@@ -1,2 +1,2 @@
 # Pound
-An less powerful and less accuracy imitation of Scratch
+An less powerful and less accurate imitation of Scratch
