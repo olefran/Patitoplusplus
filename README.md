@@ -1,2 +1,2 @@
-# Pound
-An less powerful and less accurate imitation of Scratch
+# Patito++
+Proyecto de Compiladores 2020
