@@ -1,0 +1,11 @@
+program Example;
+var aux1, aux2: float; aux3: int;
+{
+  aux1 = 4.0;
+  if (2 < 1) {
+     aux3 = 24;
+  } else {
+    aux3 = 25;
+  }
+  print("Good Job", aux1);
+}
