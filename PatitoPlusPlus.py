@@ -44,6 +44,7 @@ def t_ID(t):
   r'[a-zA-Z_][a-zA-Z_0-9]*'
   # Check if matched id is a reserved keyword.
   t.type = reserved.get(t.value, 'ID')
+  return t
 
 # Productions
 start = 'PROGRAMA'
