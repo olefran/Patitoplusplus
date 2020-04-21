@@ -28,6 +28,7 @@ reserved = {
     'string': 'STRING',
     'null': 'NULL',
     'void': 'VOID',
+
 }
 
 #Tokens
@@ -77,16 +78,6 @@ def t_ID(t):
   t.type = reserved.get(t.value, 'ID')
   return t
 
-#Current variables and Symbol Table
-current_type = None
-current_func = 'global'
-current_var = ''
-symbol_table = {
-        'global' : {
-            'vars' : {}
-        }
-}
-
 # Productions
 start = 'PROGRAM'
 
@@ -94,48 +85,51 @@ def p_empty(p):
     'empty :'
     pass
 
-# PROGRAMA → programa id ;  VARS FUNCTIONS MAIN
+# PROGRAMA → programa id ; VAR_AUX FUNCTIONS MAIN
 def p_PROGRAM(p):
-    'PROGRAM : PROGRAMA ID DOTCOMA VARS FUNCTIONS MAIN'
-    print(symbol_table)
+    'PROGRAM : PROGRAMA ID DOTCOMA VAR_AUX FUNCTIONS MAIN'
+    pass
 
-#MAIN → principal ( )  VARS BLOQUE
+#MAIN → principal ( ) VAR_AUX BLOQUE
 def p_MAIN(p):
-    'MAIN : PRINCIPAL r_save_func LPAREN RPAREN r_register_princ VARS BLOQUE'
+    'MAIN : PRINCIPAL LPAREN RPAREN VAR_AUX BLOQUE'
     pass
 
-#VARS → var VARPRE | empty
-def p_VARS(p):
-    '''VARS : VAR VAR_AUX
-    | empty'''
-    pass
-
-#empty?
-#VARPRE → TIPO IDS VARPRE | empty
+# VAR_AUX → VARS | empty
 def p_VAR_AUX(p):
-    '''VAR_AUX : TIPO IDS VAR_AUX
+    '''VAR_AUX : VARS
     | empty'''
+    pass
+
+#VARS → var VARPRE
+def p_VARS(p):
+    'VARS : VAR VARPRE'
+    pass
+
+#VARPRE → TIPO IDS ; | TIPO IDS ; VARPRE
+def p_VARPRE(p):
+    '''VARPRE : TIPO IDS DOTCOMA
+    | TIPO IDS DOTCOMA VARPRE'''
     pass
 
 #TIPO → int | float | char | string
 def p_TIPO(p):
-    '''TIPO : INT r_save_type
-    | FLOAT r_save_type
-    | CHAR r_save_type
-    | STRING r_save_type'''
+    '''TIPO : INT
+    | FLOAT
+    | CHAR
+    | STRING'''
     pass
 
 # IDS → id ARRDIM ; | id ARRDIM , IDS
 def p_IDS(p):
-    '''IDS : ID r_register_var ARRDIM DOTCOMA
-    | ID r_register_var ARRDIM COMA IDS'''
+    '''IDS : ID ARRDIM DOTCOMA
+    | ID ARRDIM COMA IDS'''
     pass
 
-# ARRDIM → [ EXPRESION ] | [ EXPRESION ] [ EXPRESION ] | [ EXPRESION , EXPRESION ] | empty
+# ARRDIM → [ EXPRESION ] | [ EXPRESION ] [ EXPRESION ] | empty
 def p_ARRDIM(p):
     '''ARRDIM : LSTAPLE EXPRESION RSTAPLE
     | LSTAPLE EXPRESION RSTAPLE LSTAPLE EXPRESION RSTAPLE
-    | LSTAPLE EXPRESION COMA EXPRESION RSTAPLE
     | empty'''
     pass
 
@@ -145,20 +139,20 @@ def p_FUNCTIONS(p):
     | empty'''
     pass
 
-#FUNCTION → funcion TIPO id ( PARAM )  VARS BLOQUE | funcion void id ( PARAM )  VARS BLOQUE
+#FUNCTION → funcion TIPO id ( PARAM ) VAR_AUX BLOQUE | funcion TIPO void ( PARAM ) VAR_AUX BLOQUE
 def p_FUNCTION(p):
-    '''FUNCTION : FUNCION TIPO ID r_save_func r_register_func LPAREN PARAM RPAREN VARS BLOQUE
-    | FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN VARS BLOQUE'''
+    '''FUNCTION : FUNCION TIPO ID LBRACKET PARAM RBRACKET VAR_AUX BLOQUE
+    | FUNCION TIPO VOID LBRACKET PARAM RBRACKET VAR_AUX BLOQUE'''
     pass
 
 #PARAM → TIPO id PARENTESIS PARAMSUB
 def p_PARAM(p):
-    '''PARAM : TIPO ID r_register_var PARENTESIS PARAM_AUX'''
+    '''PARAM : TIPO ID PARENTESIS PARAMSUB'''
     pass
 
-#PARAM_AUX → , PARAM  | empty
-def p_PARAM_AUX(p):
-    '''PARAM_AUX : COMA PARAM
+#PARAMSUB → , PARAM  | empty
+def p_PARAMSUB(p):
+    '''PARAMSUB : COMA PARAM
     | empty'''
     pass
 
@@ -180,11 +174,11 @@ def p_ESTATUTOS(p):
     | empty'''
     pass
 
-#ESTATUTO → ASIGNACION ; | FUN ; | COND | WRITE ; | REAd ; | RETURN ;
+#ESTATUTO → ASIGNACION ; | FUN ; | COND ; | WRITE ; | REAd ; | RETURN ;
 def p_ESTATUTO(p):
     '''ESTATUTO : ASIGNACION DOTCOMA
     | FUN DOTCOMA
-    | COND
+    | COND DOTCOMA
     | WRITE DOTCOMA
     | READ DOTCOMA
     | RETURN DOTCOMA'''
@@ -219,28 +213,28 @@ def p_COMPARACION(p):
     | LESSEQUAL'''
     pass
 
-#EXP → TERMINO | TERMINO + EXP | TERMINO - EXP
+#EXP → TERMINO | TERMINO + TERMINO | TERMINO - TERMINO
 def p_EXP(p):
     '''EXP : TERMINO
-    | TERMINO PLUS EXP
-    | TERMINO MINUS EXP'''
+    | TERMINO PLUS TERMINO
+    | TERMINO MINUS TERMINO'''
     pass
 
-#TERMINO → FACTOR | FACTOR * TERMINO | FACTOR / TERMINO | FACTOR % TERMINO
+#TERMINO → FACTOR | FACTOR * FACTOR | FACTOR / FACTOR | FACTOR % FACTOR
 def p_TERMINO(p):
     '''TERMINO : FACTOR
-    | FACTOR MULT TERMINO
-    | FACTOR DIV TERMINO
-    | FACTOR MOD TERMINO'''
+    | FACTOR MULT FACTOR
+    | FACTOR DIV FACTOR
+    | FACTOR MOD FACTOR'''
     pass
 
-#FACTOR → ( EXPRESION ) | + CTE | - CTE | NOT CTE | CTE ARROP | CTE
+#FACTOR → ( EXPRESION ) | + CTE | - CTE | NOT CTE | ARROP CTE | CTE
 def p_FACTOR(p):
     '''FACTOR : LPAREN EXPRESION RPAREN
     | PLUS CTE
     | MINUS CTE
     | NOT CTE
-    | CTE ARROP
+    | ARROP CTE
     | CTE'''
     pass
 
@@ -282,8 +276,7 @@ def p_COND(p):
 
 #IF → si ( EXPRESION ) entonces BLOQUE IF_AUX
 def p_IF(p):
-    '''IF : SI LPAREN EXPRESION RPAREN ENTONCES BLOQUE IF_AUX
-    | SI LPAREN EXPRESION RPAREN ENTONCES COND '''
+    'IF : SI LPAREN EXPRESION RPAREN ENTONCES BLOQUE SINO IF_AUX'
     pass
 
 #IFAUX → sino BLOQUE | empty
@@ -292,22 +285,14 @@ def p_IF_AUX(p):
     | empty'''
     pass
 
-#WHILE → mientras ( EXPRESION ) WHILE_AUX BLOQUE
+#WHILE → mientras ( EXPRESION ) haz BLOQUE
 def p_WHILE(p):
-    '''WHILE :  MIENTRAS LPAREN EXPRESION RPAREN WHILE_AUX BLOQUE
-    | MIENTRAS LPAREN EXPRESION RPAREN WHILE_AUX COND'''
-    pass
-
-#WHILE_AUX → haz | empty
-def p_WHILE_AUX(p):
-    '''WHILE_AUX :  HAZ
-    | empty '''
+    'WHILE :  MIENTRAS LPAREN EXPRESION RPAREN HAZ BLOQUE'
     pass
 
 #FOR → desde ASIGNACION hasta EXPRESION hacer BLOQUE
 def p_FOR(p):
-    '''FOR :  DESDE ASIGNACION HASTA EXPRESION HACER BLOQUE
-    | DESDE ASIGNACION HASTA EXPRESION HACER COND'''
+    'FOR :  DESDE ASIGNACION HASTA EXPRESION HACER BLOQUE'
     pass
 
 #WRITE → escribe ( WRITE_AUX )
@@ -391,14 +376,6 @@ def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
-def p_error(p):
-    if p:
-        print("Syntax error at token", p.type)
-        # Just discard the token and tell the parser it's okay.
-        parser.errok()
-    else:
-        print("Syntax error at EOF")
-
 #Precedence: Build againts ambiguity
 precedence = (
     ('left', 'PLUS', 'MINUS'),
@@ -406,42 +383,6 @@ precedence = (
     ('right', 'EQUAL'),
     ('left', 'AND', 'OR'),
 )
-
-#DirFunctions
-def p_r_save_type(p):
-    'r_save_type : '
-    global current_type
-    current_type = p[-1]
-
-def p_r_save_func(p):
-    'r_save_func : '
-    global current_func
-    current_func = p[-1]
-
-def p_r_register_func(p):
-    'r_register_func : '
-    global symbol_table
-    symbol_table[current_func] = {
-        'type': current_type,
-        'vars': {}
-    }
-
-def p_r_register_var(p):
-    'r_register_var : '
-    global current_var
-    current_var = p[-1]
-    global symbol_table
-    symbol_table[current_func]['vars'][current_var] = {
-        'type': current_type,
-    }
-
-def p_r_register_princ(p):
-    'r_register_princ : '
-    global symbol_table
-    symbol_table[current_func] = {
-        'vars': {}
-    }
-
 
 #Build the lexer
 lexer = lex.lex()
@@ -452,19 +393,21 @@ parser = yacc.yacc()
 
 
 # Test it out
-aux = int(input("1.Ingrese Programa\n2.Documento Prueba\n"))
+aux = int(input("1.Programa que cumple\n2.Programa que no cumple\n3.Documento\n"))
 
 data = ""
 
 if(aux == 1):
-    f = open(input("Ingrese el nombre del programa: "), "r")
-    if f.mode == 'r':
-        data = f.read()
-        f.close()
-    else:
-        print("Error: input File not found or redable")
+    data = '''program Example;
+var aux1, aux2: float; aux3: int;
+{
+
+}'''
 
 elif(aux == 2):
+    data = '''programa ~'''
+
+elif(aux == 3):
     f = open("example.duckpp", "r")
     if f.mode == 'r':
         data = f.read()
@@ -485,3 +428,4 @@ while True:
 
 result = parser.parse(data)
 print("Errors: ", result)
+
