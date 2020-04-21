@@ -28,7 +28,6 @@ reserved = {
     'string': 'STRING',
     'null': 'NULL',
     'void': 'VOID',
-
 }
 
 #Tokens
@@ -78,6 +77,12 @@ def t_ID(t):
   t.type = reserved.get(t.value, 'ID')
   return t
 
+#Current variables and Symbol Table
+current_type = ''
+current_func = ''
+current_var = ''
+symbol_table = {}
+
 # Productions
 start = 'PROGRAM'
 
@@ -88,11 +93,11 @@ def p_empty(p):
 # PROGRAMA → programa id ;  VARS FUNCTIONS MAIN
 def p_PROGRAM(p):
     'PROGRAM : PROGRAMA ID DOTCOMA VARS FUNCTIONS MAIN'
-    pass
+    print(symbol_table)
 
 #MAIN → principal ( )  VARS BLOQUE
 def p_MAIN(p):
-    'MAIN : PRINCIPAL LPAREN RPAREN VARS BLOQUE'
+    'MAIN : PRINCIPAL r_save_func LPAREN RPAREN VARS r_register_func BLOQUE'
     pass
 
 #VARS → var VARPRE | empty
@@ -110,16 +115,16 @@ def p_VAR_AUX(p):
 
 #TIPO → int | float | char | string
 def p_TIPO(p):
-    '''TIPO : INT
-    | FLOAT
-    | CHAR
-    | STRING'''
+    '''TIPO : INT r_save_type
+    | FLOAT r_save_type
+    | CHAR r_save_type
+    | STRING r_save_type'''
     pass
 
 # IDS → id ARRDIM ; | id ARRDIM , IDS
 def p_IDS(p):
-    '''IDS : ID ARRDIM DOTCOMA
-    | ID ARRDIM COMA IDS'''
+    '''IDS : ID r_register_var ARRDIM DOTCOMA
+    | ID r_register_var ARRDIM COMA IDS'''
     pass
 
 # ARRDIM → [ EXPRESION ] | [ EXPRESION ] [ EXPRESION ] | [ EXPRESION , EXPRESION ] | empty
@@ -138,13 +143,13 @@ def p_FUNCTIONS(p):
 
 #FUNCTION → funcion TIPO id ( PARAM )  VARS BLOQUE | funcion void id ( PARAM )  VARS BLOQUE
 def p_FUNCTION(p):
-    '''FUNCTION : FUNCION TIPO ID LPAREN PARAM RPAREN VARS BLOQUE
-    | FUNCION VOID ID LPAREN PARAM RPAREN VARS BLOQUE'''
+    '''FUNCTION : FUNCION TIPO ID r_save_func LPAREN PARAM RPAREN VARS r_register_func BLOQUE
+    | FUNCION VOID r_save_type ID r_save_func LPAREN PARAM RPAREN VARS r_register_func BLOQUE'''
     pass
 
 #PARAM → TIPO id PARENTESIS PARAMSUB
 def p_PARAM(p):
-    '''PARAM : TIPO ID PARENTESIS PARAM_AUX'''
+    '''PARAM : TIPO ID r_register_var PARENTESIS PARAM_AUX'''
     pass
 
 #PARAM_AUX → , PARAM  | empty
@@ -397,6 +402,36 @@ precedence = (
     ('right', 'EQUAL'),
     ('left', 'AND', 'OR'),
 )
+
+#DirFunctions
+def p_r_save_type(p):
+    'r_save_type : '
+    global current_type
+    current_type = p[-1]
+
+def p_r_save_func(p):
+    'r_save_func : '
+    global current_func
+    current_func = p[-1]
+
+def p_r_register_func(p):
+    'r_register_func : '
+    global symbol_table
+    symbol_table[current_func] = {
+        'type': current_type,
+        'vars': {}
+    }
+
+def p_r_register_var(p):
+    'r_register_var : '
+    global current_var
+    current_var = p[-1]
+    global symbol_table
+    symbol_table[current_func]['vars'][current_var] = {
+        'type': current_type,
+    }
+
+
 
 #Build the lexer
 lexer = lex.lex()
