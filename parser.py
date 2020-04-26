@@ -308,7 +308,7 @@ def p_error(p):
     else:
         print("Syntax error at EOF")
 
-#Precedence: Build againts ambiguity
+#Precedence: Build againts ambiguity TODO: More Operations
 precedence = (
     ('left', 'PLUS', 'MINUS'),
     ('left', 'MULT', 'DIV', 'MOD'),
