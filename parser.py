@@ -4,10 +4,7 @@
 # Created 04/25/2020
 import yacc
 from scanner import tokens
-from semantics import symbol_table
-from semantics import current_func
-from semantics import current_var
-from semantics import current_type
+from semantics import *
 
 
 #Productions
@@ -33,7 +30,6 @@ def p_VARS(p):
     | empty'''
     pass
 
-#empty?
 #VARPRE → TIPO IDS VARPRE | empty
 def p_VAR_AUX(p):
     '''VAR_AUX : TIPO IDS VAR_AUX
@@ -120,16 +116,17 @@ def p_ASIGNACION(p):
     pass
 
 #EXPRESION → SUBEXP && SUBEXP | SUBEXP || SUBEXP | SUBEXP
+# r_seen_andor -> save
 def p_EXPRESION(p):
-    '''EXPRESION : SUBEXP AND SUBEXP
-    | SUBEXP OR SUBEXP
-    | SUBEXP'''
+    '''EXPRESION : SUBEXP r_seen_subexp AND r_seen_operator SUBEXP r_seen_subexp
+    | SUBEXP r_seen_subexp OR r_seen_operator SUBEXP r_seen_subexp
+    | SUBEXP r_seen_subexp'''
     pass
 
 #SUBEXP → EXP | EXP COMPARACION EXP
 def p_SUBEXP(p):
-    '''SUBEXP : EXP
-    | EXP COMPARACION EXP'''
+    '''SUBEXP : EXP r_seen_exp
+    | EXP r_seen_exp COMPARACION r_seen_operator EXP r_seen_exp'''
     pass
 
 #COMPARACION → > | < | == | != | >= | <=
@@ -144,37 +141,37 @@ def p_COMPARACION(p):
 
 #EXP → TERMINO | TERMINO + EXP | TERMINO - EXP
 def p_EXP(p):
-    '''EXP : TERMINO
-    | TERMINO PLUS EXP
-    | TERMINO MINUS EXP'''
+    '''EXP : TERMINO r_seen_term
+    | TERMINO r_seen_term PLUS r_seen_operator EXP r_seen_exp
+    | TERMINO r_seen_term MINUS r_seen_operator EXP r_seen_exp'''
     pass
 
 #TERMINO → FACTOR | FACTOR * TERMINO | FACTOR / TERMINO | FACTOR % TERMINO
 def p_TERMINO(p):
-    '''TERMINO : FACTOR
-    | FACTOR MULT TERMINO
-    | FACTOR DIV TERMINO
-    | FACTOR MOD TERMINO'''
+    '''TERMINO : FACTOR r_seen_factor
+    | FACTOR r_seen_factor MULT r_seen_operator TERMINO r_seen_term
+    | FACTOR r_seen_factor DIV r_seen_operator TERMINO r_seen_term
+    | FACTOR r_seen_factor MOD r_seen_operator TERMINO r_seen_term'''
     pass
 
 #FACTOR → ( EXPRESION ) | + CTE | - CTE | NOT CTE | CTE ARROP | CTE
 def p_FACTOR(p):
-    '''FACTOR : LPAREN EXPRESION RPAREN
-    | PLUS CTE
-    | MINUS CTE
-    | NOT CTE
-    | CTE ARROP
-    | CTE'''
+    '''FACTOR : LPAREN r_seen_operator EXPRESION RPAREN r_seen_operator
+    | PLUS r_seen_unary_operator CTE r_seen_operand
+    | MINUS r_seen_unary_operator CTE r_seen_operand
+    | NOT r_seen_unary_operator CTE r_seen_operand
+    | CTE r_seen_operand ARROP
+    | CTE r_seen_operand'''
     pass
 
 #CTE → cte_i | cte_f | ct_ch | cte_string | FUN | ID ARRDIM
 def p_CTE(p):
-    '''CTE : CTE_I
-    | CTE_F
-    | CTE_CH
-    | CTE_STRING
-    | FUN
-    | ID ARRDIM'''
+    '''CTE : CTE_I r_seen_operator
+    | CTE_F r_seen_operator
+    | CTE_CH r_seen_operator
+    | CTE_STRING r_seen_operator
+    | FUN 
+    | ID ARRDIM '''
     pass
 
 #ARROP→ $ | ! | ?
@@ -351,6 +348,46 @@ def p_r_register_princ(p):
         'vars': {}
     }
 
+def p_r_seen_operand(p):
+    'r_seen_operand : '
+    e = register_operand(p[-1])
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_seen_operator(p):
+    'r_seen_operator : '
+    e = register_operator(p[-1])
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_seen_subexp(p):
+    'r_seen_subexp : '
+    e = solve_op_or_cont([Operations.AND, Operations.OR])
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_seen_exp(p):
+    'r_seen_exp : '
+    e = solve_op_or_cont([Operations.MORE_THAN, Operations.LESS_THAN, Operations.IS_EQUAL,
+                        Operations.DIFFERENT, Operations.LESS_EQUAL, Operations.MORE_EQUAL])
+    if e:
+        andle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_seen_term(p):
+    'r_seen_term : '
+    e = solve_op_or_cont([Operations.PLUS, Operations.MINUS])
+    if e:
+        andle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_seen_factor(p):
+    'r_seen_factor : '
+    e = solve_op_or_cont([Operations.TIMES, Operations.DIV, Operations.MOD])
+    if e:
+        andle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_seen_unary_operator(p):
+    'r_seen_unary_operator : '
+    pass #TODO Unary operation
 
 #Build the parser
 parser = yacc.yacc()

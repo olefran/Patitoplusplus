@@ -3,6 +3,8 @@
 # semantincs cube and symbol table of Patitoplusplus
 # Created 04/25/2020
 from enum import Enum, IntEnum, auto
+from collections import defaultdict
+from quadruples import operand_stack, operator_stack, type_stack, jump_stack
 
 current_type = None
 current_func = 'global'
@@ -17,7 +19,7 @@ symbol_table = {
 #Funcion para consultar un simbolo dad una llave
 # Input: dirreción del simbolo
 # Output: Symbolo
-def consult_sim(key):
+def consult_type():
     return NULL
 
 # Limites de memoria virtual
@@ -40,6 +42,7 @@ class Types(Enum):
   CHAR = 'char'
   STRING = 'string'
   VOID = 'void'
+  LEE = 'lee'
 
 var_types = (Types.INT, Types.FLOAT, Types.CHAR, Types.STRING)
 avail_types = (Types.INT, Types.FLOAT, Types.CHAR, Types.STRING, Types.VOID)
@@ -62,7 +65,7 @@ class Operations(IntEnum):
   OR = 14
   AND = 15
   EQUAL = 16
-  READ = 17
+  LEE = 17
   WRITE = 18
   GOTO = 19
   GOTOF = 20
@@ -78,9 +81,10 @@ class Operations(IntEnum):
   FAKE_BOTTOM = 30
   VER = 31
   SET_FOREIGN = 32
-  UNSET_FOREIGN = 3
+  UNSET_FOREIGN = 33
+  MOD = 34
 
-  str_operations = {
+str_operations = {
     'unary+': Operations.PLUS_UNARY,
     'unary-': Operations.MINUS_UNARY,
     'unarynot': Operations.NOT,
@@ -90,16 +94,63 @@ class Operations(IntEnum):
     '-': Operations.MINUS,
     '<': Operations.LESS_THAN,
     '>': Operations.MORE_THAN,
-    '<>': Operations.DIFFERENT,
+    '!=': Operations.DIFFERENT,
     '==': Operations.IS_EQUAL,
     '<=': Operations.LESS_EQUAL,
     '>=': Operations.MORE_EQUAL,
     'or': Operations.OR,
     'and': Operations.AND,
     '=': Operations.EQUAL,
-    '(': Operations.FAKE_BOTTOM
+    '(': Operations.FAKE_BOTTOM,
+    '%': Operations.MOD
 }
 
+#Functions
+
+# Register an operand on the operand_stack, with its type
+def register_operand(raw_operand):
+    global operand_stack
+    try:
+        operand = [type(raw_operand), raw_operand]
+    except:
+        return operand.get_error()
+
+    operand_stack.append(operand)
+
+#Register a function on the operator_stack
+def register_operator(raw_operator):
+    global operator_stack
+    operator_stack.append(raw_operator)
+
+#TODO: Resolve the operation _ gnerate the cuadruple?
+def solve_op_or_cont(ops: [Operations]):
+  '''Generates quadruple for next operation if it exists in ops.
+  Solves the next operation (from the operation stack) if it is included in ops.
+  Returns error if operation cannot be performed on the given operands.
+  Returns error if trying to perform an operation on a call to a void function.
+  '''
+  global operator_stack, operand_stack, type_stack
+  operator = operator_stack[-1]
+  if operator in ops:
+    right_operand = operand_stack.pop()
+    right_type = type_stack.pop()
+    left_operand = operand_stack.pop()
+    left_type = type_stack.pop()
+    operator = operator_stack.pop()
+    result_type = semantic_cube[left_type][right_type][operator]
+    if not result_type:
+      if left_type == Types.VOID or right_type == Types.VOID:
+        return f'Expression returns no value.'
+      return f'Type mismatch: Invalid operation \'{operator}\' on given operand'
+    temp = build_temp_operand(result_type)
+    if temp.get_error():
+      return temp.get_error()
+    generate_quadruple(operator, left_operand, right_operand, temp)
+    operand_stack.append(temp)
+    type_stack.append(result_type)
+
+# Declaracion de cubo sematico, todo que no sea declarado se considera NULO
+# TODO: Realizar los operandos especiales unitarios para matrices
 
 semantic_cube = defaultdict(
     lambda: defaultdict(lambda: defaultdict(lambda: None)))
@@ -117,7 +168,7 @@ semantic_cube[Types.INT][Types.INT][Operations.MINUS] = Types.INT
 semantic_cube[Types.INT][Types.INT][Operations.TIMES] = Types.INT
 semantic_cube[Types.INT][Types.INT][Operations.DIV] = Types.INT
 semantic_cube[Types.INT][Types.INT][Operations.EQUAL] = Types.INT
-semantic_cube[Types.INT][Types.READ][Operations.EQUAL] = Types.INT
+semantic_cube[Types.INT][Types.LEE][Operations.EQUAL] = Types.INT
 semantic_cube[Types.INT][Operations.PLUS_UNARY] = Types.INT
 semantic_cube[Types.INT][Operations.MINUS_UNARY] = Types.INT
 semantic_cube[Types.INT][Operations.NOT] = Types.INT
@@ -135,7 +186,7 @@ semantic_cube[Types.FLOAT][Types.FLOAT][Operations.MINUS] = Types.FLOAT
 semantic_cube[Types.FLOAT][Types.FLOAT][Operations.TIMES] = Types.FLOAT
 semantic_cube[Types.FLOAT][Types.FLOAT][Operations.DIV] = Types.FLOAT
 semantic_cube[Types.FLOAT][Types.FLOAT][Operations.EQUAL] = Types.FLOAT
-semantic_cube[Types.FLOAT][Types.READ][Operations.EQUAL] = Types.FLOAT
+semantic_cube[Types.FLOAT][Types.LEE][Operations.EQUAL] = Types.FLOAT
 semantic_cube[Types.FLOAT][Operations.PLUS_UNARY] = Types.FLOAT
 semantic_cube[Types.FLOAT][Operations.MINUS_UNARY] = Types.FLOAT
 semantic_cube[Types.FLOAT][Operations.NOT] = Types.INT
@@ -153,7 +204,7 @@ semantic_cube[Types.CHAR][Types.CHAR][Operations.MINUS] = Types.CHAR
 semantic_cube[Types.CHAR][Types.CHAR][Operations.TIMES] = Types.CHAR
 semantic_cube[Types.CHAR][Types.CHAR][Operations.DIV] = Types.CHAR
 semantic_cube[Types.CHAR][Types.CHAR][Operations.EQUAL] = Types.CHAR
-semantic_cube[Types.CHAR][Types.READ][Operations.EQUAL] = Types.CHAR
+semantic_cube[Types.CHAR][Types.LEE][Operations.EQUAL] = Types.CHAR
 semantic_cube[Types.CHAR][Operations.PLUS_UNARY] = None
 semantic_cube[Types.CHAR][Operations.MINUS_UNARY] = None
 semantic_cube[Types.CHAR][Operations.NOT] = Types.CHAR
@@ -202,4 +253,4 @@ semantic_cube[Types.FLOAT][Types.CHAR][Operations.TIMES] = semantic_cube[Types.C
 semantic_cube[Types.FLOAT][Types.CHAR][Operations.DIV] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.DIV] = Types.FLOAT
 semantic_cube[Types.FLOAT][Types.CHAR][Operations.EQUAL] = Types.FLOAT
 semantic_cube[Types.CHAR][Types.FLOAT][Operations.EQUAL] = Types.CHAR
-semantic_cube[Types.CHAR][Types.READ][Operations.EQUAL] = Types.CHAR
+semantic_cube[Types.CHAR][Types.LEE][Operations.EQUAL] = Types.CHAR
