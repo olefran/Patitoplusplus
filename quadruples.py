@@ -1,4 +1,3 @@
-
 #Stack de Operaciones
 operator_stack = []
 
@@ -15,3 +14,7 @@ operand_stack = []
 
 #Stack de salto durante ejecucion
 jump_stack = []
+
+
+# Generated quadruples
+quadruples = []

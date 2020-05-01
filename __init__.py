@@ -5,6 +5,7 @@
 from parser import parser
 from scanner import lexer
 from quadruples import operand_stack, operator_stack
+from semantics import symbol_table
 import sys
 
 # Open file or fail at it, but try to look profesional
@@ -37,12 +38,13 @@ def main():
         tok = lexer.token()
         if not tok:
             break      # No more input
-        print(tok)
+        #print(tok)
 
     result = parser.parse(data)
     print("Errors: ", result)
-    print("Operator Stack: ", operator_stack)
-    #print("Operand Stack: ", operand_stack)
+    print("Operator Stack: ", operator_stack) #Error saves not operators
+    print("Operand Stack: ", operand_stack) #Error none
+    print("Simbol Table: ", symbol_table)
     return 0
 
 if __name__ == "__main__":

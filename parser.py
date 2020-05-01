@@ -17,7 +17,7 @@ def p_empty(p):
 # PROGRAMA → programa id ;  VARS FUNCTIONS MAIN
 def p_PROGRAM(p):
     'PROGRAM : PROGRAMA ID DOTCOMA VARS FUNCTIONS MAIN'
-    print(symbol_table)
+    pass
 
 #MAIN → principal ( )  VARS BLOQUE
 def p_MAIN(p):
@@ -157,20 +157,20 @@ def p_TERMINO(p):
 #FACTOR → ( EXPRESION ) | + CTE | - CTE | NOT CTE | CTE ARROP | CTE
 def p_FACTOR(p):
     '''FACTOR : LPAREN r_seen_operator EXPRESION RPAREN r_seen_operator
-    | PLUS r_seen_unary_operator CTE r_seen_operand
-    | MINUS r_seen_unary_operator CTE r_seen_operand
-    | NOT r_seen_unary_operator CTE r_seen_operand
-    | CTE r_seen_operand ARROP
-    | CTE r_seen_operand'''
+    | PLUS r_seen_unary_operator CTE
+    | MINUS r_seen_unary_operator CTE
+    | NOT r_seen_unary_operator CTE
+    | CTE ARROP
+    | CTE'''
     pass
 
 #CTE → cte_i | cte_f | ct_ch | cte_string | FUN | ID ARRDIM
 def p_CTE(p):
-    '''CTE : CTE_I r_seen_operator
-    | CTE_F r_seen_operator
-    | CTE_CH r_seen_operator
-    | CTE_STRING r_seen_operator
-    | FUN 
+    '''CTE : CTE_I r_seen_operand
+    | CTE_F r_seen_operand
+    | CTE_CH r_seen_operand
+    | CTE_STRING r_seen_operand
+    | FUN
     | ID ARRDIM '''
     pass
 
@@ -357,6 +357,7 @@ def p_r_seen_operand(p):
 def p_r_seen_operator(p):
     'r_seen_operator : '
     e = register_operator(p[-1])
+    print(p[-1])
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
