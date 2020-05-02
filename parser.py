@@ -111,48 +111,68 @@ def p_ESTATUTO(p):
 
 #ASIGNACION → id ARRDIM = EXPRESION | id ARRDIM = CTE_ARR
 def p_ASIGNACION(p):
-    '''ASIGNACION : ID ARRDIM EQUAL EXPRESION
-    | ID ARRDIM EQUAL CTE_ARR'''
+    '''ASIGNACION : ID ARRDIM EQUAL r_seen_operator EXPRESION
+    | ID ARRDIM EQUAL r_seen_operator CTE_ARR'''
     pass
 
-#EXPRESION → SUBEXP && SUBEXP | SUBEXP || SUBEXP | SUBEXP
-# r_seen_andor -> save
+#EXPRESION → SUBEXP EXPRESION_AUX
 def p_EXPRESION(p):
-    '''EXPRESION : SUBEXP r_seen_subexp AND r_seen_operator SUBEXP r_seen_subexp
-    | SUBEXP r_seen_subexp OR r_seen_operator SUBEXP r_seen_subexp
-    | SUBEXP r_seen_subexp'''
+    'EXPRESION : SUBEXP r_seen_subexp EXPRESION_AUX'
     pass
 
-#SUBEXP → EXP | EXP COMPARACION EXP
+#EXPRESION_AUX → && EXPRESION | || EXPRESION | empty
+def p_EXPRESION_AUX(p):
+    '''EXPRESION_AUX : AND r_seen_operator EXPRESION
+    | OR r_seen_operator EXPRESION
+    | empty'''
+    pass
+
+#SUBEXP → EXP SUBEXP_AUX
 def p_SUBEXP(p):
-    '''SUBEXP : EXP r_seen_exp
-    | EXP r_seen_exp COMPARACION r_seen_operator EXP r_seen_exp'''
+    'SUBEXP : EXP r_seen_exp SUBEXP_AUX'
+    pass
+
+#SUBEXP → COMPARACION SUBEXP | empty
+def p_SUBEXP_AUX(p):
+    '''SUBEXP_AUX : COMPARACION SUBEXP
+    | empty'''
     pass
 
 #COMPARACION → > | < | == | != | >= | <=
 def p_COMPARACION(p):
-    '''COMPARACION : MORE
-    | LESS
-    | COMPARE
-    | DIFFERENT
-    | MOREEQUAL
-    | LESSEQUAL'''
+    '''COMPARACION : MORE r_seen_operator
+    | LESS r_seen_operator
+    | COMPARE r_seen_operator
+    | DIFFERENT r_seen_operator
+    | MOREEQUAL r_seen_operator
+    | LESSEQUAL r_seen_operator'''
     pass
 
-#EXP → TERMINO | TERMINO + EXP | TERMINO - EXP
+#EXP → TERMINO EXP_AUX
 def p_EXP(p):
-    '''EXP : TERMINO r_seen_term
-    | TERMINO r_seen_term PLUS r_seen_operator EXP r_seen_exp
-    | TERMINO r_seen_term MINUS r_seen_operator EXP r_seen_exp'''
+    'EXP : TERMINO r_seen_term EXP_AUX'
     pass
 
-#TERMINO → FACTOR | FACTOR * TERMINO | FACTOR / TERMINO | FACTOR % TERMINO
-def p_TERMINO(p):
-    '''TERMINO : FACTOR r_seen_factor
-    | FACTOR r_seen_factor MULT r_seen_operator TERMINO r_seen_term
-    | FACTOR r_seen_factor DIV r_seen_operator TERMINO r_seen_term
-    | FACTOR r_seen_factor MOD r_seen_operator TERMINO r_seen_term'''
+# + EXP | - EXP | empty
+def p_EXP_AUX(p):
+    '''EXP_AUX : PLUS r_seen_operator EXP
+    | MINUS r_seen_operator EXP
+    | empty'''
     pass
+
+#TERMINO → FACTOR TERMINO_AUX
+def p_TERMINO(p):
+    'TERMINO : FACTOR r_seen_factor TERMINO_AUX'
+    pass
+
+#TERMINO_AUX → * TERMINO | / TERMINO | % TERMINO | empty
+def p_TERMINO_AUX(p):
+    '''TERMINO_AUX : MULT r_seen_operator TERMINO
+    | DIV r_seen_operator TERMINO
+    | MOD r_seen_operator TERMINO
+    | empty'''
+    pass
+
 
 #FACTOR → ( EXPRESION ) | + CTE | - CTE | NOT CTE | CTE ARROP | CTE
 def p_FACTOR(p):
@@ -220,7 +240,7 @@ def p_WHILE(p):
 
 #WHILE_AUX → haz | empty
 def p_WHILE_AUX(p):
-    '''WHILE_AUX :  HAZ
+    '''WHILE_AUX : HAZ
     | empty '''
     pass
 
@@ -363,26 +383,25 @@ def p_r_seen_operator(p):
 
 def p_r_seen_subexp(p):
     'r_seen_subexp : '
-    e = solve_op_or_cont([Operations.AND, Operations.OR])
+    e = solve_op_or_cont(['&&', '||'])
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_seen_exp(p):
     'r_seen_exp : '
-    e = solve_op_or_cont([Operations.MORE_THAN, Operations.LESS_THAN, Operations.IS_EQUAL,
-                        Operations.DIFFERENT, Operations.LESS_EQUAL, Operations.MORE_EQUAL])
+    e = solve_op_or_cont(['>', '<', '==','!=', '<=', '>='])
     if e:
         andle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_seen_term(p):
     'r_seen_term : '
-    e = solve_op_or_cont([Operations.PLUS, Operations.MINUS])
+    e = solve_op_or_cont(['+', '-'])
     if e:
         andle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_seen_factor(p):
     'r_seen_factor : '
-    e = solve_op_or_cont([Operations.TIMES, Operations.DIV, Operations.MOD])
+    e = solve_op_or_cont(['*', '/', '%'])
     if e:
         andle_error(p.lineno(-1), p.lexpos(-1), e)
 

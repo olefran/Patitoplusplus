@@ -3,6 +3,7 @@
 # Scanner with lex of Patitoplusplus
 # Created 04/25/2020
 import lex
+import math
 
 
 # Language's reserved keywords.
@@ -54,8 +55,6 @@ t_PLUS      = r'\+'
 t_MINUS     = r'-'
 t_MULT      = r'\*'
 t_DIV       = r'/'
-t_CTE_I     = r'[0-9][0-9]*'
-t_CTE_F     = r'(\+|-)?[0-9]+(\.[0-9]+)?f' #Modified "f" at the end, and '+' on digit part
 t_AND       = r'&&'
 t_OR        = r'\|\|'
 t_COMPARE   = r'=='
@@ -70,6 +69,15 @@ t_DIFFERENT = r'!='
 t_LSTAPLE   = r'\['
 t_RSTAPLE   = r'\]'
 t_ignore_COMMENT = r'%%.*'
+
+def t_CTE_F(t):
+  r'([0-9]*[.])?[0-9]+'
+  if int(math.floor(float(t.value))) == float(t.value):
+    t.value = int(t.value)
+    t.type = 'CTE_I'
+  else:
+    t.value = float(t.value)
+  return t
 
 def t_ID(t):
   r'[a-zA-Z_][a-zA-Z_0-9]*'

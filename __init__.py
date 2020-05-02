@@ -42,9 +42,9 @@ def main():
 
     result = parser.parse(data)
     print("Errors: ", result)
-    print("Operator Stack: ", operator_stack) #Error saves not operators
-    print("Operand Stack: ", operand_stack) #Error none
-    print("Simbol Table: ", symbol_table)
+    # print("Operator Stack: ", operator_stack) #Error saves not operators
+    # print("Operand Stack: ", operand_stack) #Error none
+    # print("Symbol Table: ", symbol_table)
     return 0
 
 if __name__ == "__main__":

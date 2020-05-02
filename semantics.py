@@ -45,9 +45,9 @@ class Types(Enum):
   VOID = 'void'
   LEE = 'lee'
 
-var_types = (Types.INT, Types.FLOAT, Types.CHAR, Types.STRING)
-avail_types = (Types.INT, Types.FLOAT, Types.CHAR, Types.STRING, Types.VOID)
-func_types = (Types.INT, Types.FLOAT, Types.CHAR, Types.STRING, Types.VOID)
+var_types = ('int', 'float', 'char', 'string')
+avail_types = ('int', 'float', 'char', 'string', 'void')
+func_types = ('int', 'float', 'char', 'string', 'void')
 
 class Operations(IntEnum):
   PLUS_UNARY = 1
@@ -86,24 +86,24 @@ class Operations(IntEnum):
   MOD = 34
 
 str_operations = {
-    'unary+': Operations.PLUS_UNARY,
-    'unary-': Operations.MINUS_UNARY,
-    'unarynot': Operations.NOT,
-    '*': Operations.TIMES,
-    '/': Operations.DIV,
-    '+': Operations.PLUS,
-    '-': Operations.MINUS,
-    '<': Operations.LESS_THAN,
-    '>': Operations.MORE_THAN,
-    '!=': Operations.DIFFERENT,
-    '==': Operations.IS_EQUAL,
-    '<=': Operations.LESS_EQUAL,
-    '>=': Operations.MORE_EQUAL,
-    'or': Operations.OR,
-    'and': Operations.AND,
-    '=': Operations.EQUAL,
-    '(': Operations.FAKE_BOTTOM,
-    '%': Operations.MOD
+    'unary+': 'unary+',
+    'unary-': 'unary-',
+    '!': '!',
+    '*': '*',
+    '/': '/',
+    '+': '+',
+    '-': '-',
+    '<': '<',
+    '>': '>',
+    '!=': '!=',
+    '==': '==',
+    '<=': '<=',
+    '>=': '>=',
+    '||': '||',
+    '&&': '&&',
+    '=': '=',
+    '(': '(',
+    '%': '%'
 }
 
 #Functions
@@ -112,11 +112,27 @@ str_operations = {
 def register_operand(raw_operand):
     global operand_stack
     try:
-        operand = [ 'type', raw_operand]
+        operand = create_operand(raw_operand)
     except:
-        return operand.get_error()
+        print('Error al registrar operando')
+
 
     operand_stack.append(operand)
+
+def create_operand(raw_operand):
+    t = type(raw_operand)
+    type_op = ''
+    if t == int:
+        type_op = 'int'
+    if t == float:
+        type_op = 'float'
+
+    if t == str and len(raw_operand) == 1 :
+        type_op = 'char'
+    elif t == str:
+        type_op = 'string'
+
+    return (type_op, raw_operand)
 
 #Register a function on the operator_stack
 def register_operator(raw_operator):
@@ -124,111 +140,141 @@ def register_operator(raw_operator):
     operator_stack.append(raw_operator)
 
 #TODO: Resolve the operation _ gnerate the cuadruple?
+# '''Generates quadruple for next operation if it exists in ops.
+# Solves the next operation (from the operation stack) if it is included in ops.
+# Returns error if operation cannot be performed on the given operands.
+# Returns error if trying to perform an operation on a call to a void function.'''
 def solve_op_or_cont(ops: [Operations]):
-    pass
+    print(ops)
+    global operator_stack, operand_stack
+    print(operator_stack)
+    print(operand_stack)
+    # global operator_stack, operand_stack, type_stack
+    # operator = operator_stack.pop()
+    # if operator in ops:
+    #     right_operand = operand_stack.pop()
+    #     #TODO BETTER SYMBOL  LOOKUP -> LOOK OUT FOR DUPLICATDES
+    #     right_type = symbol_table[current_func]['vars'][right_operand]['type']
+    #     left_operand = operand_stack.pop()
+    #     left_type = symbol_table[current_func]['vars'][left_operand]['type']
+    #     operator = operator_stack.pop()
+    #     result_type = semantic_cube[left_type][right_type][operator]
+    #     if not result_type:
+    #         if left_type == 'void' or right_type == 'void':
+    #             return f'Expression returns no value.'
+    #         return f'Type mismatch: Invalid operation \'{operator}\' on given operand'
+    # #temp = build_temp_operand(result_type)
+    # #if temp.get_error():
+    # #  return temp.get_error()
+    # # Generate Cuadruple
+    # # TODO: Verfy OPERATION
+    # cuadruple.append([operator, left_operand, right_operand, temp])
+    # #operand_stack.append(temp)
+    # type_stack.append(result_type)
 
 # Declaracion de cubo sematico, todo que no sea declarado se considera NULO
 # TODO: Realizar los operandos especiales unitarios para matrices
+    pass
 
 semantic_cube = defaultdict(
     lambda: defaultdict(lambda: defaultdict(lambda: None)))
 
-semantic_cube[Types.INT][Types.INT][Operations.AND] = Types.INT
-semantic_cube[Types.INT][Types.INT][Operations.OR] = Types.INT
-semantic_cube[Types.INT][Types.INT][Operations.LESS_THAN] = Types.INT
-semantic_cube[Types.INT][Types.INT][Operations.MORE_THAN] = Types.INT
-semantic_cube[Types.INT][Types.INT][Operations.DIFFERENT] = Types.INT
-semantic_cube[Types.INT][Types.INT][Operations.IS_EQUAL] = Types.INT
-semantic_cube[Types.INT][Types.INT][Operations.LESS_EQUAL] = Types.INT
-semantic_cube[Types.INT][Types.INT][Operations.MORE_EQUAL] = Types.INT
-semantic_cube[Types.INT][Types.INT][Operations.PLUS] = Types.INT
-semantic_cube[Types.INT][Types.INT][Operations.MINUS] = Types.INT
-semantic_cube[Types.INT][Types.INT][Operations.TIMES] = Types.INT
-semantic_cube[Types.INT][Types.INT][Operations.DIV] = Types.INT
-semantic_cube[Types.INT][Types.INT][Operations.EQUAL] = Types.INT
-semantic_cube[Types.INT][Types.LEE][Operations.EQUAL] = Types.INT
-semantic_cube[Types.INT][Operations.PLUS_UNARY] = Types.INT
-semantic_cube[Types.INT][Operations.MINUS_UNARY] = Types.INT
-semantic_cube[Types.INT][Operations.NOT] = Types.INT
+semantic_cube['int']['int']['&&'] = 'int'
+semantic_cube['int']['int']['||'] = 'int'
+semantic_cube['int']['int']['<'] = 'int'
+semantic_cube['int']['int']['>'] = 'int'
+semantic_cube['int']['int']['!='] = 'int'
+semantic_cube['int']['int']['=='] = 'int'
+semantic_cube['int']['int']['<='] = 'int'
+semantic_cube['int']['int']['>='] = 'int'
+semantic_cube['int']['int']['+'] = 'int'
+semantic_cube['int']['int']['-'] = 'int'
+semantic_cube['int']['int']['*'] = 'int'
+semantic_cube['int']['int']['/'] = 'int'
+semantic_cube['int']['int']['='] = 'int'
+semantic_cube['int']['lee']['='] = 'int'
+semantic_cube['int']['unary+'] = 'int'
+semantic_cube['int']['unary-'] = 'int'
+semantic_cube['int']['!'] = 'int'
 
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.AND] = Types.INT
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.OR] = Types.INT
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.LESS_THAN] = Types.INT
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.MORE_THAN] = Types.INT
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.DIFFERENT] = Types.INT
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.IS_EQUAL] = Types.INT
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.LESS_EQUAL] = Types.INT
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.MORE_EQUAL] = Types.INT
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.PLUS] = Types.FLOAT
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.MINUS] = Types.FLOAT
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.TIMES] = Types.FLOAT
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.DIV] = Types.FLOAT
-semantic_cube[Types.FLOAT][Types.FLOAT][Operations.EQUAL] = Types.FLOAT
-semantic_cube[Types.FLOAT][Types.LEE][Operations.EQUAL] = Types.FLOAT
-semantic_cube[Types.FLOAT][Operations.PLUS_UNARY] = Types.FLOAT
-semantic_cube[Types.FLOAT][Operations.MINUS_UNARY] = Types.FLOAT
-semantic_cube[Types.FLOAT][Operations.NOT] = Types.INT
+semantic_cube['float']['float']['&&'] = 'int'
+semantic_cube['float']['float']['||'] = 'int'
+semantic_cube['float']['float']['<'] = 'int'
+semantic_cube['float']['float']['>'] = 'int'
+semantic_cube['float']['float']['!='] = 'int'
+semantic_cube['float']['float']['=='] = 'int'
+semantic_cube['float']['float']['<='] = 'int'
+semantic_cube['float']['float']['>='] = 'int'
+semantic_cube['float']['float']['+'] = 'float'
+semantic_cube['float']['float']['-'] = 'float'
+semantic_cube['float']['float']['*'] = 'float'
+semantic_cube['float']['float']['/'] = 'float'
+semantic_cube['float']['float']['='] = 'float'
+semantic_cube['float']['lee']['='] = 'float'
+semantic_cube['float']['unary+'] = 'float'
+semantic_cube['float']['unary-'] = 'float'
+semantic_cube['float']['!'] = 'int'
 
-semantic_cube[Types.CHAR][Types.CHAR][Operations.AND] = Types.INT
-semantic_cube[Types.CHAR][Types.CHAR][Operations.OR] = Types.INT
-semantic_cube[Types.CHAR][Types.CHAR][Operations.LESS_THAN] = Types.INT
-semantic_cube[Types.CHAR][Types.CHAR][Operations.MORE_THAN] = Types.INT
-semantic_cube[Types.CHAR][Types.CHAR][Operations.DIFFERENT] = Types.INT
-semantic_cube[Types.CHAR][Types.CHAR][Operations.IS_EQUAL] = Types.INT
-semantic_cube[Types.CHAR][Types.CHAR][Operations.MORE_EQUAL] = Types.INT
-semantic_cube[Types.CHAR][Types.CHAR][Operations.LESS_EQUAL] = Types.INT
-semantic_cube[Types.CHAR][Types.CHAR][Operations.PLUS] = Types.CHAR
-semantic_cube[Types.CHAR][Types.CHAR][Operations.MINUS] = Types.CHAR
-semantic_cube[Types.CHAR][Types.CHAR][Operations.TIMES] = Types.CHAR
-semantic_cube[Types.CHAR][Types.CHAR][Operations.DIV] = Types.CHAR
-semantic_cube[Types.CHAR][Types.CHAR][Operations.EQUAL] = Types.CHAR
-semantic_cube[Types.CHAR][Types.LEE][Operations.EQUAL] = Types.CHAR
-semantic_cube[Types.CHAR][Operations.PLUS_UNARY] = None
-semantic_cube[Types.CHAR][Operations.MINUS_UNARY] = None
-semantic_cube[Types.CHAR][Operations.NOT] = Types.CHAR
+semantic_cube['char']['char']['&&'] = 'int'
+semantic_cube['char']['char']['||'] = 'int'
+semantic_cube['char']['char']['<'] = 'int'
+semantic_cube['char']['char']['>'] = 'int'
+semantic_cube['char']['char']['!='] = 'int'
+semantic_cube['char']['char']['=='] = 'int'
+semantic_cube['char']['char']['>='] = 'int'
+semantic_cube['char']['char']['<='] = 'int'
+semantic_cube['char']['char']['+'] = 'char'
+semantic_cube['char']['char']['-'] = 'char'
+semantic_cube['char']['char']['*'] = 'char'
+semantic_cube['char']['char']['/'] = 'char'
+semantic_cube['char']['char']['='] = 'char'
+semantic_cube['char']['lee']['='] = 'char'
+semantic_cube['char']['unary+'] = None
+semantic_cube['char']['unary-'] = None
+semantic_cube['char']['!'] = 'char'
 
-semantic_cube[Types.INT][Types.FLOAT][Operations.AND] = semantic_cube[Types.FLOAT][Types.INT][Operations.AND] = Types.INT
-semantic_cube[Types.INT][Types.FLOAT][Operations.OR] = semantic_cube[Types.FLOAT][Types.INT][Operations.OR] = Types.INT
-semantic_cube[Types.INT][Types.FLOAT][Operations.LESS_THAN] = semantic_cube[Types.FLOAT][Types.INT][Operations.LESS_THAN] = Types.INT
-semantic_cube[Types.INT][Types.FLOAT][Operations.MORE_THAN] = semantic_cube[Types.FLOAT][Types.INT][Operations.MORE_THAN] = Types.INT
-semantic_cube[Types.INT][Types.FLOAT][Operations.DIFFERENT] = semantic_cube[Types.FLOAT][Types.INT][Operations.DIFFERENT] = Types.INT
-semantic_cube[Types.INT][Types.FLOAT][Operations.IS_EQUAL] = semantic_cube[Types.FLOAT][Types.INT][Operations.IS_EQUAL] = Types.INT
-semantic_cube[Types.INT][Types.FLOAT][Operations.LESS_EQUAL] = semantic_cube[Types.FLOAT][Types.INT][Operations.LESS_EQUAL] = Types.INT
-semantic_cube[Types.INT][Types.FLOAT][Operations.MORE_EQUAL] = semantic_cube[Types.FLOAT][Types.INT][Operations.MORE_EQUAL] = Types.INT
-semantic_cube[Types.INT][Types.FLOAT][Operations.PLUS] = semantic_cube[Types.FLOAT][Types.INT][Operations.PLUS] = Types.FLOAT
-semantic_cube[Types.INT][Types.FLOAT][Operations.MINUS] = semantic_cube[Types.FLOAT][Types.INT][Operations.MINUS] = Types.FLOAT
-semantic_cube[Types.INT][Types.FLOAT][Operations.TIMES] = semantic_cube[Types.FLOAT][Types.INT][Operations.TIMES] = Types.FLOAT
-semantic_cube[Types.INT][Types.FLOAT][Operations.DIV] = semantic_cube[Types.FLOAT][Types.INT][Operations.DIV] = Types.FLOAT
-semantic_cube[Types.INT][Types.FLOAT][Operations.EQUAL] = Types.INT
-semantic_cube[Types.FLOAT][Types.INT][Operations.EQUAL] = Types.FLOAT
+semantic_cube['int']['float']['&&'] = semantic_cube['float']['int']['&&'] = 'int'
+semantic_cube['int']['float']['||'] = semantic_cube['float']['int']['||'] = 'int'
+semantic_cube['int']['float']['<'] = semantic_cube['float']['int']['<'] = 'int'
+semantic_cube['int']['float']['>'] = semantic_cube['float']['int']['>'] = 'int'
+semantic_cube['int']['float']['!='] = semantic_cube['float']['int']['!='] = 'int'
+semantic_cube['int']['float']['=='] = semantic_cube['float']['int']['=='] = 'int'
+semantic_cube['int']['float']['<='] = semantic_cube['float']['int']['<='] = 'int'
+semantic_cube['int']['float']['>='] = semantic_cube['float']['int']['>='] = 'int'
+semantic_cube['int']['float']['+'] = semantic_cube['float']['int']['+'] = 'float'
+semantic_cube['int']['float']['-'] = semantic_cube['float']['int']['-'] = 'float'
+semantic_cube['int']['float']['*'] = semantic_cube['float']['int']['*'] = 'float'
+semantic_cube['int']['float']['/'] = semantic_cube['float']['int']['/'] = 'float'
+semantic_cube['int']['float']['='] = 'int'
+semantic_cube['float']['int']['='] = 'float'
 
-semantic_cube[Types.INT][Types.CHAR][Operations.AND] = semantic_cube[Types.CHAR][Types.INT][Operations.AND] = Types.INT
-semantic_cube[Types.INT][Types.CHAR][Operations.OR] = semantic_cube[Types.CHAR][Types.INT][Operations.OR] = Types.INT
-semantic_cube[Types.INT][Types.CHAR][Operations.LESS_THAN] = semantic_cube[Types.CHAR][Types.INT][Operations.LESS_THAN] = Types.INT
-semantic_cube[Types.INT][Types.CHAR][Operations.MORE_THAN] = semantic_cube[Types.CHAR][Types.INT][Operations.MORE_THAN] = Types.INT
-semantic_cube[Types.INT][Types.CHAR][Operations.DIFFERENT] = semantic_cube[Types.CHAR][Types.INT][Operations.DIFFERENT] = Types.INT
-semantic_cube[Types.INT][Types.CHAR][Operations.IS_EQUAL] = semantic_cube[Types.CHAR][Types.INT][Operations.IS_EQUAL] = Types.INT
-semantic_cube[Types.INT][Types.CHAR][Operations.LESS_EQUAL] = semantic_cube[Types.CHAR][Types.INT][Operations.LESS_EQUAL] = Types.INT
-semantic_cube[Types.INT][Types.CHAR][Operations.MORE_EQUAL] = semantic_cube[Types.CHAR][Types.INT][Operations.MORE_EQUAL] = Types.INT
-semantic_cube[Types.INT][Types.CHAR][Operations.PLUS] = semantic_cube[Types.CHAR][Types.INT][Operations.PLUS] = Types.INT
-semantic_cube[Types.INT][Types.CHAR][Operations.MINUS] = semantic_cube[Types.CHAR][Types.INT][Operations.MINUS] = Types.INT
-semantic_cube[Types.INT][Types.CHAR][Operations.TIMES] = semantic_cube[Types.CHAR][Types.INT][Operations.TIMES] = Types.INT
-semantic_cube[Types.INT][Types.CHAR][Operations.DIV] = semantic_cube[Types.CHAR][Types.INT][Operations.DIV] = Types.INT
-semantic_cube[Types.INT][Types.CHAR][Operations.EQUAL] = Types.INT
-semantic_cube[Types.CHAR][Types.INT][Operations.EQUAL] = Types.CHAR
+semantic_cube['int']['char']['&&'] = semantic_cube['char']['int']['&&'] = 'int'
+semantic_cube['int']['char']['||'] = semantic_cube['char']['int']['||'] = 'int'
+semantic_cube['int']['char']['<'] = semantic_cube['char']['int']['<'] = 'int'
+semantic_cube['int']['char']['>'] = semantic_cube['char']['int']['>'] = 'int'
+semantic_cube['int']['char']['!='] = semantic_cube['char']['int']['!='] = 'int'
+semantic_cube['int']['char']['=='] = semantic_cube['char']['int']['=='] = 'int'
+semantic_cube['int']['char']['<='] = semantic_cube['char']['int']['<='] = 'int'
+semantic_cube['int']['char']['>='] = semantic_cube['char']['int']['>='] = 'int'
+semantic_cube['int']['char']['+'] = semantic_cube['char']['int']['+'] = 'int'
+semantic_cube['int']['char']['-'] = semantic_cube['char']['int']['-'] = 'int'
+semantic_cube['int']['char']['*'] = semantic_cube['char']['int']['*'] = 'int'
+semantic_cube['int']['char']['/'] = semantic_cube['char']['int']['/'] = 'int'
+semantic_cube['int']['char']['='] = 'int'
+semantic_cube['char']['int']['='] = 'char'
 
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.AND] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.AND] = Types.INT
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.OR] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.OR] = Types.INT
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.LESS_THAN] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.LESS_THAN] = Types.INT
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.MORE_THAN] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.MORE_THAN] = Types.INT
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.DIFFERENT] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.DIFFERENT] = Types.INT
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.IS_EQUAL] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.IS_EQUAL] = Types.INT
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.LESS_EQUAL] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.LESS_EQUAL] = Types.INT
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.MORE_EQUAL] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.MORE_EQUAL] = Types.INT
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.PLUS] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.PLUS] = Types.FLOAT
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.MINUS] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.MINUS] = Types.FLOAT
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.TIMES] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.TIMES] = Types.FLOAT
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.DIV] = semantic_cube[Types.CHAR][Types.FLOAT][Operations.DIV] = Types.FLOAT
-semantic_cube[Types.FLOAT][Types.CHAR][Operations.EQUAL] = Types.FLOAT
-semantic_cube[Types.CHAR][Types.FLOAT][Operations.EQUAL] = Types.CHAR
-semantic_cube[Types.CHAR][Types.LEE][Operations.EQUAL] = Types.CHAR
+semantic_cube['float']['char']['&&'] = semantic_cube['char']['float']['&&'] = 'int'
+semantic_cube['float']['char']['||'] = semantic_cube['char']['float']['||'] = 'int'
+semantic_cube['float']['char']['<'] = semantic_cube['char']['float']['<'] = 'int'
+semantic_cube['float']['char']['>'] = semantic_cube['char']['float']['>'] = 'int'
+semantic_cube['float']['char']['!='] = semantic_cube['char']['float']['!='] = 'int'
+semantic_cube['float']['char']['=='] = semantic_cube['char']['float']['=='] = 'int'
+semantic_cube['float']['char']['<='] = semantic_cube['char']['float']['<='] = 'int'
+semantic_cube['float']['char']['>='] = semantic_cube['char']['float']['>='] = 'int'
+semantic_cube['float']['char']['+'] = semantic_cube['char']['float']['+'] = 'float'
+semantic_cube['float']['char']['-'] = semantic_cube['char']['float']['-'] = 'float'
+semantic_cube['float']['char']['*'] = semantic_cube['char']['float']['*'] = 'float'
+semantic_cube['float']['char']['/'] = semantic_cube['char']['float']['/'] = 'float'
+semantic_cube['float']['char']['='] = 'float'
+semantic_cube['char']['float']['='] = 'char'
+semantic_cube['char']['lee']['='] = 'char'

@@ -10,7 +10,7 @@ int Matriz[3][8], OtraMatriz[3][3];
 funcion int fact (int j)
 var int i;
 {
-	i = j + (p - j*2*j) ;
+	i = j + (p - j*2*j);
 	si (j == 1) entonces
 		{
 			regresa (j);
@@ -36,7 +36,7 @@ var int x;
 principal()
 {
   lee(p) ; j =p*2;
-  inicia (p*j - 5) ;
+  inicia (p*j - 5.5) ;
 
   desde i=0 hasta 9 hacer
   {
