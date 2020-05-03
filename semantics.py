@@ -1,4 +1,4 @@
-# Oscar Lerma A01380817
+    # Oscar Lerma A01380817
 # Cesar Buenfil Vazquez A01207499
 # semantincs cube and symbol table of Patitoplusplus
 # Created 04/25/2020
@@ -145,32 +145,39 @@ def register_operator(raw_operator):
 # Returns error if operation cannot be performed on the given operands.
 # Returns error if trying to perform an operation on a call to a void function.'''
 def solve_op_or_cont(ops: [Operations]):
-    print(ops)
-    global operator_stack, operand_stack
-    print(operator_stack)
-    print(operand_stack)
-    # global operator_stack, operand_stack, type_stack
-    # operator = operator_stack.pop()
-    # if operator in ops:
-    #     right_operand = operand_stack.pop()
-    #     #TODO BETTER SYMBOL  LOOKUP -> LOOK OUT FOR DUPLICATDES
-    #     right_type = symbol_table[current_func]['vars'][right_operand]['type']
-    #     left_operand = operand_stack.pop()
-    #     left_type = symbol_table[current_func]['vars'][left_operand]['type']
-    #     operator = operator_stack.pop()
-    #     result_type = semantic_cube[left_type][right_type][operator]
-    #     if not result_type:
-    #         if left_type == 'void' or right_type == 'void':
-    #             return f'Expression returns no value.'
-    #         return f'Type mismatch: Invalid operation \'{operator}\' on given operand'
-    # #temp = build_temp_operand(result_type)
-    # #if temp.get_error():
-    # #  return temp.get_error()
-    # # Generate Cuadruple
-    # # TODO: Verfy OPERATION
-    # cuadruple.append([operator, left_operand, right_operand, temp])
-    # #operand_stack.append(temp)
-    # type_stack.append(result_type)
+    global operator_stack, operand_stack, type_stack
+    if operator_stack:
+        if operator_stack[-1] in ops:
+            #print(ops)
+            # print(operator_stack)
+            # print(operand_stack)
+            operator = operator_stack[-1]
+            print(operator)
+
+            # We need to verify if the stack has at leat two operands and is not a fake bottom
+            if len(operand_stack) > 1 and operator_stack[-1] is not "(":
+                operator = operator_stack.pop()
+                right_type, right_operand = operand_stack.pop()
+                print(right_type, right_operand)
+                left_type, left_operand = operand_stack.pop()
+                print(left_type, left_operand)
+            #
+            # result_type = semantic_cube[left_type][right_type][operator]
+            #
+            # print(right_operand, left_operand, result_type)
+            #
+            # if not result_type:
+            #     if left_type == 'void' or right_type == 'void':
+            #         return f'Expression returns no value.'
+            #     return f'Type mismatch: Invalid operation \'{operator}\' on given operand'
+
+            #temp = build_temp_operand(result_type)
+            #if temp.get_error():
+            #  return temp.get_error()
+            # Generate Cuadruple
+            # TODO: Verfy OPERATION
+            #quadruples.append([operator, left_operand, right_operand, temp])
+            #operand_stack.append(temp_type, temp)
 
 # Declaracion de cubo sematico, todo que no sea declarado se considera NULO
 # TODO: Realizar los operandos especiales unitarios para matrices

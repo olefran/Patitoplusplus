@@ -168,8 +168,8 @@ def p_TERMINO(p):
 #TERMINO_AUX → * TERMINO | / TERMINO | % TERMINO | empty
 def p_TERMINO_AUX(p):
     '''TERMINO_AUX : MULT r_seen_operator TERMINO
-    | DIV r_seen_operator TERMINO
-    | MOD r_seen_operator TERMINO
+    | DIV r_seen_operator TERMINO r_seen_term
+    | MOD r_seen_operator TERMINO r_seen_term
     | empty'''
     pass
 
@@ -377,7 +377,6 @@ def p_r_seen_operand(p):
 def p_r_seen_operator(p):
     'r_seen_operator : '
     e = register_operator(p[-1])
-    print(p[-1])
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
