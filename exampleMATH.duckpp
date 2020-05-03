@@ -1,0 +1,11 @@
+%% Example for Patitoplusplus
+programa patito;
+
+principal()
+var
+int j, i;
+{
+	%%i = 2 + 3;
+	%%j = i + 1;
+	i = (2*3) + 4;
+}
