@@ -6,6 +6,7 @@ import yacc
 from scanner import tokens
 from semantics import *
 
+input_str = ''
 
 #Productions
 start = 'PROGRAM'
@@ -390,23 +391,53 @@ def p_r_seen_exp(p):
     'r_seen_exp : '
     e = solve_op_or_cont(['>', '<', '==','!=', '<=', '>='])
     if e:
-        andle_error(p.lineno(-1), p.lexpos(-1), e)
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_seen_term(p):
     'r_seen_term : '
     e = solve_op_or_cont(['+', '-'])
     if e:
-        andle_error(p.lineno(-1), p.lexpos(-1), e)
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_seen_factor(p):
     'r_seen_factor : '
     e = solve_op_or_cont(['*', '/', '%'])
     if e:
-        andle_error(p.lineno(-1), p.lexpos(-1), e)
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_seen_unary_operator(p):
     'r_seen_unary_operator : '
     pass #TODO Unary operation
+
+#Error handling
+def handle_error(line, lexpos, mssg):
+  '''Print error message and set error state to true'''
+  global error
+  error = True
+  error_prefix(line, lexpos, input_str)
+  print(mssg)
+
+def error_prefix(line, lexpos, input_str):
+  '''Prints the line and column where an error ocurred.'''
+
+  print(f'Error at {line}:{find_column(lexpos, input_str)} - ', end='')
+  global error
+  error = True
+
+def find_column(lexpos, input_str: str):
+  '''Finds the column where an error ocurred.
+  This is used to display error messages.
+  '''
+
+  line_start = input_str.rfind('\n', 0, lexpos) + 1
+  return (lexpos - line_start) + 1
+
+def p_error(p):
+  global error
+  error = True
+  error_prefix(p.lineno, p.lexpos, input_str)
+  print(f'Unexpected token {p.value}.')
+  recover_parser(parser)
 
 #Build the parser
 parser = yacc.yacc()
