@@ -1,6 +1,6 @@
-    # Oscar Lerma A01380817
+# Oscar Lerma A01380817
 # Cesar Buenfil Vazquez A01207499
-# semantincs cube and symbol table of Patitoplusplus
+# Cubo de semantica y tabla de simbolos de Patitoplusplus
 # Created 04/25/2020
 from enum import Enum, IntEnum, auto
 from collections import defaultdict
@@ -17,23 +17,26 @@ symbol_table = {
         }
 }
 
-#Funcion para consultar un simbolo dad una llave
-# Input: dirreción del simbolo
-# Output: Symbolo
-def consult_type():
-    return NULL
-
 # Limites de memoria virtual
-ATTRIBUTE_LOWER_LIMIT = 7_000
-ATTRIBUTE_UPPER_LIMIT = 12_999
-VAR_LOWER_LIMIT = 13_000
-VAR_UPPER_LIMIT = 18_999
-TEMP_LOWER_LIMIT = 19_000
-TEMP_UPPER_LIMIT = 24_999
-GLOBAL_ADJUSTMENT = 12_000
-ATTRIBUTES_ADJUSTMENT = 6_000
-CONSTANT_LOWER_LIMIT = 25_000
-CONSTANT_UPPER_LIMIT = 30_999
+# Gracias a la siguiente configuración, solo pueden existir un total de 1500 variables de un tipo
+
+VAR_LOWER_LIMIT = [13_000, 14_500, 16_000, 17_500]
+VAR_UPPER_LIMIT = [14_499, 15_999, 17_499, 18_999]
+
+TEMP_LOWER_LIMIT = [19_000, 20_500, 22_000, 23_500]
+TEMP_UPPER_LIMIT = [20_499, 21_999, 23_499, 24_999]
+
+CONST_LOWER_LIMIT = [25_000, 26_500, 28_000, 29_500]
+CONST_UPPER_LIMIT = [26_499, 27_999, 29_499, 30_999]
+
+#CONSTANT_UPPER_LIMIT = 30_999
+
+# Contadores de memoria virutal
+var_dir_count = list(VAR_LOWER_LIMIT)
+
+temp_dir_count = list(TEMP_LOWER_LIMIT)
+
+const_dir_count = list(CONST_LOWER_LIMIT)
 
 
 # Enumeracion de tipos de datos
@@ -105,6 +108,24 @@ str_operations = {
     '(': '(',
     '%': '%'
 }
+
+#Manage Virtual address
+
+def get_var_dir(current_type):
+    global var_dir_count, VAR_UPPER_LIMIT
+    switcher = {
+    1: "int"
+    2: "float"
+    3: "char"
+    4: "string"
+    }
+    result = switcher.get(current_type, -1)
+    assert(result > 0), "Error!: Undefined type."
+    if (var_dir_count[result] + 1 > VAR_UPPER_LIMIT[result]):
+        
+
+
+
 
 #Functions
 

@@ -357,9 +357,10 @@ def p_r_register_var(p):
     'r_register_var : '
     global current_var
     current_var = p[-1]
+    current_dir = get_var_dir(current_type) #Get direction or launch error
     global symbol_table
     symbol_table[current_func]['vars'][current_var] = {
-        'type': current_type,
+        'type': current_type, 'address': current_dir,
     }
 
 def p_r_register_princ(p):
