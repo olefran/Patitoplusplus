@@ -19,19 +19,27 @@ symbol_table = {
 
 # Limites de memoria virtual
 # Gracias a la siguiente configuración, solo pueden existir un total de 1500 variables de un tipo
+# VARIABLES GLOBALES    INT     FLOAT   CHAR    STRINGS  VOID
+GLOBAL_LOWER_LIMIT =       [5_000, 6_500, 8_000, 9_500, 11_000]
+GLOBAL_UPPER_LIMIT =       [6_499, 7_999, 9_499, 10_999, 12_499]
 
-VAR_LOWER_LIMIT = [13_000, 14_500, 16_000, 17_500]
-VAR_UPPER_LIMIT = [14_499, 15_999, 17_499, 18_999]
+# VAR DE FUNCIONES      INT     FLOAT   CHAR    STRINGS
+VAR_LOWER_LIMIT =       [13_000, 14_500, 16_000, 17_500]
+VAR_UPPER_LIMIT =       [14_499, 15_999, 17_499, 18_999]
 
-TEMP_LOWER_LIMIT = [19_000, 20_500, 22_000, 23_500]
-TEMP_UPPER_LIMIT = [20_499, 21_999, 23_499, 24_999]
+# CONSTANTeS            INT     FLOAT   CHAR    STRINGS
+CONST_LOWER_LIMIT =     [25_000, 26_500, 28_000, 29_500]
+CONST_UPPER_LIMIT =     [26_499, 27_999, 29_499, 30_999]
 
-CONST_LOWER_LIMIT = [25_000, 26_500, 28_000, 29_500]
-CONST_UPPER_LIMIT = [26_499, 27_999, 29_499, 30_999]
+# TEMPORALES            INT     FLOAT   CHAR    STRINGS
+TEMP_LOWER_LIMIT =      [19_000, 20_500, 22_000, 23_500]
+TEMP_UPPER_LIMIT =      [20_499, 21_999, 23_499, 24_999]
 
 #CONSTANT_UPPER_LIMIT = 30_999
 
 # Contadores de memoria virutal
+global_dir_count = list(GLOBAL_LOWER_LIMIT)
+
 var_dir_count = list(VAR_LOWER_LIMIT)
 
 temp_dir_count = list(TEMP_LOWER_LIMIT)
@@ -109,25 +117,94 @@ str_operations = {
     '%': '%'
 }
 
-#Manage Virtual address
+#Manage virtual address from globals
+def get_global_dir(current_type, e):
+    global global_dir_count, GLOBAL_UPPER_LIMIT
+    switcher = {
+    "int": 1,
+    "float": 2,
+    "char": 3,
+    "string": 4,
+    "void": 5,
+    }
+    result = switcher.get(current_type, -1)
+    #print(result)
+    if result > 0:
+        e = "Error: Undefined type."
+        return result
 
+    if global_dir_count[result] + 1 >= GLOBAL_UPPER_LIMIT[result]:
+        e = "Error: too many " + current_type + "vars"
+        return result
+
+    global_dir_count[result] = global_dir_count[result] + 1
+    return global_dir_count[result]
+
+
+#Manage Virtual address from variables
 def get_var_dir(current_type):
     global var_dir_count, VAR_UPPER_LIMIT
     switcher = {
-    1: "int"
-    2: "float"
-    3: "char"
-    4: "string"
+    "int": 1,
+    "float": 2,
+    "char": 3,
+    "string": 4
     }
     result = switcher.get(current_type, -1)
-    assert(result > 0), "Error!: Undefined type."
-    if (var_dir_count[result] + 1 > VAR_UPPER_LIMIT[result]):
-        
+    if result < 0:
+        e = "Undefined type."
+        return result, e
 
+    if var_dir_count[result] + 1 >= VAR_UPPER_LIMIT[result]:
+        e = "Too many " + current_type + " vars"
+        return result, e
 
+    var_dir_count[result] = var_dir_count[result] + 1
+    return var_dir_count[result], None
 
+#Manage virtual address from temps
+def get_temp_dir(current_type):
+    global temp_dir_count, TEMP_UPPER_LIMIT
+    switcher = {
+    "int": 1,
+    "float": 2,
+    "char": 3,
+    "string": 4
+    }
+    result = switcher.get(current_type, -1)
+    if result < 0:
+        e = "Undefined type."
+        return result, e
 
-#Functions
+    if temp_dir_count[result] + 1 >= TEMP_UPPER_LIMIT[result]:
+        e = "Too many " + current_type + " vars"
+        return result, e
+
+    temp_dir_count[result] = temp_dir_count[result] + 1
+    return var_dir_count[result]
+
+#Manage virtual address from constants
+def get_const_dir(current_type):
+    global const_dir_count, CONST_UPPER_LIMIT
+    switcher = {
+    "int": 1,
+    "float": 2,
+    "char": 3,
+    "string": 4
+    }
+    result = switcher.get(current_type, -1)
+    if result < 0:
+        e = "Undefined type."
+        return result, e
+
+    if const_dir_count[result] + 1 >= CONST_UPPER_LIMIT[result]:
+        e = "Too many " + current_type + " vars"
+        return result, e
+
+    const_dir_count[result] = const_dir_count[result] + 1
+    return const_dir_count[result]
+
+# Functions
 
 # Register an operand on the operand_stack, with its type
 def register_operand(raw_operand):
@@ -176,7 +253,7 @@ def solve_op_or_cont(ops: [Operations]):
             # print(operator)
 
             # We need to verify if the stack has at leat two operands and they are not a fake bottom
-            if len(operand_stack) > 1 and operator_stack[-1] is not "(" and operator_stack[-2] is not "(":
+            if len(operand_stack) > 1 and operator_stack[-1] != "(" and operator_stack[-2] != "(":
                 operator = operator_stack.pop()
                 right_type, right_operand = operand_stack.pop()
                 left_type, left_operand = operand_stack.pop()
@@ -212,8 +289,7 @@ def solve_expression(result_type, right_operand, left_operand):
     address = temp
 
 
-semantic_cube = defaultdict(
-    lambda: defaultdict(lambda: defaultdict(lambda: None)))
+semantic_cube = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: None)))
 
 semantic_cube['int']['int']['&&'] = 'int'
 semantic_cube['int']['int']['||'] = 'int'

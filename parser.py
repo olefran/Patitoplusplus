@@ -178,9 +178,9 @@ def p_TERMINO_AUX(p):
 #FACTOR → ( EXPRESION ) | + CTE | - CTE | NOT CTE | CTE ARROP | CTE
 def p_FACTOR(p):
     '''FACTOR : LPAREN r_seen_operator EXPRESION RPAREN r_seen_operator
-    | PLUS r_seen_unary_operator CTE
-    | MINUS r_seen_unary_operator CTE
-    | NOT r_seen_unary_operator CTE
+    | PLUS r_seen_unary_operator CTE r_seen_cte
+    | MINUS r_seen_unary_operator CTE r_seen_cte
+    | NOT r_seen_unary_operator CTE r_seen_cte
     | CTE ARROP
     | CTE'''
     pass
@@ -357,7 +357,9 @@ def p_r_register_var(p):
     'r_register_var : '
     global current_var
     current_var = p[-1]
-    current_dir = get_var_dir(current_type) #Get direction or launch error
+    current_dir, e = get_var_dir(current_type) #Get direction or launch error
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
     global symbol_table
     symbol_table[current_func]['vars'][current_var] = {
         'type': current_type, 'address': current_dir,
