@@ -4,21 +4,20 @@
 # Created 04/06/2020
 from parser import parser
 from scanner import lexer
-from quadruples import operand_stack, operator_stack
-from semantics import symbol_table
+from quadruples import operand_stack, operator_stack, quadruples
+from semantics import symbol_table, const_table
 import sys
+import pprint
 
-# Open file or fail at it, but try to look profesional
+# Para buscar y abrir un file con el programa
 data = ""
 def main():
     if(len(sys.argv) == 2):
-
         try:
             f = open(sys.argv[1], "r")
         except:
             print("File not found: " + sys.argv[1])
             return -1
-
         if f.mode == 'r':
             data = f.read()
             f.close()
@@ -29,23 +28,26 @@ def main():
         print("Usage: " + sys.argv[0] + " file")
         return -1
 
-
-    # Give the lexer some input
+    # Dar el input al lexer
     lexer.input(data)
 
     # Tokenize
     while True:
         tok = lexer.token()
         if not tok:
-            break      # No more input
-        #print(tok)
-
+            break
     result = parser.parse(data)
     print("Errors: ", result)
-    # print("Operator Stack: ", operator_stack) #Error saves not operators
-    # print("Operand Stack: ", operand_stack) #Error none
-    print("Symbol Table: ", symbol_table)
+    #print("Operator Stack: ", operator_stack) #Error saves not operators
+    #print("Operand Stack: ", operand_stack) #Error none
+    #print("Symbol Table: ")
+    #pprint.pprint(symbol_table)
+    print("Const Table: ")
+    pprint.pprint(const_table)
+    print("Cuadruples ")
+    pprint.pprint(quadruples)
     return 0
 
+# Correr el main
 if __name__ == "__main__":
     main()

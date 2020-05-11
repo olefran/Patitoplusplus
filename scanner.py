@@ -5,8 +5,7 @@
 import lex
 import math
 
-
-# Language's reserved keywords.
+# Palabras reservadas
 reserved = {
     'programa': 'PROGRAMA',
     'principal': 'PRINCIPAL',
@@ -31,7 +30,7 @@ reserved = {
     'void': 'VOID',
 }
 
-#Tokens
+# Tokens
 tokens = [
     'ID', 'DOTCOMA', 'LBRACKET', 'RBRACKET', 'EQUAL', 'MORE', 'LESS',
     'DIFFERENT', 'LPAREN', 'RPAREN', 'COMA', 'CTE_STRING',
@@ -70,6 +69,7 @@ t_LSTAPLE   = r'\['
 t_RSTAPLE   = r'\]'
 t_ignore_COMMENT = r'%%.*'
 
+# Función para tokens de constantes de int y float
 def t_CTE_F(t):
   r'([0-9]*[.])?[0-9]+'
   if int(math.floor(float(t.value))) == float(t.value):
@@ -79,24 +79,25 @@ def t_CTE_F(t):
     t.value = float(t.value)
   return t
 
+# Función para tokens de id
 def t_ID(t):
   r'[a-zA-Z_][a-zA-Z_0-9]*'
-  # Check if matched id is a reserved keyword.
+  # Checar si es una palabra reservada
   t.type = reserved.get(t.value, 'ID')
   return t
 
-#Track line numbers
+# Para las nuevas líneas
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-#A string containing ignored characters
+# Para ignorar los tabs
 t_ignore = ' \t'
 
-#Error handling rule for lexer
+# Para errores en el lexer
 def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
-#Build the lexer
+# Construir el Lexer
 lexer = lex.lex()

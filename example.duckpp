@@ -34,6 +34,7 @@ var int x;
 
 
 principal()
+var int k;
 {
   lee(p) ; j =p*2;
   inicia (p*j - 5.5) ;

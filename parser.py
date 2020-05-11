@@ -6,11 +6,13 @@ import yacc
 from scanner import tokens
 from semantics import *
 
+# String para errores
 input_str = ''
 
-#Productions
+# Punto de partida
 start = 'PROGRAM'
 
+# Produccion vacía para epsilon
 def p_empty(p):
     'empty :'
     pass
@@ -20,24 +22,24 @@ def p_PROGRAM(p):
     'PROGRAM : PROGRAMA ID DOTCOMA VARS FUNCTIONS MAIN'
     pass
 
-#MAIN → principal ( )  VARS BLOQUE
+# MAIN → principal ( )  VARS BLOQUE
 def p_MAIN(p):
     'MAIN : PRINCIPAL r_save_func LPAREN RPAREN r_register_princ VARS BLOQUE'
     pass
 
-#VARS → var VARPRE | empty
+# VARS → var VARPRE | empty
 def p_VARS(p):
     '''VARS : VAR VAR_AUX
     | empty'''
     pass
 
-#VARPRE → TIPO IDS VARPRE | empty
+# VARPRE → TIPO IDS VARPRE | empty
 def p_VAR_AUX(p):
     '''VAR_AUX : TIPO IDS VAR_AUX
     | empty'''
     pass
 
-#TIPO → int | float | char | string
+# TIPO → int | float | char | string
 def p_TIPO(p):
     '''TIPO : INT r_save_type
     | FLOAT r_save_type
@@ -59,48 +61,49 @@ def p_ARRDIM(p):
     | empty'''
     pass
 
-#FUNCTIONS → FUNCTION FUNCTIONS | empty
+# FUNCTIONS → FUNCTION FUNCTIONS | empty
 def p_FUNCTIONS(p):
     '''FUNCTIONS : FUNCTION FUNCTIONS
     | empty'''
     pass
 
-#FUNCTION → funcion TIPO id ( PARAM )  VARS BLOQUE | funcion void id ( PARAM )  VARS BLOQUE
+# FUNCTION → funcion TIPO id ( PARAM )  VARS BLOQUE | funcion void id ( PARAM )  VARS BLOQUE
 def p_FUNCTION(p):
     '''FUNCTION : FUNCION TIPO ID r_save_func r_register_func LPAREN PARAM RPAREN VARS BLOQUE
     | FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN VARS BLOQUE'''
     pass
 
-#PARAM → TIPO id PARENTESIS PARAMSUB
+# PARAM → TIPO id PARENTESIS PARAMSUB
+# Sólo acepta ids ya declaradas, no acepta constantes
 def p_PARAM(p):
     '''PARAM : TIPO ID r_register_var PARENTESIS PARAM_AUX'''
     pass
 
-#PARAM_AUX → , PARAM  | empty
+# PARAM_AUX → , PARAM  | empty
 def p_PARAM_AUX(p):
     '''PARAM_AUX : COMA PARAM
     | empty'''
     pass
 
-#PARENTESIS → [ ] | [ ] [ ] | empty
+# PARENTESIS → [ ] | [ ] [ ] | empty
 def p_PARENTESIS(p):
     '''PARENTESIS : LSTAPLE RSTAPLE
     | LSTAPLE RSTAPLE LSTAPLE RSTAPLE
     | empty'''
     pass
 
-#BLOQUE → { ESTATUTOS }
+# BLOQUE → { ESTATUTOS }
 def p_BLOQUE(p):
     'BLOQUE : LBRACKET ESTATUTOS RBRACKET'
     pass
 
-#ESTATUTOS → ESTATUTO ESTATUTOS | empty
+# ESTATUTOS → ESTATUTO ESTATUTOS | empty
 def p_ESTATUTOS(p):
     '''ESTATUTOS : ESTATUTO ESTATUTOS
     | empty'''
     pass
 
-#ESTATUTO → ASIGNACION ; | FUN ; | COND | WRITE ; | REAd ; | RETURN ;
+# ESTATUTO → ASIGNACION ; | FUN ; | COND | WRITE ; | REAd ; | RETURN ;
 def p_ESTATUTO(p):
     '''ESTATUTO : ASIGNACION DOTCOMA
     | FUN DOTCOMA
@@ -110,36 +113,36 @@ def p_ESTATUTO(p):
     | RETURN DOTCOMA'''
     pass
 
-#ASIGNACION → id ARRDIM = EXPRESION | id ARRDIM = CTE_ARR
+# ASIGNACION → id ARRDIM = EXPRESION | id ARRDIM = CTE_ARR
 def p_ASIGNACION(p):
     '''ASIGNACION : ID ARRDIM EQUAL r_seen_operator EXPRESION
     | ID ARRDIM EQUAL r_seen_operator CTE_ARR'''
     pass
 
-#EXPRESION → SUBEXP EXPRESION_AUX
+# EXPRESION → SUBEXP EXPRESION_AUX
 def p_EXPRESION(p):
     'EXPRESION : SUBEXP r_seen_subexp EXPRESION_AUX'
     pass
 
-#EXPRESION_AUX → && EXPRESION | || EXPRESION | empty
+# EXPRESION_AUX → && EXPRESION | || EXPRESION | empty
 def p_EXPRESION_AUX(p):
     '''EXPRESION_AUX : AND r_seen_operator EXPRESION
     | OR r_seen_operator EXPRESION
     | empty'''
     pass
 
-#SUBEXP → EXP SUBEXP_AUX
+# SUBEXP → EXP SUBEXP_AUX
 def p_SUBEXP(p):
     'SUBEXP : EXP r_seen_exp SUBEXP_AUX'
     pass
 
-#SUBEXP → COMPARACION SUBEXP | empty
+# SUBEXP → COMPARACION SUBEXP | empty
 def p_SUBEXP_AUX(p):
     '''SUBEXP_AUX : COMPARACION SUBEXP
     | empty'''
     pass
 
-#COMPARACION → > | < | == | != | >= | <=
+# COMPARACION → > | < | == | != | >= | <=
 def p_COMPARACION(p):
     '''COMPARACION : MORE r_seen_operator
     | LESS r_seen_operator
@@ -149,7 +152,7 @@ def p_COMPARACION(p):
     | LESSEQUAL r_seen_operator'''
     pass
 
-#EXP → TERMINO EXP_AUX
+# EXP → TERMINO EXP_AUX
 def p_EXP(p):
     'EXP : TERMINO r_seen_term EXP_AUX'
     pass
@@ -161,12 +164,12 @@ def p_EXP_AUX(p):
     | empty'''
     pass
 
-#TERMINO → FACTOR TERMINO_AUX
+# TERMINO → FACTOR TERMINO_AUX
 def p_TERMINO(p):
     'TERMINO : FACTOR r_seen_factor TERMINO_AUX'
     pass
 
-#TERMINO_AUX → * TERMINO | / TERMINO | % TERMINO | empty
+# TERMINO_AUX → * TERMINO | / TERMINO | % TERMINO | empty
 def p_TERMINO_AUX(p):
     '''TERMINO_AUX : MULT r_seen_operator TERMINO
     | DIV r_seen_operator TERMINO r_seen_term
@@ -174,159 +177,150 @@ def p_TERMINO_AUX(p):
     | empty'''
     pass
 
-
-#FACTOR → ( EXPRESION ) | + CTE | - CTE | NOT CTE | CTE ARROP | CTE
+# FACTOR → ( EXPRESION ) | + CTE | - CTE | NOT CTE | CTE ARROP | CTE
 def p_FACTOR(p):
     '''FACTOR : LPAREN r_seen_operator EXPRESION RPAREN r_seen_operator
-    | PLUS r_seen_unary_operator CTE r_seen_cte
-    | MINUS r_seen_unary_operator CTE r_seen_cte
-    | NOT r_seen_unary_operator CTE r_seen_cte
+    | PLUS r_seen_unary_operator CTE
+    | MINUS r_seen_unary_operator CTE
+    | NOT r_seen_unary_operator CTE
     | CTE ARROP
     | CTE'''
     pass
 
-#CTE → cte_i | cte_f | ct_ch | cte_string | FUN | ID ARRDIM
+# CTE → cte_i | cte_f | ct_ch | cte_string | FUN | ID ARRDIM
 def p_CTE(p):
     '''CTE : CTE_I r_seen_operand
     | CTE_F r_seen_operand
     | CTE_CH r_seen_operand
     | CTE_STRING r_seen_operand
     | FUN
-    | ID ARRDIM '''
+    | ID r_seen_operand_id ARRDIM '''
     pass
 
-#ARROP→ $ | ! | ?
+# ARROP→ $ | ! | ?
 def p_ARROP(p):
     '''ARROP : DET_ARR
     | TRANS_ARR
     | INV_ARR'''
     pass
 
-#FUN → id ( FUN_AUX )
+# FUN → id ( FUN_AUX )
 def p_FUN(p):
     'FUN : ID LPAREN FUN_AUX RPAREN'
     pass
 
-#FUN_AUX → CTE , FUN_AUX | CTE
+# FUN_AUX → CTE , FUN_AUX | CTE
 def p_FUN_AUX(p):
     '''FUN_AUX : EXPRESION COMA FUN_AUX
     | EXPRESION
     | empty'''
     pass
 
-#COND → IF | FOR | WHILE
+# COND → IF | FOR | WHILE
 def p_COND(p):
     '''COND : IF
     | FOR
     | WHILE'''
     pass
 
-#IF → si ( EXPRESION ) entonces BLOQUE IF_AUX
+# IF → si ( EXPRESION ) entonces BLOQUE IF_AUX
 def p_IF(p):
     '''IF : SI LPAREN EXPRESION RPAREN ENTONCES BLOQUE IF_AUX
     | SI LPAREN EXPRESION RPAREN ENTONCES COND '''
     pass
 
-#IFAUX → sino BLOQUE | empty
+# IFAUX → sino BLOQUE | empty
 def p_IF_AUX(p):
     '''IF_AUX : SINO BLOQUE
     | empty'''
     pass
 
-#WHILE → mientras ( EXPRESION ) WHILE_AUX BLOQUE
+# WHILE → mientras ( EXPRESION ) WHILE_AUX BLOQUE
 def p_WHILE(p):
     '''WHILE :  MIENTRAS LPAREN EXPRESION RPAREN WHILE_AUX BLOQUE
     | MIENTRAS LPAREN EXPRESION RPAREN WHILE_AUX COND'''
     pass
 
-#WHILE_AUX → haz | empty
+# WHILE_AUX → haz | empty
 def p_WHILE_AUX(p):
     '''WHILE_AUX : HAZ
     | empty '''
     pass
 
-#FOR → desde ASIGNACION hasta EXPRESION hacer BLOQUE
+# FOR → desde ASIGNACION hasta EXPRESION hacer BLOQUE
 def p_FOR(p):
     '''FOR :  DESDE ASIGNACION HASTA EXPRESION HACER BLOQUE
     | DESDE ASIGNACION HASTA EXPRESION HACER COND'''
     pass
 
-#WRITE → escribe ( WRITE_AUX )
+# WRITE → escribe ( WRITE_AUX )
 def p_WRITE(p):
     'WRITE : ESCRIBE LPAREN WRITE_AUX RPAREN'
     pass
 
-#WRITE_AUX → EXPRESION WRITE_AUXSUB
+# WRITE_AUX → EXPRESION WRITE_AUXSUB
 def p_WRITE_AUX(p):
     'WRITE_AUX : EXPRESION WRITE_AUXSUB'
     pass
 
-#WRITE_AUXSUB → , WRITE_AUX | empty
+# WRITE_AUXSUB → , WRITE_AUX | empty
 def p_WRITE_AUXSUB(p):
     '''WRITE_AUXSUB : COMA WRITE_AUX
     | empty'''
     pass
 
-#READ → lee ( READ_AUX )
+# READ → lee ( READ_AUX )
 def p_READ(p):
     'READ : LEE LPAREN READ_AUX RPAREN'
     pass
 
-#READ_AUX → id ARRDIM READ_AUXSUB
+# READ_AUX → id ARRDIM READ_AUXSUB
 def p_READ_AUX(p):
     'READ_AUX : ID ARRDIM READ_AUXSUB'
     pass
 
-#READ_AUXSUB →, READ_AUX | empty
+# READ_AUXSUB →, READ_AUX | empty
 def p_READ_AUXSUB(p):
     '''READ_AUXSUB : COMA READ_AUX
     | empty'''
     pass
 
-#RETURN → regresa ( EXPRESION ) regresa ( NULL )
+# RETURN → regresa ( EXPRESION ) regresa ( NULL )
 def p_RETURN(p):
     '''RETURN : REGRESA LPAREN EXPRESION RPAREN
     | REGRESA LPAREN NULL RPAREN'''
     pass
 
-#CTE_ARR → { CTE_ARR_AUX } | { CTE_ARR_AUX2 }
+# CTE_ARR → { CTE_ARR_AUX } | { CTE_ARR_AUX2 }
 def p_CTE_ARR(p):
     '''CTE_ARR : LBRACKET CTE_ARR_AUX RBRACKET
     | LBRACKET CTE_ARR_AUX2 RBRACKET '''
     pass
 
-#CTE_ARR_AUX → CTE | CTE_ARR_AUXSUB
+# CTE_ARR_AUX → CTE | CTE_ARR_AUXSUB
 def p_CTE_ARR_AUX(p):
     '''CTE_ARR_AUX : CTE
     | CTE_ARR_AUXSUB '''
     pass
 
-#CTE_ARR_AUXSUB →, CTE_ARR_AUX | empty
+# CTE_ARR_AUXSUB →, CTE_ARR_AUX | empty
 def p_CTE_ARR_AUXSUB(p):
     '''CTE_ARR_AUXSUB : COMA CTE_ARR_AUX
     | empty '''
     pass
 
-#CTE_ARR_AUX2 → { CTE_ARR_AUX } CTE_ARR_AUX2SUB
+# CTE_ARR_AUX2 → { CTE_ARR_AUX } CTE_ARR_AUX2SUB
 def p_CTE_ARR_AUX2(p):
     'CTE_ARR_AUX2 : LBRACKET CTE_ARR_AUX RBRACKET  CTE_ARR_AUX2SUB'
     pass
 
-#CTE_ARR_AUX2SUB → , CTE_ARR_AUX2  | empty
+# CTE_ARR_AUX2SUB → , CTE_ARR_AUX2  | empty
 def p_CTE_ARR_AUX2SUB(p):
     '''CTE_ARR_AUX2SUB : COMA CTE_ARR_AUX2
     | empty '''
     pass
 
-def p_error(p):
-    if p:
-        print("Syntax error at token", p.type)
-        # Just discard the token and tell the parser it's okay.
-        parser.errok()
-    else:
-        print("Syntax error at EOF")
-
-#Precedence: Build againts ambiguity TODO: More Operations
+# Precedencia: Para ambigüedades en la Operaciones
 precedence = (
     ('left', 'PLUS', 'MINUS'),
     ('left', 'MULT', 'DIV', 'MOD'),
@@ -334,7 +328,7 @@ precedence = (
     ('left', 'AND', 'OR'),
 )
 
-#DirFunctions
+# Funciones para guardar en symbol_table
 def p_r_save_type(p):
     'r_save_type : '
     global current_type
@@ -348,22 +342,33 @@ def p_r_save_func(p):
 def p_r_register_func(p):
     'r_register_func : '
     global symbol_table
-    symbol_table[current_func] = {
-        'type': current_type,
-        'vars': {}
-    }
+    if symbol_table.get(current_func) is None:
+        symbol_table[current_func] = {
+            'type': current_type,
+            'vars': {}
+            }
+    else:
+        handle_error(p.lineno(-1), p.lexpos(-1), "multiple function name declaration: " + current_func)
 
 def p_r_register_var(p):
     'r_register_var : '
     global current_var
     current_var = p[-1]
-    current_dir, e = get_var_dir(current_type) #Get direction or launch error
-    if e:
-        handle_error(p.lineno(-1), p.lexpos(-1), e)
-    global symbol_table
-    symbol_table[current_func]['vars'][current_var] = {
-        'type': current_type, 'address': current_dir,
-    }
+    e = None
+    if symbol_table[current_func]['vars'].get(current_var) is None:
+        if current_func == 'global':
+            current_dir, e = get_global_dir(current_type) #Get direction or launch error
+        else:
+            current_dir, e = get_var_dir(current_type) #Get direction or launch error
+
+        if e:
+            handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+        symbol_table[current_func]['vars'][current_var] = {
+            'type': current_type, 'address': current_dir,
+        }
+    else:
+        handle_error(p.lineno(-1), p.lexpos(-1), "multiple var name decalration: " + current_var )
 
 def p_r_register_princ(p):
     'r_register_princ : '
@@ -372,9 +377,16 @@ def p_r_register_princ(p):
         'vars': {}
     }
 
+# Funciones para guardar Operandos y Operadores para hacer Cuádruplos y Operaciones
 def p_r_seen_operand(p):
     'r_seen_operand : '
     e = register_operand(p[-1])
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_seen_operand_id(p):
+    'r_seen_operand_id :'
+    e = register_operand_id(p[-1], current_func)
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
@@ -412,7 +424,7 @@ def p_r_seen_unary_operator(p):
     'r_seen_unary_operator : '
     pass #TODO Unary operation
 
-#Error handling
+# Para controlar errores
 def handle_error(line, lexpos, mssg):
   '''Print error message and set error state to true'''
   global error
@@ -442,5 +454,5 @@ def p_error(p):
   print(f'Unexpected token {p.value}.')
   recover_parser(parser)
 
-#Build the parser
+# Construir el Parser
 parser = yacc.yacc()
