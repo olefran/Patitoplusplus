@@ -422,6 +422,7 @@ def p_r_seen_factor(p):
 
 def p_r_seen_unary_operator(p):
     'r_seen_unary_operator : '
+    #e = solve_unary_or_cont(['PLUS_UNARY'])
     pass #TODO Unary operation
 
 # Para controlar errores

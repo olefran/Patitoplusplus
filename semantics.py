@@ -260,16 +260,24 @@ def solve_op_or_cont(ops: [Operations]):
                      if left_type == 'void' or right_type == 'void':
                          return f'Expression returns no value.'
                      return f'Type mismatch: Invalid operation \'{operator}\' on given operand \'{right_operand}\' and \'{left_operand}\''
-                #temp = solve_expression(result_type, right_operand, left_operand)
                 temp, e = get_temp_dir(result_type)
-                # if temp.get_error():
-                #  return temp.get_error()
                 # Generate Cuadruple
                 # TODO: Verify OPERATION
                 quadruples.append([operator, left_operand, right_operand, temp])
-                #print(quadruples)
                 operand_stack.append( (result_type, temp) )
     return e
+
+#Generates cuadruples for unary operations
+def solve_unary_or_cont(ops: [Operations]):
+    global operator_stack, operand_stack
+    e = None
+    if operator_stack:
+        if operator_stack[-1] in ops:
+            # Check
+            if len(oper):
+                pass
+
+
 
 #
 def solve_expression(result_type, right_operand, left_operand):

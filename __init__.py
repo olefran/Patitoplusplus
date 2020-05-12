@@ -38,12 +38,12 @@ def main():
             break
     result = parser.parse(data)
     print("Errors: ", result)
-    #print("Operator Stack: ", operator_stack) #Error saves not operators
-    #print("Operand Stack: ", operand_stack) #Error none
+    print("Operator Stack: ", operator_stack) #Error saves not operators
+    print("Operand Stack: ", operand_stack) #Error none
     #print("Symbol Table: ")
     #pprint.pprint(symbol_table)
-    print("Const Table: ")
-    pprint.pprint(const_table)
+    #print("Const Table: ")
+    #pprint.pprint(const_table)
     print("Cuadruples ")
     pprint.pprint(quadruples)
     return 0
