@@ -198,10 +198,11 @@ def p_CTE(p):
     pass
 
 # ARROP→ $ | ! | ?
+# TODO: Have an seen operator to use this kinds of matrix operations
 def p_ARROP(p):
     '''ARROP : DET_ARR
     | TRANS_ARR
-    | INV_ARR'''
+    | INV_ARR '''
     pass
 
 # FUN → id ( FUN_AUX )
@@ -368,7 +369,7 @@ def p_r_register_var(p):
             'type': current_type, 'address': current_dir,
         }
     else:
-        handle_error(p.lineno(-1), p.lexpos(-1), "multiple var name decalration: " + current_var )
+        handle_error(p.lineno(-1), p.lexpos(-1), "multiple var name declaration: " + current_var )
 
 def p_r_register_princ(p):
     'r_register_princ : '

@@ -183,12 +183,12 @@ def solve_op_or_cont(ops: [Operations], mark_assigned):
           quadruples.append([operator, right_operand, None, left_operand])
       else:
           quadruples.append([operator, left_operand, right_operand, temp])
-      operand_stack.append( (result_type, temp) )
-    elif operator == '(' or operator == ')':
-        print("hi")
-        operator = operator_stack.pop()
-        print("Operator: ", operator)
-
+      operand_stack.append( (result_type, temp) )    
+    elif operator == ')':
+        if top(operator) != '(':
+            e = "expected ')'"
+        else:
+            operator = operator_stack.pop()
     return e
 
 #Generates cuadruples for unary operations
