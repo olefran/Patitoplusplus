@@ -1,6 +1,6 @@
 # Oscar Lerma A01380817
 # Cesar Buenfil Vazquez A01207499
-# Parser with yacc of Patitoplusplus
+# Parser con yacc de Patitoplusplus
 # Created 04/25/2020
 import yacc
 from scanner import tokens
@@ -115,8 +115,8 @@ def p_ESTATUTO(p):
 
 # ASIGNACION → id ARRDIM = EXPRESION | id ARRDIM = CTE_ARR
 def p_ASIGNACION(p):
-    '''ASIGNACION : ID ARRDIM EQUAL r_seen_operator EXPRESION
-    | ID ARRDIM EQUAL r_seen_operator CTE_ARR'''
+    '''ASIGNACION : ID r_seen_operand_id ARRDIM EQUAL r_seen_operator EXPRESION r_seen_equal
+    | ID r_seen_operand_id ARRDIM EQUAL r_seen_operator CTE_ARR'''
     pass
 
 # EXPRESION → SUBEXP EXPRESION_AUX
@@ -396,27 +396,33 @@ def p_r_seen_operator(p):
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
+def p_r_seen_equal(p):
+    'r_seen_equal : '
+    e = solve_op_or_cont(['='], mark_assigned=True)
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
 def p_r_seen_subexp(p):
     'r_seen_subexp : '
-    e = solve_op_or_cont(['&&', '||'])
+    e = solve_op_or_cont(['&&', '||'], mark_assigned=False)
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_seen_exp(p):
     'r_seen_exp : '
-    e = solve_op_or_cont(['>', '<', '==','!=', '<=', '>='])
+    e = solve_op_or_cont(['>', '<', '==','!=', '<=', '>='], mark_assigned=False)
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_seen_term(p):
     'r_seen_term : '
-    e = solve_op_or_cont(['+', '-'])
+    e = solve_op_or_cont(['+', '-'], mark_assigned=False)
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_seen_factor(p):
     'r_seen_factor : '
-    e = solve_op_or_cont(['*', '/', '%'])
+    e = solve_op_or_cont(['*', '/', '%'], mark_assigned=False)
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 

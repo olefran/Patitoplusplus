@@ -1,10 +1,10 @@
 # Oscar Lerma A01380817
 # Cesar Buenfil Vazquez A01207499
-# init file of Patitoplusplus
+# init file de Patitoplusplus
 # Created 04/06/2020
 from parser import parser
 from scanner import lexer
-from quadruples import operand_stack, operator_stack, quadruples
+from structures import *
 from semantics import symbol_table, const_table
 import sys
 import pprint
@@ -42,8 +42,8 @@ def main():
     print("Operand Stack: ", operand_stack) #Error none
     #print("Symbol Table: ")
     #pprint.pprint(symbol_table)
-    #print("Const Table: ")
-    #pprint.pprint(const_table)
+    print("Const Table: ")
+    pprint.pprint(const_table)
     print("Cuadruples ")
     pprint.pprint(quadruples)
     return 0

@@ -2,95 +2,8 @@
 # Cesar Buenfil Vazquez A01207499
 # Cubo de semantica y tabla de simbolos de Patitoplusplus
 # Created 04/25/2020
-from enum import Enum, IntEnum, auto
-from collections import defaultdict
-from quadruples import operand_stack, operator_stack, jump_stack, quadruples
+from structures import *
 import ast
-
-# Variables Auxiliares para currents
-current_type = None
-current_func = 'global' # Scope
-current_var = ''
-
-# Directorio de funciones y sus variables
-symbol_table = {
-        'global' : {
-            'vars' : {}
-        }
-}
-
-# Directorio de constantes
-const_table = {}
-
-# Limites de memoria virtual
-# Gracias a la siguiente configuración, solo pueden existir un total de 1500 variables de un tipo
-# VARIABLES GLOBALES    INT     FLOAT   CHAR    STRINGS  VOID
-GLOBAL_LOWER_LIMIT =    [5_000, 6_500, 8_000, 9_500, 11_000]
-GLOBAL_UPPER_LIMIT =    [6_499, 7_999, 9_499, 10_999, 12_499]
-
-# VAR DE FUNCIONES      INT     FLOAT   CHAR    STRINGS
-VAR_LOWER_LIMIT =       [13_000, 14_500, 16_000, 17_500]
-VAR_UPPER_LIMIT =       [14_499, 15_999, 17_499, 18_999]
-
-# CONSTANTES            INT     FLOAT   CHAR    STRINGS
-CONST_LOWER_LIMIT =     [19_000, 20_500, 22_000, 23_500]
-CONST_UPPER_LIMIT =     [20_499, 21_999, 23_499, 24_999]
-
-# TEMPORALES            INT     FLOAT   CHAR    STRINGS
-TEMP_LOWER_LIMIT =      [25_000, 26_500, 28_000, 29_500]
-TEMP_UPPER_LIMIT =     [26_499, 27_999, 29_499, 30_999]
-
-#CONSTANT_UPPER_LIMIT = 30_999
-
-# Contadores de memoria virutal
-global_dir_count = list(GLOBAL_LOWER_LIMIT)
-var_dir_count = list(VAR_LOWER_LIMIT)
-temp_dir_count = list(TEMP_LOWER_LIMIT)
-const_dir_count = list(CONST_LOWER_LIMIT)
-
-# Enumeracion de tipos de datos
-var_types = ('int', 'float', 'char', 'string')
-avail_types = ('int', 'float', 'char', 'string', 'void')
-func_types = ('int', 'float', 'char', 'string', 'void')
-
-# Diccionario de Operaciones
-str_operations = ('unary+','unary-','!','*','/','+','-','<','>','!=','==','<=','>=','||','&&','=','(','%')
-Operations = {
-  "PLUS_UNARY" : 1,
-  "MINUS_UNARY" : 2,
-  "NOT" : 3,
-  "TIMES" : 4,
-  "DIV" : 5,
-  "PLUS" : 6,
-  "MINUS" : 7,
-  "LESS_THAN" : 8,
-  "MORE_THAN" : 9,
-  "DIFFERENT" : 10,
-  "IS_EQUAL" : 11,
-  "LESS_EQUAL" : 12,
-  "MORE_EQUAL" : 13,
-  "OR" : 14,
-  "AND" : 15,
-  "EQUAL" : 16,
-  "LEE" : 17,
-  "WRITE" : 18,
-  "GOTO" : 19,
-  "GOTOF" : 20,
-  "GOSUB" : 21,
-  "PARAM" : 22,
-  "ERA" : 23,
-  "RETURN" : 24,
-  "ENDPROC" : 25,
-  "END" : 26,
-  "ENTER_INSTANCE" : 27,
-  "EXIT_INSTANCE" : 28,
-  "GET_RETURN" : 29,
-  "FAKE_BOTTOM" : 30,
-  "VER" : 31,
-  "SET_FOREIGN" : 32,
-  "UNSET_FOREIGN" : 33,
-  "MOD" : 34
- }
 
 # Manejo de la dirección digital de variables globales
 def get_global_dir(current_type):
@@ -243,28 +156,39 @@ def register_operator(raw_operator):
 # Returns error if operation cannot be performed on the given operands.
 # Returns error if trying to perform an operation on a call to a void function.'''
 
-def solve_op_or_cont(ops: [Operations]):
+def top(l):
+  '''Gets the top element on a stack without crashing if stack is empty.'''
+  if len(l) > 0:
+    return l[-1]
+  return None
+
+def solve_op_or_cont(ops: [Operations], mark_assigned):
     global operator_stack, operand_stack
     e = None
-    if operator_stack:
-        if operator_stack[-1] in ops:
-            operator = operator_stack[-1]
-            # Checar que al menos haya 2 operandos y nos sea fake bottom
-            if len(operand_stack) > 1 and operator_stack[-1] != "(" and operator_stack[-2] != "(":
-                operator = operator_stack.pop()
-                right_type, right_operand = operand_stack.pop()
-                left_type, left_operand = operand_stack.pop()
-                # Buscar el tipo del operador
-                result_type = semantic_cube[left_type][right_type][operator]
-                if not result_type:
-                     if left_type == 'void' or right_type == 'void':
-                         return f'Expression returns no value.'
-                     return f'Type mismatch: Invalid operation \'{operator}\' on given operand \'{right_operand}\' and \'{left_operand}\''
-                temp, e = get_temp_dir(result_type)
-                # Generate Cuadruple
-                # TODO: Verify OPERATION
-                quadruples.append([operator, left_operand, right_operand, temp])
-                operand_stack.append( (result_type, temp) )
+    operator = top(operator_stack)
+    if operator in ops:
+      right_type, right_operand = operand_stack.pop()
+      print("Right Operand: ", right_operand)
+      left_type, left_operand = operand_stack.pop()
+      print("Left Operand: ", left_operand)
+      operator = operator_stack.pop()
+      print("Operator: ", operator)
+      result_type = semantic_cube[left_type][right_type][operator]
+      if not result_type:
+        if left_type == 'void' or right_type == 'void':
+          return f'Expression returns no value.'
+        return f'Type mismatch: Invalid operation \'{operator}\' on given operand \'{right_operand}\' and \'{left_operand}\''
+      temp, e = get_temp_dir(result_type)
+      if mark_assigned:
+          quadruples.append([operator, right_operand, None, left_operand])
+      else:
+          quadruples.append([operator, left_operand, right_operand, temp])
+      operand_stack.append( (result_type, temp) )
+    elif operator == '(' or operator == ')':
+        print("hi")
+        operator = operator_stack.pop()
+        print("Operator: ", operator)
+
     return e
 
 #Generates cuadruples for unary operations
@@ -277,113 +201,8 @@ def solve_unary_or_cont(ops: [Operations]):
             if len(oper):
                 pass
 
-
-
 #
 def solve_expression(result_type, right_operand, left_operand):
     global current_func
     #TODO: Add adresses to variables and CTEs
     pass
-
-# Semantic cube for Operations
-semantic_cube = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: None)))
-
-semantic_cube['int']['int']['&&'] = 'int'
-semantic_cube['int']['int']['||'] = 'int'
-semantic_cube['int']['int']['<'] = 'int'
-semantic_cube['int']['int']['>'] = 'int'
-semantic_cube['int']['int']['!='] = 'int'
-semantic_cube['int']['int']['=='] = 'int'
-semantic_cube['int']['int']['<='] = 'int'
-semantic_cube['int']['int']['>='] = 'int'
-semantic_cube['int']['int']['+'] = 'int'
-semantic_cube['int']['int']['-'] = 'int'
-semantic_cube['int']['int']['*'] = 'int'
-semantic_cube['int']['int']['/'] = 'int'
-semantic_cube['int']['int']['='] = 'int'
-semantic_cube['int']['lee']['='] = 'int'
-semantic_cube['int']['unary+'] = 'int'
-semantic_cube['int']['unary-'] = 'int'
-semantic_cube['int']['!'] = 'int'
-
-semantic_cube['float']['float']['&&'] = 'int'
-semantic_cube['float']['float']['||'] = 'int'
-semantic_cube['float']['float']['<'] = 'int'
-semantic_cube['float']['float']['>'] = 'int'
-semantic_cube['float']['float']['!='] = 'int'
-semantic_cube['float']['float']['=='] = 'int'
-semantic_cube['float']['float']['<='] = 'int'
-semantic_cube['float']['float']['>='] = 'int'
-semantic_cube['float']['float']['+'] = 'float'
-semantic_cube['float']['float']['-'] = 'float'
-semantic_cube['float']['float']['*'] = 'float'
-semantic_cube['float']['float']['/'] = 'float'
-semantic_cube['float']['float']['='] = 'float'
-semantic_cube['float']['lee']['='] = 'float'
-semantic_cube['float']['unary+'] = 'float'
-semantic_cube['float']['unary-'] = 'float'
-semantic_cube['float']['!'] = 'int'
-
-semantic_cube['char']['char']['&&'] = 'int'
-semantic_cube['char']['char']['||'] = 'int'
-semantic_cube['char']['char']['<'] = 'int'
-semantic_cube['char']['char']['>'] = 'int'
-semantic_cube['char']['char']['!='] = 'int'
-semantic_cube['char']['char']['=='] = 'int'
-semantic_cube['char']['char']['>='] = 'int'
-semantic_cube['char']['char']['<='] = 'int'
-semantic_cube['char']['char']['+'] = 'char'
-semantic_cube['char']['char']['-'] = 'char'
-semantic_cube['char']['char']['*'] = 'char'
-semantic_cube['char']['char']['/'] = 'char'
-semantic_cube['char']['char']['='] = 'char'
-semantic_cube['char']['lee']['='] = 'char'
-semantic_cube['char']['unary+'] = None
-semantic_cube['char']['unary-'] = None
-semantic_cube['char']['!'] = 'char'
-
-semantic_cube['int']['float']['&&'] = semantic_cube['float']['int']['&&'] = 'int'
-semantic_cube['int']['float']['||'] = semantic_cube['float']['int']['||'] = 'int'
-semantic_cube['int']['float']['<'] = semantic_cube['float']['int']['<'] = 'int'
-semantic_cube['int']['float']['>'] = semantic_cube['float']['int']['>'] = 'int'
-semantic_cube['int']['float']['!='] = semantic_cube['float']['int']['!='] = 'int'
-semantic_cube['int']['float']['=='] = semantic_cube['float']['int']['=='] = 'int'
-semantic_cube['int']['float']['<='] = semantic_cube['float']['int']['<='] = 'int'
-semantic_cube['int']['float']['>='] = semantic_cube['float']['int']['>='] = 'int'
-semantic_cube['int']['float']['+'] = semantic_cube['float']['int']['+'] = 'float'
-semantic_cube['int']['float']['-'] = semantic_cube['float']['int']['-'] = 'float'
-semantic_cube['int']['float']['*'] = semantic_cube['float']['int']['*'] = 'float'
-semantic_cube['int']['float']['/'] = semantic_cube['float']['int']['/'] = 'float'
-semantic_cube['int']['float']['='] = 'int'
-semantic_cube['float']['int']['='] = 'float'
-
-semantic_cube['int']['char']['&&'] = semantic_cube['char']['int']['&&'] = 'int'
-semantic_cube['int']['char']['||'] = semantic_cube['char']['int']['||'] = 'int'
-semantic_cube['int']['char']['<'] = semantic_cube['char']['int']['<'] = 'int'
-semantic_cube['int']['char']['>'] = semantic_cube['char']['int']['>'] = 'int'
-semantic_cube['int']['char']['!='] = semantic_cube['char']['int']['!='] = 'int'
-semantic_cube['int']['char']['=='] = semantic_cube['char']['int']['=='] = 'int'
-semantic_cube['int']['char']['<='] = semantic_cube['char']['int']['<='] = 'int'
-semantic_cube['int']['char']['>='] = semantic_cube['char']['int']['>='] = 'int'
-semantic_cube['int']['char']['+'] = semantic_cube['char']['int']['+'] = 'int'
-semantic_cube['int']['char']['-'] = semantic_cube['char']['int']['-'] = 'int'
-semantic_cube['int']['char']['*'] = semantic_cube['char']['int']['*'] = 'int'
-semantic_cube['int']['char']['/'] = semantic_cube['char']['int']['/'] = 'int'
-semantic_cube['int']['char']['='] = 'int'
-semantic_cube['char']['int']['='] = 'char'
-
-semantic_cube['float']['char']['&&'] = semantic_cube['char']['float']['&&'] = 'int'
-semantic_cube['float']['char']['||'] = semantic_cube['char']['float']['||'] = 'int'
-semantic_cube['float']['char']['<'] = semantic_cube['char']['float']['<'] = 'int'
-semantic_cube['float']['char']['>'] = semantic_cube['char']['float']['>'] = 'int'
-semantic_cube['float']['char']['!='] = semantic_cube['char']['float']['!='] = 'int'
-semantic_cube['float']['char']['=='] = semantic_cube['char']['float']['=='] = 'int'
-semantic_cube['float']['char']['<='] = semantic_cube['char']['float']['<='] = 'int'
-semantic_cube['float']['char']['>='] = semantic_cube['char']['float']['>='] = 'int'
-semantic_cube['float']['char']['+'] = semantic_cube['char']['float']['+'] = 'float'
-semantic_cube['float']['char']['-'] = semantic_cube['char']['float']['-'] = 'float'
-semantic_cube['float']['char']['*'] = semantic_cube['char']['float']['*'] = 'float'
-semantic_cube['float']['char']['/'] = semantic_cube['char']['float']['/'] = 'float'
-semantic_cube['float']['char']['='] = 'float'
-semantic_cube['char']['float']['='] = 'char'
-semantic_cube['char']['lee']['='] = 'char'
