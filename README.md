@@ -12,14 +12,26 @@ Asegurate que los archivos: ``` yacc.py , lex.py``` existan en el mismo director
 
 ### Uso
 
-Corre con python 3.6+
-
+Windows:
 ```
-python3 PatitoPlusPlus.py (archivo)
+python3 __init.py__ (archivo)
 ```
 ó 
 ```
-python PatitoPlusPlus.py (archivo)
+python __init.py (archivo)
+```
+
+\*nix:
+```
+python3 __init.py__ (archivo)
+```
+ó 
+```
+python __init.py (archivo)
+```
+ó
+```
+./patitoplusplus (archivo)
 ```
 
 Acepta todo archivo patito++ válido, pero la terminación preferida es:  ```.duckpp```
