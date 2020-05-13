@@ -37,15 +37,20 @@ def main():
         if not tok:
             break
     result = parser.parse(data)
-    print("Errors: ", result)
-    print("Operator Stack: ", operator_stack) #Error saves not operators
-    print("Operand Stack: ", operand_stack) #Error none
-    #print("Symbol Table: ")
-    #pprint.pprint(symbol_table)
-    print("Const Table: ")
-    pprint.pprint(const_table)
-    print("Cuadruples ")
-    pprint.pprint(quadruples)
+
+    # Debbuging
+    # print("Errors: ", result)
+    # print("Operator Stack: ", operator_stack) #Error saves not operators
+    # print("Operand Stack: ", operand_stack) #Error none
+    # print("Symbol Table: ")
+    # pprint.pprint(symbol_table)
+    # print("Const Table: ")
+    # pprint.pprint(const_table)
+    print("Cuadruples: ")
+    i = 0
+    for element in quadruples:
+        print( i,": ", element)
+        i = i + 1
     return 0
 
 # Correr el main

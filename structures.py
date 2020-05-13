@@ -18,6 +18,7 @@ jump_stack = []
 
 # Generated quadruples
 quadruples = []
+quad_pointer = 0
 
 # Variables Auxiliares para currents
 current_type = None
@@ -33,6 +34,9 @@ symbol_table = {
 
 # Directorio de constantes
 const_table = {}
+
+# Operador Temporal de for
+temp_for_op = None
 
 # Limites de memoria virtual
 # Gracias a la siguiente configuración, solo pueden existir un total de 1500 variables de un tipo

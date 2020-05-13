@@ -179,7 +179,7 @@ def p_TERMINO_AUX(p):
 
 # FACTOR → ( EXPRESION ) | + CTE | - CTE | NOT CTE | CTE ARROP | CTE
 def p_FACTOR(p):
-    '''FACTOR : LPAREN r_seen_operator EXPRESION RPAREN r_seen_operator
+    '''FACTOR : LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom
     | PLUS r_seen_unary_operator CTE
     | MINUS r_seen_unary_operator CTE
     | NOT r_seen_unary_operator CTE
@@ -224,22 +224,32 @@ def p_COND(p):
     | WHILE'''
     pass
 
-# IF → si ( EXPRESION ) entonces BLOQUE IF_AUX
+# IF → si ( EXPRESION ) entonces IF2
 def p_IF(p):
-    '''IF : SI LPAREN EXPRESION RPAREN ENTONCES BLOQUE IF_AUX
-    | SI LPAREN EXPRESION RPAREN ENTONCES COND '''
+    'IF : SI LPAREN EXPRESION r_check_int RPAREN ENTONCES IF2 r_if_end'
+    pass
+
+# IF2 → BLOQUE IF_AUX | COND
+def p_IF2(p):
+    '''IF2 : BLOQUE IF_AUX
+    | COND'''
     pass
 
 # IFAUX → sino BLOQUE | empty
 def p_IF_AUX(p):
-    '''IF_AUX : SINO BLOQUE
+    '''IF_AUX : SINO r_else_start BLOQUE
     | empty'''
     pass
 
-# WHILE → mientras ( EXPRESION ) WHILE_AUX BLOQUE
+# WHILE → mientras ( EXPRESION ) WHILE_AUX WHILE2
 def p_WHILE(p):
-    '''WHILE :  MIENTRAS LPAREN EXPRESION RPAREN WHILE_AUX BLOQUE
-    | MIENTRAS LPAREN EXPRESION RPAREN WHILE_AUX COND'''
+    'WHILE :  MIENTRAS r_set_while LPAREN EXPRESION r_check_int RPAREN WHILE_AUX WHILE2 r_while_end'
+    pass
+
+# WHILE2 → BLOQUE | COND
+def p_WHILE2(p):
+    '''WHILE2 :  BLOQUE
+    | COND'''
     pass
 
 # WHILE_AUX → haz | empty
@@ -248,10 +258,15 @@ def p_WHILE_AUX(p):
     | empty '''
     pass
 
-# FOR → desde ASIGNACION hasta EXPRESION hacer BLOQUE
+# FOR → desde ASIGNACION hasta EXPRESION hacer FOR2
 def p_FOR(p):
-    '''FOR :  DESDE ASIGNACION HASTA EXPRESION HACER BLOQUE
-    | DESDE ASIGNACION HASTA EXPRESION HACER COND'''
+    'FOR : DESDE ASIGNACION HASTA EXPRESION r_for_gen HACER FOR2 r_for_end'
+    pass
+
+# FOR2 → BLOQUE | COND
+def p_FOR2(p):
+    '''FOR2 : BLOQUE
+    | COND'''
     pass
 
 # WRITE → escribe ( WRITE_AUX )
@@ -432,6 +447,54 @@ def p_r_seen_unary_operator(p):
     #e = solve_unary_or_cont(['PLUS_UNARY'])
     pass #TODO Unary operation
 
+def p_r_pop_fake_bottom(p):
+  'r_pop_fake_bottom : '
+  e = pop_fake_bottom()
+  if e:
+      handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_check_int(p):
+    'r_check_int : '
+    e = check_int()
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_if_end(p):
+    'r_if_end : '
+    e = cond_end("if")
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_else_start(p):
+    'r_else_start : '
+    e = else_start()
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_set_while(p):
+    'r_set_while : '
+    e = set_while()
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_while_end(p):
+    'r_while_end : '
+    e = cond_end("while")
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_for_gen(p):
+    'r_for_gen : '
+    e = gen_for()
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_for_end(p):
+    'r_for_end : '
+    e = cond_end("for")
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
 # Para controlar errores
 def handle_error(line, lexpos, mssg):
   '''Print error message and set error state to true'''
@@ -461,6 +524,27 @@ def p_error(p):
   error_prefix(p.lineno, p.lexpos, input_str)
   print(f'Unexpected token {p.value}.')
   recover_parser(parser)
+
+def recover_parser(parser):
+  '''Recovers parser on error to keep finding errors.'''
+
+  opened = 0
+  tokName = None
+  while True:
+    tok = parser.token()
+    if not tok:
+      break
+    tokName = tok.type
+    if tokName == 'SC' and opened == 0:
+      break
+    elif tokName == 'LEFT_B':
+      opened += 1
+    elif tokName == 'RIGHT_B':
+      opened -= 1
+      if opened == 0:
+        break
+  parser.restart()
+  return tokName
 
 # Construir el Parser
 parser = yacc.yacc()

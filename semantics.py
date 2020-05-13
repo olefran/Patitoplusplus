@@ -146,47 +146,59 @@ def register_operator(raw_operator):
     global operator_stack
     operator_stack.append(raw_operator)
 
+#Gets top element of stack without popping it and if there is none is doesn't crash
+def top(l):
+  if len(l) > 0:
+    return l[-1]
+  return None
 
-#TODO: Resolve the operation _ gnerate the cuadruple?
+#Pops ( aka fake bottom form the operator_stack
+def pop_fake_bottom():
+  global operator_stack
+  operator = operator_stack.pop()
+  if operator != '(':
+      e = 'Expected: )'
+
 # TODO: Realizar los operandos especiales unitarios para matrices
+
+
+# Create cuadruples and add to quad_pointer
+def create_quadruple(operator, left_operand, right_operand, result):
+    global quadruples, quad_pointer
+    quadruples.append([operator, left_operand, right_operand, result])
+    quad_pointer = quad_pointer + 1
 
 
 # '''Generates quadruple for next operation if it exists in ops.
 # Solves the next operation (from the operation stack) if it is included in ops.
 # Returns error if operation cannot be performed on the given operands.
 # Returns error if trying to perform an operation on a call to a void function.'''
-
-def top(l):
-  '''Gets the top element on a stack without crashing if stack is empty.'''
-  if len(l) > 0:
-    return l[-1]
-  return None
-
 def solve_op_or_cont(ops: [Operations], mark_assigned):
     global operator_stack, operand_stack
     e = None
     operator = top(operator_stack)
     if operator in ops:
       right_type, right_operand = operand_stack.pop()
-      print("Right Operand: ", right_operand)
       left_type, left_operand = operand_stack.pop()
-      print("Left Operand: ", left_operand)
       operator = operator_stack.pop()
-      print("Operator: ", operator)
       result_type = semantic_cube[left_type][right_type][operator]
       if not result_type:
         if left_type == 'void' or right_type == 'void':
           return f'Expression returns no value.'
         return f'Type mismatch: Invalid operation \'{operator}\' on given operand \'{right_operand}\' and \'{left_operand}\''
-      temp, e = get_temp_dir(result_type)
+      temp, e = None, None
       if mark_assigned:
-          quadruples.append([operator, right_operand, None, left_operand])
+          create_quadruple(operator, right_operand, None, left_operand)
+          temp = left_operand
       else:
-          quadruples.append([operator, left_operand, right_operand, temp])
-      operand_stack.append( (result_type, temp) )    
+          temp, e = get_temp_dir(result_type)
+          create_quadruple(operator, left_operand, right_operand, temp)
+      operand_stack.append( (result_type, temp) )
     elif operator == ')':
+        operator_stack.pop()
+        print(top(operator))
         if top(operator) != '(':
-            e = "expected ')'"
+            e = "Expected: ')'"
         else:
             operator = operator_stack.pop()
     return e
@@ -202,7 +214,68 @@ def solve_unary_or_cont(ops: [Operations]):
                 pass
 
 #
-def solve_expression(result_type, right_operand, left_operand):
-    global current_func
+#def solve_expression(result_type, right_operand, left_operand):
+#    global current_func
     #TODO: Add adresses to variables and CTEs
-    pass
+#    pass
+
+# check value ("int") for if / while expressions
+def check_int():
+    global jump_stack
+    e = None
+    if top(operand_stack)[0] != 'int':
+        e = "Expected: 'int' type on expression"
+    else:
+        type, result = operand_stack.pop()
+        create_quadruple('GOTOF', result, None, None)
+        jump_stack.append(quad_pointer - 1)
+
+# fill waiting goto staement
+def fill_quad(end, cont):
+    global quadruples
+    e = None
+    try:
+        quadruples[end][3] = cont
+    except:
+        e = "Unable to modify quadruple: " + end
+    return e
+
+# end if OR while statement and fill waiting goto dir
+def cond_end(type_op):
+    e = None
+    global jump_stack
+    end = jump_stack.pop()
+    if type_op == "while" or type_op == "for":
+        loop_return = jump_stack.pop()
+        create_quadruple('GOTO', None , None, loop_return)
+    e = fill_quad(end, quad_pointer)
+    return e
+
+# Generate quadruples for else staement
+def else_start():
+    global jump_stack
+    e = None
+    create_quadruple('GOTO', None, None, None)
+    if_false = jump_stack.pop()
+    jump_stack.append(quad_pointer - 1)
+    e = fill_quad(if_false, quad_pointer)
+    return e
+
+def set_while():
+    global jump_stack
+    jump_stack.append(quad_pointer)
+    return None
+
+def gen_for():
+    global jump_stack
+    e = None
+    if top(operand_stack)[0] != 'int':
+        e = "Expected: 'int' type on expression"
+    else:
+        operator_stack.append(">")
+        e = solve_op_or_cont(['>'], mark_assigned = False)
+        type, operand = operand_stack.pop()
+        create_quadruple('GOTOF', operand, None, None)
+        jump_stack.append(quad_pointer - 1)
+        jump_stack.append(quad_pointer - 1)
+    return e
