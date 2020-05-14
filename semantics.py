@@ -287,9 +287,9 @@ def populate_func(type_op, current_func):
     e = None
     if symbol_table[current_func].get(type_op) is not None:
         e = "Trying to define a new param/var number for function: " + current_func
-    if type_op = "numparam":
+    if type_op == "numparam":
         symbol_table[current_func][type_op] = func_var_count
-    if type_op = "numvar":
+    if type_op == "numvar":
         symbol_table[current_func][type_op] = func_var_count
     var_dir_count = [0, 0, 0, 0]
     return e
