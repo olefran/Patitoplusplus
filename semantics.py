@@ -261,11 +261,13 @@ def else_start():
     e = fill_quad(if_false, quad_pointer)
     return e
 
+#Set quad_pointer to while function
 def set_while():
     global jump_stack
     jump_stack.append(quad_pointer)
     return None
 
+#set quad_pointer
 def gen_for():
     global jump_stack
     e = None
@@ -279,3 +281,48 @@ def gen_for():
         jump_stack.append(quad_pointer - 1)
         jump_stack.append(quad_pointer - 1)
     return e
+
+def populate_func(type_op, current_func):
+    global symbol_table, var_dir_count
+    e = None
+    if symbol_table[current_func].get(type_op) is not None:
+        e = "Trying to define a new param/var number for function: " + current_func
+    if type_op = "numparam":
+        symbol_table[current_func][type_op] = func_var_count
+    if type_op = "numvar":
+        symbol_table[current_func][type_op] = func_var_count
+    var_dir_count = [0, 0, 0, 0]
+    return e
+
+def func_set(current_func):
+    global symbol_table
+    e = None
+    try:
+        symbol_table[current_func]['pos'] = quad_pointer
+    except:
+        e = "Not able to modify quad pointer on start position on function: " + current_func
+    return e
+
+def func_end(current_func):
+    global symbol_table
+    e = None
+    try:
+        symbol_table[current_func]['vars'] = None    #DELETE THE VAR TABLE
+    except:
+        e = "Not able to delete var table on function: " + current_func
+    create_quadruple("ENDFunc", None, None, None)
+    return e
+
+def get_func_count(current_type):
+    global func_var_count, current_var
+    switcher = {
+    "int": 0,
+    "float": 1,
+    "char": 2,
+    "string": 3
+    }
+    e = None
+    result = switcher.get(current_type, -1)
+    if result < 0:
+        e = "Invalid type on counter addition on: " + current_var
+    func_var_count[result] = func_var_count[result] + 1

@@ -69,8 +69,8 @@ def p_FUNCTIONS(p):
 
 # FUNCTION → funcion TIPO id ( PARAM )  VARS BLOQUE | funcion void id ( PARAM )  VARS BLOQUE
 def p_FUNCTION(p):
-    '''FUNCTION : FUNCION TIPO ID r_save_func r_register_func LPAREN PARAM RPAREN VARS BLOQUE
-    | FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN VARS BLOQUE'''
+    '''FUNCTION : FUNCION TIPO ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end
+    | FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end'''
     pass
 
 # PARAM → TIPO id PARENTESIS PARAMSUB
@@ -380,6 +380,8 @@ def p_r_register_var(p):
         if e:
             handle_error(p.lineno(-1), p.lexpos(-1), e)
 
+        get_func_count(current_type) #Add the counter to variable / param counter
+
         symbol_table[current_func]['vars'][current_var] = {
             'type': current_type, 'address': current_dir,
         }
@@ -492,6 +494,30 @@ def p_r_for_gen(p):
 def p_r_for_end(p):
     'r_for_end : '
     e = cond_end("for")
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_save_param_func(p):
+    'r_save_param_func : '
+    e = populate_func("numparam", current_func) #Save the number of parameters
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_save_vars(p):
+    'r_save_vars : '
+    e = pupulate_func("numvar", current_func) #save the number of variables
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_func_set(p):
+    'r_func_set : '
+    e = func_set(current_func) #Set the quad-pointer to start the function
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_func_end(p):
+    'r_func_set : '
+    e = func_end(current_func) #End var table, create_quadruple ENDFunc
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 

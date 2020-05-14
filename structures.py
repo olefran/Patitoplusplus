@@ -20,6 +20,10 @@ jump_stack = []
 quadruples = []
 quad_pointer = 0
 
+#Counts parameter and variables for function creation
+#                INT, FLOAT, CHAR , STRING
+func_var_count = [0,    0,      0,      0]
+
 # Variables Auxiliares para currents
 current_type = None
 current_func = 'global' # Scope
