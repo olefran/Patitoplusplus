@@ -19,12 +19,12 @@ def p_empty(p):
 
 # PROGRAMA → programa id ;  VARS FUNCTIONS MAIN
 def p_PROGRAM(p):
-    'PROGRAM : PROGRAMA ID DOTCOMA VARS FUNCTIONS MAIN'
+    'PROGRAM : PROGRAMA r_goto_main ID DOTCOMA VARS FUNCTIONS MAIN'
     pass
 
 # MAIN → principal ( )  VARS BLOQUE
 def p_MAIN(p):
-    'MAIN : PRINCIPAL r_save_func LPAREN RPAREN r_register_princ VARS BLOQUE'
+    'MAIN : PRINCIPAL r_save_func LPAREN RPAREN r_register_princ r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end'
     pass
 
 # VARS → var VARPRE | empty
@@ -207,13 +207,13 @@ def p_ARROP(p):
 
 # FUN → id ( FUN_AUX )
 def p_FUN(p):
-    'FUN : ID LPAREN FUN_AUX RPAREN'
+    'FUN : ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub'
     pass
 
 # FUN_AUX → CTE , FUN_AUX | CTE
 def p_FUN_AUX(p):
-    '''FUN_AUX : EXPRESION COMA FUN_AUX
-    | EXPRESION
+    '''FUN_AUX : EXPRESION r_check_param COMA FUN_AUX
+    | EXPRESION r_check_param
     | empty'''
     pass
 
@@ -301,9 +301,9 @@ def p_READ_AUXSUB(p):
     | empty'''
     pass
 
-# RETURN → regresa ( EXPRESION ) regresa ( NULL )
+# RETURN → regresa ( EXPRESION ) | regresa ( NULL )
 def p_RETURN(p):
-    '''RETURN : REGRESA LPAREN EXPRESION RPAREN
+    '''RETURN : REGRESA LPAREN EXPRESION RPAREN r_regresa
     | REGRESA LPAREN NULL RPAREN'''
     pass
 
@@ -368,7 +368,7 @@ def p_r_register_func(p):
 
 def p_r_register_var(p):
     'r_register_var : '
-    global current_var
+    global current_var, func_var_count
     current_var = p[-1]
     e = None
     if symbol_table[current_func]['vars'].get(current_var) is None:
@@ -380,7 +380,11 @@ def p_r_register_var(p):
         if e:
             handle_error(p.lineno(-1), p.lexpos(-1), e)
 
-        get_func_count(current_type) #Add the counter to variable / param counter
+        e = get_func_count(current_type, current_var) #Add the counter to variable / param counter
+
+        if e:
+            handle_error(p.lineno(-1), p.lexpos(-1), e)
+
 
         symbol_table[current_func]['vars'][current_var] = {
             'type': current_type, 'address': current_dir,
@@ -505,7 +509,7 @@ def p_r_save_param_func(p):
 
 def p_r_save_vars(p):
     'r_save_vars : '
-    e = pupulate_func("numvar", current_func) #save the number of variables
+    e = populate_func("numvar", current_func) #save the number of variables
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
@@ -516,10 +520,45 @@ def p_r_func_set(p):
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_func_end(p):
-    'r_func_set : '
+    'r_func_end : '
     e = func_end(current_func) #End var table, create_quadruple ENDFunc
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_check_func(p):
+    'r_check_func : '
+    e = func_check(p[-1]) #Checa que exista la funcion en el symbol_table
+    global call_func
+    call_func = p[-1]
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_check_param(p):
+    'r_check_param : '
+    global call_func
+    e = check_param(call_func)
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_go_sub(p):
+    'r_go_sub : '
+    global call_func
+    e = go_sub(call_func)
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_goto_main(p):
+    'r_goto_main : '
+    e = goto_main(p[-1])
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_regresa(p):
+    'r_regresa : '
+    e = regresa()
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
 
 # Para controlar errores
 def handle_error(line, lexpos, mssg):

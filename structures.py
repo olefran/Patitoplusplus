@@ -24,10 +24,17 @@ quad_pointer = 0
 #                INT, FLOAT, CHAR , STRING
 func_var_count = [0,    0,      0,      0]
 
+#Stores parameters order in function ddeclaration
+func_param_order = []
+
+#Stores the paramenter counter
+func_param_counter = 0
+
 # Variables Auxiliares para currents
 current_type = None
 current_func = 'global' # Scope
 current_var = ''
+call_func = 'global'
 
 # Directorio de funciones y sus variables
 symbol_table = {

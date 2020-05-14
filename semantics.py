@@ -193,7 +193,7 @@ def solve_op_or_cont(ops: [Operations], mark_assigned):
       else:
           temp, e = get_temp_dir(result_type)
           create_quadruple(operator, left_operand, right_operand, temp)
-      operand_stack.append( (result_type, temp) )
+      operand_stack.append( (result_type, temp) ) #Se quedan los results en el stack
     elif operator == ')':
         operator_stack.pop()
         print(top(operator))
@@ -267,6 +267,10 @@ def set_while():
     jump_stack.append(quad_pointer)
     return None
 
+# Creates quadruple for main
+def goto_main(function):
+    create_quadruple('GOTO', function, None, None)
+
 #set quad_pointer
 def gen_for():
     global jump_stack
@@ -283,15 +287,17 @@ def gen_for():
     return e
 
 def populate_func(type_op, current_func):
-    global symbol_table, var_dir_count
+    global symbol_table, func_var_count, func_param_order
     e = None
     if symbol_table[current_func].get(type_op) is not None:
         e = "Trying to define a new param/var number for function: " + current_func
+
     if type_op == "numparam":
-        symbol_table[current_func][type_op] = func_var_count
-    if type_op == "numvar":
-        symbol_table[current_func][type_op] = func_var_count
-    var_dir_count = [0, 0, 0, 0]
+        symbol_table[current_func]['param'] = func_param_order # Save parameter order
+
+    symbol_table[current_func][type_op] = func_var_count
+    func_var_count = [0, 0, 0, 0]
+    func_param_order = []
     return e
 
 def func_set(current_func):
@@ -312,9 +318,10 @@ def func_end(current_func):
         e = "Not able to delete var table on function: " + current_func
     create_quadruple("ENDFunc", None, None, None)
     return e
+    pass
 
-def get_func_count(current_type):
-    global func_var_count, current_var
+def get_func_count(current_type, current_var):
+    global func_var_count, func_param_order
     switcher = {
     "int": 0,
     "float": 1,
@@ -326,3 +333,40 @@ def get_func_count(current_type):
     if result < 0:
         e = "Invalid type on counter addition on: " + current_var
     func_var_count[result] = func_var_count[result] + 1
+    func_param_order.append(current_type)
+    return e
+
+def func_check(current_func):
+    global symbol_table, func_param_counter
+    e = None
+    size = []
+    func_param_counter = 0
+    if symbol_table.get(current_func) is None:
+        e = "Function not found: " + current_func
+    else:
+        for element in range(len(symbol_table[current_func]['numvar'])):
+            size.append(symbol_table[current_func]['numvar'][element] + symbol_table[current_func]['numparam'][element])
+        create_quadruple("ERA", current_func, None, None)
+    return e
+
+def check_param(current_func):
+    global func_param_counter
+    e = None
+    argumentType, value = operand_stack.pop()
+    paramsize = len(symbol_table[current_func]['param'])
+    tempParam = func_param_counter + 1
+
+    try:
+        if argumentType == symbol_table[current_func]['param'][func_param_counter] and func_param_counter < paramsize:
+            create_quadruple("parameter", value, None, tempParam)
+            func_param_counter = func_param_counter + 1
+    except:
+        e = "Too many parameters on: " + current_func
+    return e
+
+def go_sub(current_func):
+    create_quadruple("GOSUB", current_func, None, symbol_table[current_func]['pos'])
+
+def regresa():
+    Type, value = operand_stack.pop()
+    create_quadruple("regresa", None, None, value)
