@@ -269,7 +269,9 @@ def set_while():
 
 # Creates quadruple for main
 def goto_main(function):
-    create_quadruple('GOTO', function, None, None)
+    global jump_stack
+    create_quadruple('GOTO', None, None, None)
+    jump_stack.append(quad_pointer - 1)
 
 #set quad_pointer
 def gen_for():
@@ -367,6 +369,11 @@ def check_param(current_func):
 def go_sub(current_func):
     create_quadruple("GOSUB", current_func, None, symbol_table[current_func]['pos'])
 
-def regresa():
+def default_function(func):
     Type, value = operand_stack.pop()
-    create_quadruple("regresa", None, None, value)
+    create_quadruple(func, None, None, value)
+
+#Save principal addres on "goto main" jump
+def end_princ():
+    global jump_stack, quadruples
+    quadruples[jump_stack.pop()][3] = quad_pointer

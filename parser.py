@@ -19,12 +19,12 @@ def p_empty(p):
 
 # PROGRAMA → programa id ;  VARS FUNCTIONS MAIN
 def p_PROGRAM(p):
-    'PROGRAM : PROGRAMA r_goto_main ID DOTCOMA VARS FUNCTIONS MAIN'
+    'PROGRAM : PROGRAMA r_goto_main ID DOTCOMA VARS r_save_vars  FUNCTIONS MAIN'
     pass
 
 # MAIN → principal ( )  VARS BLOQUE
 def p_MAIN(p):
-    'MAIN : PRINCIPAL r_save_func LPAREN RPAREN r_register_princ r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end'
+    'MAIN : PRINCIPAL r_save_func LPAREN RPAREN r_register_princ r_save_param_func VARS r_save_vars r_end_princ r_func_set BLOQUE r_func_end '
     pass
 
 # VARS → var VARPRE | empty
@@ -271,7 +271,7 @@ def p_FOR2(p):
 
 # WRITE → escribe ( WRITE_AUX )
 def p_WRITE(p):
-    'WRITE : ESCRIBE LPAREN WRITE_AUX RPAREN'
+    'WRITE : ESCRIBE LPAREN WRITE_AUX RPAREN r_escribe'
     pass
 
 # WRITE_AUX → EXPRESION WRITE_AUXSUB
@@ -287,7 +287,7 @@ def p_WRITE_AUXSUB(p):
 
 # READ → lee ( READ_AUX )
 def p_READ(p):
-    'READ : LEE LPAREN READ_AUX RPAREN'
+    'READ : LEE LPAREN READ_AUX RPAREN r_lee'
     pass
 
 # READ_AUX → id ARRDIM READ_AUXSUB
@@ -398,6 +398,13 @@ def p_r_register_princ(p):
     symbol_table[current_func] = {
         'vars': {}
     }
+
+# Registra la direción para el salto inicial de programa "goto main"
+def p_r_end_princ(p):
+    'r_end_princ : '
+    e = end_princ()
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 # Funciones para guardar Operandos y Operadores para hacer Cuádruplos y Operaciones
 def p_r_seen_operand(p):
@@ -535,7 +542,7 @@ def p_r_check_func(p):
 
 def p_r_check_param(p):
     'r_check_param : '
-    global call_func
+    global call_func, current_func
     e = check_param(call_func)
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
@@ -555,7 +562,19 @@ def p_r_goto_main(p):
 
 def p_r_regresa(p):
     'r_regresa : '
-    e = regresa()
+    e = default_function("regresa")
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_escribe(p):
+    'r_escribe : '
+    e = default_function("escribe")
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_lee(p):
+    'r_lee : '
+    e = default_function("lee")
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
