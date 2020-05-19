@@ -373,6 +373,14 @@ def default_function(func):
     Type, value = operand_stack.pop()
     create_quadruple(func, None, None, value)
 
+def print_constants():
+    global symbol_table, const_table, quadruples
+    text_file = open("Output.txt", "w")
+    text_file.write(str(symbol_table))
+    text_file.write(str(const_table))
+    text_file.write(str(quadruples))
+    text_file.close()
+
 #Save principal addres on "goto main" jump
 def end_princ():
     global jump_stack, quadruples

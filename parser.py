@@ -19,7 +19,7 @@ def p_empty(p):
 
 # PROGRAMA → programa id ;  VARS FUNCTIONS MAIN
 def p_PROGRAM(p):
-    'PROGRAM : PROGRAMA r_goto_main ID DOTCOMA VARS r_save_vars  FUNCTIONS MAIN'
+    'PROGRAM : PROGRAMA r_goto_main ID DOTCOMA VARS r_save_vars  FUNCTIONS MAIN r_print_constants'
     pass
 
 # MAIN → principal ( )  VARS BLOQUE
@@ -577,6 +577,17 @@ def p_r_lee(p):
     e = default_function("lee")
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_print_constants(p):
+    'r_print_constants : '
+    e = print_constants()
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+
+
+
+
 
 
 # Para controlar errores
