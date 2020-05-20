@@ -104,12 +104,12 @@ def register_operand_id(raw_operand, current_func):
         if symbol_table['global']['vars'].get(raw_operand) is None:
             e = "Variable not defined: " + raw_operand
         else:
-            #operand = (symbol_table['global']['vars'][raw_operand]['type'], symbol_table['global']['vars'][raw_operand])
-            operand = (symbol_table['global']['vars'][raw_operand]['type'], raw_operand)
+            operand = (symbol_table['global']['vars'][raw_operand]['type'], symbol_table['global']['vars'][raw_operand]['address']) #Return id by address
+            #operand = (symbol_table['global']['vars'][raw_operand]['type'], raw_operand) # Return id by name
             operand_stack.append(operand)
     else:
-        #operand = (symbol_table[current_func]['vars'][raw_operand]['type'], symbol_table[current_func]['vars'][raw_operand])
-        operand = (symbol_table[current_func]['vars'][raw_operand]['type'], raw_operand)
+        operand = (symbol_table[current_func]['vars'][raw_operand]['type'], symbol_table[current_func]['vars'][raw_operand]['address']) #Return id by address
+        #operand = (symbol_table[current_func]['vars'][raw_operand]['type'], raw_operand) #Return id by name
         operand_stack.append(operand)
     return e
 
@@ -139,7 +139,8 @@ def create_operand(raw_operand):
         }
     else:
         address = const_table[raw_operand]['address']
-    return e, (type_op, raw_operand)
+    #return e, (type_op, raw_operand)  #Return constant by name
+    return e, (type_op, address) # Return constant by address
 
 #Register a operator (raw_symbol) on the operator_stack
 def register_operator(raw_operator):
@@ -312,10 +313,12 @@ def func_set(current_func):
     return e
 
 def func_end(current_func):
-    global symbol_table
+    global symbol_table, temp_dir_count, var_dir_count
     e = None
     try:
-        symbol_table[current_func]['vars'] = None    #DELETE THE VAR TABLE
+        #symbol_table[current_func]['vars'] = None    #DELETE THE VAR TABLE
+        temp_dir_count = list(TEMP_LOWER_LIMIT) #RESET the temp counter
+        var_dir_count = list(VAR_LOWER_LIMIT) #RESET the temp countre
     except:
         e = "Not able to delete var table on function: " + current_func
     create_quadruple("ENDFunc", None, None, None)
@@ -360,7 +363,7 @@ def check_param(current_func):
 
     try:
         if argumentType == symbol_table[current_func]['param'][func_param_counter] and func_param_counter < paramsize:
-            create_quadruple("parameter", value, None, tempParam)
+            create_quadruple("PARAM", value, None, tempParam)
             func_param_counter = func_param_counter + 1
     except:
         e = "Too many parameters on: " + current_func
@@ -373,15 +376,18 @@ def default_function(func):
     Type, value = operand_stack.pop()
     create_quadruple(func, None, None, value)
 
+# Save elements for virtual machine on Ouput.txt
 def print_constants():
     global symbol_table, const_table, quadruples
     text_file = open("Output.txt", "w")
-    text_file.write(str(symbol_table))
-    text_file.write(str(const_table))
-    text_file.write(str(quadruples))
+    text_file.write('{\n')
+    text_file.write('\'symbol_table\': ' + str(symbol_table) + ',\n')
+    text_file.write('\'const_table\': ' + str(const_table) + ',\n')
+    text_file.write('\'quadruples\': ' + str(quadruples) + '\n')
+    text_file.write('}')
     text_file.close()
 
-#Save principal addres on "goto main" jump
+#Save principal address on "goto main" jump
 def end_princ():
     global jump_stack, quadruples
     quadruples[jump_stack.pop()][3] = quad_pointer

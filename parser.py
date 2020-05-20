@@ -562,19 +562,19 @@ def p_r_goto_main(p):
 
 def p_r_regresa(p):
     'r_regresa : '
-    e = default_function("regresa")
+    e = default_function("REGRESA")
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_escribe(p):
     'r_escribe : '
-    e = default_function("escribe")
+    e = default_function("ESCRIBE")
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_lee(p):
     'r_lee : '
-    e = default_function("lee")
+    e = default_function("LEE")
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 

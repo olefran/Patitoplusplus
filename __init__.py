@@ -44,13 +44,13 @@ def main():
     # print("Operand Stack: ", operand_stack) #Error none
     print("Symbol Table: ")
     pprint.pprint(symbol_table)
-    # print("Const Table: ")
-    # pprint.pprint(const_table)
+    print("Const Table: ")
+    pprint.pprint(const_table)
     print("Cuadruples: ")
     i = 0
     for element in quadruples:
-        print( i,": ", element)
-        i = i + 1
+       print( i,": ", element)
+       i = i + 1
     return 0
 
 # Correr el main
