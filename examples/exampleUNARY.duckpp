@@ -1,0 +1,14 @@
+%% Example for Patitoplusplus
+programa patito;
+
+
+principal()
+var int k;
+{
+	k = -k;
+	k = +60;
+	si (!k) entonces
+		{
+			k = k;
+		}
+}

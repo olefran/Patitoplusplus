@@ -2,7 +2,7 @@
 # Ceasar Buenfil A0120
 # Oscar Lerma A01380817
 
-from .. import structures
+from structures import Operations
 
 with open("Output.txt",'r', newline = '\n') as file:
     input = eval(file.read())
@@ -14,9 +14,21 @@ quadruples = input['quadruples']
 
 #Super switch for quad execution
 def execute_quad(quadruple):
-    return None
+    result = Operations.get(quadruple[0], -1)
+    #Error
+    if result == -1:
+        e = "Cuadruple instruction not found " + quadruple[0]
+    # PLUS_UNARY
+    if result == 1:
+        pass # TODO Implement unary plus and minus operation
+    if result == 2:
+        pass #COULD this be implemented as lambda functions?
 
-for quadruple in quadruples:
-    e = execute_quad(quadruple)
-    if e:
-        print("Error:", quadruple,e)
+
+    pass
+
+def run():
+    for quadruple in quadruples:
+        e = execute_quad(quadruple)
+        if e:
+            print("Error:", quadruple,e)
