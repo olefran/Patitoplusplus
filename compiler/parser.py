@@ -179,9 +179,9 @@ def p_TERMINO_AUX(p):
 
 # FACTOR → ! FACTOR_AUX | FACTOR_AUX
 def p_FACTOR(p):
-    '''FACTOR : NOT r_seen_operator FACTOR_AUX
+    '''FACTOR : NOT r_seen_unary_operator FACTOR_AUX
     | FACTOR_AUX'''
-    e = solve_unary_or_cont(['PLUS_UNARY', 'MINUS_UNARY', '!'])
+    e = solve_unary_or_cont(["MINUS_UNARY", "PLUS_UNARY", "!"])
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
@@ -189,7 +189,7 @@ def p_FACTOR(p):
 def p_FACTOR_AUX(p):
     '''FACTOR_AUX : SIGN LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom
     | SIGN CTE ARROP'''
-    e = solve_unary_or_cont(['+', '-', '!'])
+    e = solve_unary_or_cont(["MINUS_UNARY", "PLUS_UNARY", "!"])
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
@@ -372,10 +372,18 @@ def p_r_register_func(p):
     'r_register_func : '
     global symbol_table
     if symbol_table.get(current_func) is None:
+        e = None
+        current_dir = None
         symbol_table[current_func] = {
             'type': current_type,
             'vars': {}
             }
+        if current_type != "void": #Discriminate void for saving functions on globar var table
+            current_dir, e = get_global_dir(current_type)
+            symbol_table['global']['vars'][current_func] = {
+                'type' : current_type,
+                'address' : current_dir
+                }
     else:
         handle_error(p.lineno(-1), p.lexpos(-1), "multiple function name declaration: " + current_func)
 
@@ -438,6 +446,20 @@ def p_r_seen_operator(p):
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
+def p_r_seen_unary_operator(p):
+    'r_seen_unary_operator : '
+    raw_operator = p[-1]
+    if raw_operator == '+':
+        operator = "PLUS_UNARY"
+    elif raw_operator == '-':
+        operator = "MINUS_UNARY"
+    else:
+        operator = "!"
+    e = register_operator(operator)
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+
 def p_r_seen_equal(p):
     'r_seen_equal : '
     e = solve_op_or_cont(['='], mark_assigned=True)
@@ -467,11 +489,6 @@ def p_r_seen_factor(p):
     e = solve_op_or_cont(['*', '/', '%'], mark_assigned=False)
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
-
-def p_r_seen_unary_operator(p):
-    'r_seen_unary_operator : '
-    e = register_operator(p[-1])
-    pass
 
 def p_r_seen_operator_mat(p):
     'r_seen_operator_mat : '
@@ -600,12 +617,6 @@ def p_r_print_constants(p):
     e = print_constants()
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
-
-
-
-
-
-
 
 # Para controlar errores
 def handle_error(line, lexpos, mssg):

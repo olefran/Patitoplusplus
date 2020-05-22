@@ -209,12 +209,12 @@ def solve_unary_or_cont(ops: [Operations]):
     global operator_stack, operand_stack
     e = None
     operator = top(operator_stack)
-    if operator in ops:
+    if operator in ops :
         operand_type, operand_name = operand_stack.pop()
         operator = operator_stack.pop()
-        if operator == '+':
+        if operator == 'PLUS_UNARY':
             operator = 'unary+'
-        elif operator == '-':
+        elif operator == 'MINUS_UNARY':
             operator = 'unary-'
         result_type = semantic_cube[operand_type][operator]
         if not result_type:
@@ -222,7 +222,8 @@ def solve_unary_or_cont(ops: [Operations]):
         temp, e = get_temp_dir(result_type)
         create_quadruple(operator, operand_name, None, temp)
         operand_stack.append((result_type, temp))
-    pass
+
+    return e
 
 
 
@@ -383,6 +384,10 @@ def check_param(current_func):
 
 def go_sub(current_func):
     create_quadruple("GOSUB", current_func, None, symbol_table[current_func]['pos'])
+    if symbol_table['global']['vars'].get(current_func) is not None:
+        temp, e = get_temp_dir(symbol_table['global']['vars'][current_func]['type'])
+        operand_stack.append( (symbol_table['global']['vars'][current_func]['type'], temp) )
+        create_quadruple('=', symbol_table['global']['vars'][current_func]['address'], None, temp)
 
 def default_function(func):
     Type, value = operand_stack.pop()
