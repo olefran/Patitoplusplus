@@ -2,26 +2,8 @@
 # Cesar Buenfil Vazquez A01207499
 # Operaciones para virtualMachine
 # Created 04/25/2020
-
-temp_memory = [
-
-{'main' : {} }
-
-] # Can temp memory be used as a execution_stack?
-
-global_memory = {}
-
-execution_stack = []
-
-const_table = None
-
-symbol_table = None
-
-quadruples = None
-
-quad_size = 0
-
-quad_pointer = 0
+from structures import *
+import ast
 
 def top(l):
   if len(l) > 0:
@@ -38,33 +20,37 @@ def get_bool_int(input):
         return 1
 
 def get_value(dir):
-    if dst > 4999 and dst < 12500:
+    if dir > 4999 and dir < 12500:
         if global_memory.get(dir) is None:
-            print("Undefined dir: " + dir)
+            print("Undefined dir: ", dir)
             return None
         else:
             return global_memory[dir]['value']
+    elif dir > 18999 and dir < 25000:
+        if const_table.get(dir) is None:
+            print("Undefined dir: ", dir)
+            return None
+        else:
+            return const_table[dir]['value']
     else:
         if top(temp_memory).get(dir) is None:
-            print("Undefined dir: " + dir)
+            print("Undefined dir: ", dir)
         else:
             return top(temp_memory)[dir]['value']
 
-def set_value(value, dst):
+def set_value(value, dir):
+    global temp_memory, global_memory
     e = True
-    try:
-        if dst > 4999 and dst < 12500:
-            global_memory[dst]['value'] = value
-        else:
-            top(temp_memory)[dst]['value'] = value
-    except:
-        e = "Error on writing value " + dir
-    return e
+    print(global_memory)
+    if dir > 4999 and dir < 12500:
+        global_memory[dir]['value'] = value
+    else:
+        temp_memory[dir]['value'] = value
 
 def goto_solve(first, second, dst):
     global quad_pointer
     quad_pointer = dst
-    return False
+    return dst
 
 def plus_unary_solve(first, second, dst):
     return set_value(+get_value(first),dst)
@@ -88,6 +74,7 @@ def mod_solve(first, second, dst):
     return set_value( get_value(first) % get_value(second), dst)
 
 def plus_solve(first, second, dst):
+    print(get_value(first))
     return set_value( get_value(first) + get_value(second), dst)
 
 def minus_solve(first, second, dst):
@@ -155,7 +142,9 @@ def return_solve(first, second, dst):
     return
 
 def endfunc_solve(first, second, dst):
-    return
+    global temp_memory
+    temp_memory.pop()
+    return True
 
 def end_solve(first, second, dst):
     return

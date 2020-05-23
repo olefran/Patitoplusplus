@@ -4,6 +4,7 @@
 # Created 04/06/2020
 from enum import Enum, IntEnum, auto
 from collections import defaultdict
+import ast
 
 #Stack de Operaciones
 operator_stack = []
