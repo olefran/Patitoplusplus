@@ -1,2 +1,2 @@
 from .structures import *
-from .virtualMachine import run
+from .virtualMachine import main

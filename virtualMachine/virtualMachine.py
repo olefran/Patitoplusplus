@@ -3,9 +3,9 @@
 # Oscar Lerma A01380817
 
 import pprint
-from solvers import *
+from operations import *
 
-Operations = {
+operations = {
     "+unary" : plus_unary_solve,
     "-unary" : minus_unary_solve,
     "!" : not_unary_solve,
@@ -34,50 +34,44 @@ Operations = {
     "END" : end_solve,
     "FAKE_BOTTOM" : fake_bottom_solve,
     "VER" : verify_solve
- } #TODO: Implement solvers, AND implement matrix based operations
+ } #TODO: Implement functions, AND implement matrix based operations
 
-with open("virtualMachine/Output.txt",'r', newline = '\n') as file:
-    input = eval(file.read())
+# print("Symbol Table: ")
+# pprint.pprint(symbol_table)
+# print("Const Table: ")
+# pprint.pprint(const_table)
+# pprint.pprint(quadruples)
+# i = 0
+# for element in quadruples:
+#    print( i,": ", element)
+#    i = i + 1
 
-# Save elements, nice and easy
-const_table = input['const_table']
-symbol_table = input['symbol_table']
-quadruples = input['quadruples']
-print("Symbol Table: ")
-pprint.pprint(symbol_table)
-print("Const Table: ")
-pprint.pprint(const_table)
-print("Cuadruples: ")
-i = 0
-for element in quadruples:
-   print( i,": ", element)
-   i = i + 1
 
-#Super switch for quad execution
-def execute_quad(quadruple):
-    result = Operations.get(quadruple[0], -1)
-    #Error
-    if result == -1:
-        e = "Cuadruple instruction not found " + quadruple[0]
-    # PLUS_UNARY
-    if result == 1:
-        pass # TODO Implement unary plus and minus operation
-    if result == 2:
-        pass #COULD this be implemented as lambda functions?
-    pass
-
-def run(input):
+def main():
   '''Grab the object code file and run it.'''
+  global const_table, symbol_table, quadruples, quad_size, quad_pointer
+  with open("virtualMachine/Output.txt",'r', newline = '\n') as file:
+      input = eval(file.read())
 
+  const_table = input['const_table']
+  symbol_table = input['symbol_table']
   quadruples = input['quadruples']
-  set_input(input)
+  quad_size = len(quadruples)
 
-  cont = 100
-  while not should_end():
-    quadruple = quadruples[get_q()]
-    print(get_q(), '-', operations[quadruple[0]].__name__, quadruple)
-    e = operations[quadruple[0]](quadruple[1], quadruple[2], quadruple[3])
-    if e:
-      print(e)
-      break
-    cont -= 1
+  pprint.pprint(const_table)
+
+  #Execute the quadruples one by one
+  while quad_pointer < quad_size:
+    e = operations[quadruple[quad_pointer][0]](quadruple[quad_pointer][1], quadruple[quad_pointer][2], quadruple[quad_pointer][3])
+
+    if e == True:
+      quad_pointer = quad_pointer + 1
+    elif e == False:
+        pass #DO NOT ADD TO QUAD POINTER
+    elif e:
+        print("Error on quad:" + quad_pointer + ": " + e)
+        break
+
+# Correr el main
+if __name__ == "__main__":
+    main()
