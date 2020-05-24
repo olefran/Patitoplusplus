@@ -1,11 +1,16 @@
 %% Example for Patitoplusplus
 programa patito;
+var
+int i,j,k;
 
 principal()
 var
-int j, i, p;
+int j, p;
 {
+	p = 0;
 	i = 2 + 3;
 	j = i + 1;
-	p = 4;
+	i = 2*3 + 4;
+	i = j + (p - j*2*j);
+	j = 5;
 }

@@ -2,16 +2,15 @@
 # Cesar Buenfil Vazquez A01207499
 # Operaciones para virtualMachine
 # Created 04/25/2020\
-from enum import Enum, IntEnum, auto
-from collections import defaultdict
-import ast
 import pprint
 
-temp_memory = {} # Can temp memory be used as a execution_stack?
+temp_memory = [{}] # Can temp memory be used as a execution_stack?
 
 global_memory = {}
 
-execution_stack = []
+execution_stack = ['main']
+
+jump_stack = [] #Used for jumps in era
 
 const_table = None
 

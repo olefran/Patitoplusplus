@@ -36,20 +36,21 @@ operations = {
     "VER" : verify_solve
  } #TODO: Implement functions, AND implement matrix based operations
 
+
 def main():
   '''Grab the object code file and run it.'''
-  global quad_pointer, quad_size, quadruples
-
-  print_structs()
-
+  global quad_size, quadruples
   #Execute the quadruples one by one
+  quad_pointer = 0
   while quad_pointer < quad_size:
       e = operations[quadruples[quad_pointer][0]](quadruples[quad_pointer][1], quadruples[quad_pointer][2], quadruples[quad_pointer][3])
       if e == True:
-          quad_pointer = quad_pointer + 1
+          set_pointer(quad_pointer+1)
       elif e is not None and e is not False:
           print("Error on quad:", quad_pointer, ": ", e)
           break
+      quad_pointer = get_pointer()
+  print_structs()
 
 # Correr el main
 if __name__ == "__main__":

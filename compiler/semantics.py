@@ -364,7 +364,7 @@ def func_check(current_func):
     else:
         for element in range(len(symbol_table[current_func]['numvar'])):
             size.append(symbol_table[current_func]['numvar'][element] + symbol_table[current_func]['numparam'][element])
-        create_quadruple("ERA", current_func, None, None)
+        create_quadruple("ERA", current_func, None, size)
     return e
 
 def check_param(current_func):

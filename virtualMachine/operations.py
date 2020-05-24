@@ -3,12 +3,19 @@
 # Operaciones para virtualMachine
 # Created 04/25/2020
 from structures import *
-import ast
 
 def top(l):
   if len(l) > 0:
     return l[-1]
   return None
+
+def get_pointer():
+    global quad_pointer
+    return quad_pointer
+
+def set_pointer(value):
+    global quad_pointer
+    quad_pointer = value
 
 def check_true(input):
     return not input == 0
@@ -22,35 +29,36 @@ def get_bool_int(input):
 def get_value(dir):
     if dir > 4999 and dir < 12500:
         if global_memory.get(dir) is None:
-            print("Undefined dir: ", dir)
-            return None
+            raise Exception("Undefined dir: " + str(dir) )
         else:
-            return global_memory[dir]['value']
+            return global_memory[dir]
     elif dir > 18999 and dir < 25000:
         if const_table.get(dir) is None:
-            print("Undefined dir: ", dir)
-            return None
+            raise Exception("Undefined dir: " + str(dir) )
         else:
             return const_table[dir]['value']
     else:
         if top(temp_memory).get(dir) is None:
-            print("Undefined dir: ", dir)
+            raise Exception("Undefined dir: " + str(dir) )
         else:
-            return top(temp_memory)[dir]['value']
+            return top(temp_memory)[dir]
 
 def set_value(value, dir):
     global temp_memory, global_memory
     e = True
-    print(global_memory)
-    if dir > 4999 and dir < 12500:
-        global_memory[dir]['value'] = value
-    else:
-        temp_memory[dir]['value'] = value
+    try:
+        if dir > 4999 and dir < 12500:
+            global_memory[dir] = value
+        else:
+            top(temp_memory)[dir] = value
+    except:
+        e = "Error on assingning value " + value + " to dir " + dir
+    return e
 
 def goto_solve(first, second, dst):
     global quad_pointer
     quad_pointer = dst
-    return dst
+    return False
 
 def plus_unary_solve(first, second, dst):
     return set_value(+get_value(first),dst)
@@ -74,7 +82,6 @@ def mod_solve(first, second, dst):
     return set_value( get_value(first) % get_value(second), dst)
 
 def plus_solve(first, second, dst):
-    print(get_value(first))
     return set_value( get_value(first) + get_value(second), dst)
 
 def minus_solve(first, second, dst):
@@ -114,7 +121,7 @@ def lee_solve(first, second, dst):
     return set_value(temp, dst)
 
 def escribe_solve(first, second, dst):
-    print(dst)
+    print(get_value(dst))
     return True
 
 def gotof_solve(first, second, dst):
@@ -125,10 +132,9 @@ def gotof_solve(first, second, dst):
         quad_pointer = dst
         return False
 
-
 def gosub_solve(first, second, dst):
-    global quad_pointer, temp_memory
-    temp_memory.append({ first: {} })
+    global quad_pointer, jump_stack
+    jump_stack.append(quad_pointer + 1) #Set for return of exectuion
     quad_pointer = dst
     return False
 
@@ -136,14 +142,21 @@ def param_solve(first, second, dst):
     return
 
 def era_solve(first, second, dst):
+    global temp_memory, execution_stack
+    temp_memory.append({}) # Not naming these could get confusing for debugging (memory context for functions)
+    execution_stack.append(first)
     return
 
 def return_solve(first, second, dst):
     return
 
 def endfunc_solve(first, second, dst):
-    global temp_memory
-    temp_memory.pop()
+    global temp_memory, jump_stack
+    #temp_memory.pop() #destroy context
+    if top(jump_stack):
+        quad_pointer = jump_stack.pop() #Return to previuos pointer
+        execution_stack.pop() #Return context to previous function
+        return False
     return True
 
 def end_solve(first, second, dst):
