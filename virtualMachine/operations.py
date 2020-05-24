@@ -43,6 +43,25 @@ def get_value(dir):
         else:
             return top(temp_memory)[dir]
 
+def get_last_context_value(dir):
+    if dir > 4999 and dir < 12500:
+        if global_memory.get(dir) is None:
+            raise Exception("Undefined dir: " + str(dir) )
+        else:
+            return global_memory[dir]
+    elif dir > 18999 and dir < 25000:
+        if const_table.get(dir) is None:
+            raise Exception("Undefined dir: " + str(dir) )
+        else:
+            return const_table[dir]['value']
+    else:
+        print("holi")
+        if temp_memory[-2].get(dir) is None:
+            raise Exception("Undefined dir: " + str(dir) )
+        else:
+            return temp_memory[-2][dir]
+
+
 def set_value(value, dir):
     global temp_memory, global_memory
     e = True
@@ -66,7 +85,7 @@ def plus_unary_solve(first, second, dst):
 def minus_unary_solve(first, second, dst):
     return set_value(-get_value(first), dst)
 
-def not_unary_solve(fist, second, dst):
+def not_unary_solve(first, second, dst):
     temp = None
     if check_true( get_value(first) ):
         temp = 0
@@ -77,6 +96,9 @@ def not_unary_solve(fist, second, dst):
 
 def times_solve(first, second, dst):
     return set_value( get_value(first) * get_value(second), dst)
+
+def divide_solve(first, second, dst):
+    return set_value( get_value(first) / get_value(second), dst)
 
 def mod_solve(first, second, dst):
     return set_value( get_value(first) % get_value(second), dst)
@@ -117,8 +139,8 @@ def equal_solve(first, second, dst):
     return set_value(get_value(first), dst)
 
 def lee_solve(first, second, dst):
-    temp = input() #NEED TO CHECK TYPE!!!!!
-    return set_value(temp, dst)
+    #NEED TO CHECK TYPE!!!!!
+    return set_value(input(), dst)
 
 def escribe_solve(first, second, dst):
     print(get_value(dst))
@@ -139,19 +161,27 @@ def gosub_solve(first, second, dst):
     return False
 
 def param_solve(first, second, dst):
-    return
+    global temp_memory
+    e = True
+    #print("HI",get_last_context_value(first))
+    #print(temp_memory[-2])
+    try:
+        top(temp_memory)[first] = get_last_context_value(first) #Search for the last context and copy it ot the new one
+    except:
+        e = "Error alocating param : " + str(first)
+    return e
 
 def era_solve(first, second, dst):
     global temp_memory, execution_stack
-    temp_memory.append({}) # Not naming these could get confusing for debugging (memory context for functions)
+    temp_memory.append({}) # Not naming these could get confusing for debugging (memory context for functions in execution stack)
     execution_stack.append(first)
-    return
+    return True
 
 def return_solve(first, second, dst):
     return
 
 def endfunc_solve(first, second, dst):
-    global temp_memory, jump_stack
+    global temp_memory, jump_stack, quad_pointer
     #temp_memory.pop() #destroy context
     if top(jump_stack):
         quad_pointer = jump_stack.pop() #Return to previuos pointer
@@ -160,9 +190,6 @@ def endfunc_solve(first, second, dst):
     return True
 
 def end_solve(first, second, dst):
-    return
-
-def fake_bottom_solve(first, second, dst):
     return
 
 def verify_solve(first, second, dst):

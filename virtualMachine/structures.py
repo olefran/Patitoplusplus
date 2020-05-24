@@ -23,15 +23,14 @@ quad_size = 0
 quad_pointer = 0
 
 with open("virtualMachine/Output.txt",'r', newline = '\n') as file:
-    input = eval(file.read())
+    text_file = eval(file.read())
 
-const_table = input['const_table']
-symbol_table = input['symbol_table']
-quadruples = input['quadruples']
+const_table = text_file['const_table']
+symbol_table = text_file['symbol_table']
+quadruples = text_file['quadruples']
 quad_size = len(quadruples)
 
 def print_structs():
-    print(quad_size)
     print("Temp Memory: ")
     pprint.pprint(temp_memory)
     print("Global Memory: ")

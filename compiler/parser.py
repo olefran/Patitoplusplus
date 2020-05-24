@@ -76,7 +76,8 @@ def p_FUNCTION(p):
 # PARAM → TIPO id PARENTESIS PARAMSUB
 # Sólo acepta ids ya declaradas, no acepta constantes
 def p_PARAM(p):
-    '''PARAM : TIPO ID r_register_var PARENTESIS PARAM_AUX'''
+    '''PARAM : TIPO ID r_register_var PARENTESIS PARAM_AUX
+    | empty'''
     pass
 
 # PARAM_AUX → , PARAM  | empty
@@ -305,7 +306,7 @@ def p_READ(p):
 
 # READ_AUX → id ARRDIM READ_AUXSUB
 def p_READ_AUX(p):
-    'READ_AUX : ID ARRDIM READ_AUXSUB'
+    'READ_AUX : ID r_seen_operand_id ARRDIM READ_AUXSUB'
     pass
 
 # READ_AUXSUB →, READ_AUX | empty

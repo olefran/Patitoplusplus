@@ -6,10 +6,11 @@ import pprint
 from operations import *
 
 operations = {
-    "+unary" : plus_unary_solve,
-    "-unary" : minus_unary_solve,
+    "unary+" : plus_unary_solve,
+    "unary-" : minus_unary_solve,
     "!" : not_unary_solve,
     "*" : times_solve,
+    "/" : divide_solve,
     "%" : mod_solve,
     "+" : plus_solve,
     "-" : minus_solve,
@@ -22,8 +23,8 @@ operations = {
     "||" : or_solve,
     "&&" : and_solve,
     "=" : equal_solve,
-    "LEE" : lee_solve,
-    "ESCRIBE" : escribe_solve,
+    "LEE" : lee_solve, #Lee varias
+    "ESCRIBE" : escribe_solve, #Escribe varias
     "GOTO" : goto_solve,
     "GOTOF" : gotof_solve,
     "GOSUB" : gosub_solve,
@@ -32,7 +33,6 @@ operations = {
     "RETURN" : return_solve,
     "ENDFunc" : endfunc_solve,
     "END" : end_solve,
-    "FAKE_BOTTOM" : fake_bottom_solve,
     "VER" : verify_solve
  } #TODO: Implement functions, AND implement matrix based operations
 
