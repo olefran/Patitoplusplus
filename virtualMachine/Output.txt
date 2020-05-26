@@ -1,0 +1,5 @@
+{
+'symbol_table': {'global': {'vars': {'i': {'type': 'int', 'address': 5000}, 'j': {'type': 'int', 'address': 5001}, 'k': {'type': 'int', 'address': 5002}}, 'numvar': [3, 0, 0, 0]}, 'fact': {'type': 'void', 'vars': {'t': {'type': 'int', 'address': 13000}, 'h': {'type': 'int', 'address': 13001}}, 'param': ['int', 'int'], 'numparam': [2, 0, 0, 0], 'numvar': [0, 0, 0, 0], 'pos': 1}, 'principal': {'vars': {'p': {'type': 'int', 'address': 13000}, 'y': {'type': 'int', 'address': 13001}}, 'param': [], 'numparam': [0, 0, 0, 0], 'numvar': [2, 0, 0, 0], 'pos': 4}},
+'const_table': {19000: {'value': 5, 'type': 'int'}},
+'quadruples': [['GOTO', None, None, 4], ['=', 13000, None, 5000], ['=', 13001, None, 5000], ['ENDFunc', None, None, None], ['=', 19000, None, 13000], ['ERA', 'fact', None, [2, 0, 0, 0]], ['PARAM', 13000, None, 1], ['PARAM', 13001, None, 2], ['GOSUB', 'fact', None, 1], ['ENDFunc', None, None, None]]
+}

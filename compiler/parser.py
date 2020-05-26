@@ -19,12 +19,12 @@ def p_empty(p):
 
 # PROGRAMA → programa id ;  VARS FUNCTIONS MAIN
 def p_PROGRAM(p):
-    'PROGRAM : PROGRAMA ID DOTCOMA VARS FUNCTIONS MAIN'
+    'PROGRAM : PROGRAMA r_goto_main ID DOTCOMA VARS r_save_vars  FUNCTIONS MAIN r_print_constants'
     pass
 
 # MAIN → principal ( )  VARS BLOQUE
 def p_MAIN(p):
-    'MAIN : PRINCIPAL r_save_func LPAREN RPAREN r_register_princ VARS BLOQUE'
+    'MAIN : PRINCIPAL r_save_func LPAREN RPAREN r_register_princ r_save_param_func VARS r_save_vars r_end_princ r_func_set BLOQUE r_func_end '
     pass
 
 # VARS → var VARPRE | empty
@@ -69,14 +69,15 @@ def p_FUNCTIONS(p):
 
 # FUNCTION → funcion TIPO id ( PARAM )  VARS BLOQUE | funcion void id ( PARAM )  VARS BLOQUE
 def p_FUNCTION(p):
-    '''FUNCTION : FUNCION TIPO ID r_save_func r_register_func LPAREN PARAM RPAREN VARS BLOQUE
-    | FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN VARS BLOQUE'''
+    '''FUNCTION : FUNCION TIPO ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end
+    | FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end'''
     pass
 
 # PARAM → TIPO id PARENTESIS PARAMSUB
 # Sólo acepta ids ya declaradas, no acepta constantes
 def p_PARAM(p):
-    '''PARAM : TIPO ID r_register_var PARENTESIS PARAM_AUX'''
+    '''PARAM : TIPO ID r_register_var PARENTESIS PARAM_AUX
+    | empty'''
     pass
 
 # PARAM_AUX → , PARAM  | empty
@@ -177,15 +178,27 @@ def p_TERMINO_AUX(p):
     | empty'''
     pass
 
-# FACTOR → ( EXPRESION ) | + CTE | - CTE | NOT CTE | CTE ARROP | CTE
+# FACTOR → ! FACTOR_AUX | FACTOR_AUX
 def p_FACTOR(p):
-    '''FACTOR : LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom
-    | PLUS r_seen_unary_operator CTE
-    | MINUS r_seen_unary_operator CTE
-    | NOT r_seen_unary_operator CTE
-    | CTE ARROP
-    | CTE'''
-    pass
+    '''FACTOR : NOT r_seen_unary_operator FACTOR_AUX
+    | FACTOR_AUX'''
+    e = solve_unary_or_cont(["MINUS_UNARY", "PLUS_UNARY", "!"])
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+# FACTOR → ( EXPRESION ) | SIGN ( EXPRESION ) | SIGN CTE | CTE ARROP | CTE
+def p_FACTOR_AUX(p):
+    '''FACTOR_AUX : SIGN LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom
+    | SIGN CTE ARROP'''
+    e = solve_unary_or_cont(["MINUS_UNARY", "PLUS_UNARY", "!"])
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+# SIGN → + CTE | - CTE
+def p_SIGN(p):
+    '''SIGN : PLUS r_seen_unary_operator
+    | MINUS r_seen_unary_operator
+    | empty'''
 
 # CTE → cte_i | cte_f | ct_ch | cte_string | FUN | ID ARRDIM
 def p_CTE(p):
@@ -200,20 +213,21 @@ def p_CTE(p):
 # ARROP→ $ | ! | ?
 # TODO: Have an seen operator to use this kinds of matrix operations
 def p_ARROP(p):
-    '''ARROP : DET_ARR
-    | TRANS_ARR
-    | INV_ARR '''
+    '''ARROP : DET_ARR r_seen_operator_mat
+    | TRANS_ARR r_seen_operator_mat
+    | INV_ARR r_seen_operator_mat
+    | empty'''
     pass
 
 # FUN → id ( FUN_AUX )
 def p_FUN(p):
-    'FUN : ID LPAREN FUN_AUX RPAREN'
+    'FUN : ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub'
     pass
 
 # FUN_AUX → CTE , FUN_AUX | CTE
 def p_FUN_AUX(p):
-    '''FUN_AUX : EXPRESION COMA FUN_AUX
-    | EXPRESION
+    '''FUN_AUX : EXPRESION r_check_param COMA FUN_AUX
+    | EXPRESION r_check_param
     | empty'''
     pass
 
@@ -271,7 +285,7 @@ def p_FOR2(p):
 
 # WRITE → escribe ( WRITE_AUX )
 def p_WRITE(p):
-    'WRITE : ESCRIBE LPAREN WRITE_AUX RPAREN'
+    'WRITE : ESCRIBE LPAREN WRITE_AUX RPAREN r_escribe'
     pass
 
 # WRITE_AUX → EXPRESION WRITE_AUXSUB
@@ -287,12 +301,12 @@ def p_WRITE_AUXSUB(p):
 
 # READ → lee ( READ_AUX )
 def p_READ(p):
-    'READ : LEE LPAREN READ_AUX RPAREN'
+    'READ : LEE LPAREN READ_AUX RPAREN r_lee'
     pass
 
 # READ_AUX → id ARRDIM READ_AUXSUB
 def p_READ_AUX(p):
-    'READ_AUX : ID ARRDIM READ_AUXSUB'
+    'READ_AUX : ID r_seen_operand_id ARRDIM READ_AUXSUB'
     pass
 
 # READ_AUXSUB →, READ_AUX | empty
@@ -301,9 +315,9 @@ def p_READ_AUXSUB(p):
     | empty'''
     pass
 
-# RETURN → regresa ( EXPRESION ) regresa ( NULL )
+# RETURN → regresa ( EXPRESION ) | regresa ( NULL )
 def p_RETURN(p):
-    '''RETURN : REGRESA LPAREN EXPRESION RPAREN
+    '''RETURN : REGRESA LPAREN EXPRESION RPAREN r_regresa
     | REGRESA LPAREN NULL RPAREN'''
     pass
 
@@ -359,16 +373,24 @@ def p_r_register_func(p):
     'r_register_func : '
     global symbol_table
     if symbol_table.get(current_func) is None:
+        e = None
+        current_dir = None
         symbol_table[current_func] = {
             'type': current_type,
             'vars': {}
             }
+        if current_type != "void": #Discriminate void for saving functions on globar var table
+            current_dir, e = get_global_dir(current_type)
+            symbol_table['global']['vars'][current_func] = {
+                'type' : current_type,
+                'address' : current_dir
+                }
     else:
         handle_error(p.lineno(-1), p.lexpos(-1), "multiple function name declaration: " + current_func)
 
 def p_r_register_var(p):
     'r_register_var : '
-    global current_var
+    global current_var, func_var_count
     current_var = p[-1]
     e = None
     if symbol_table[current_func]['vars'].get(current_var) is None:
@@ -379,6 +401,12 @@ def p_r_register_var(p):
 
         if e:
             handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+        e = get_func_count(current_type, current_var) #Add the counter to variable / param counter
+
+        if e:
+            handle_error(p.lineno(-1), p.lexpos(-1), e)
+
 
         symbol_table[current_func]['vars'][current_var] = {
             'type': current_type, 'address': current_dir,
@@ -392,6 +420,13 @@ def p_r_register_princ(p):
     symbol_table[current_func] = {
         'vars': {}
     }
+
+# Registra la direción para el salto inicial de programa "goto main"
+def p_r_end_princ(p):
+    'r_end_princ : '
+    e = end_princ()
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 # Funciones para guardar Operandos y Operadores para hacer Cuádruplos y Operaciones
 def p_r_seen_operand(p):
@@ -411,6 +446,20 @@ def p_r_seen_operator(p):
     e = register_operator(p[-1])
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_seen_unary_operator(p):
+    'r_seen_unary_operator : '
+    raw_operator = p[-1]
+    if raw_operator == '+':
+        operator = "PLUS_UNARY"
+    elif raw_operator == '-':
+        operator = "MINUS_UNARY"
+    else:
+        operator = "!"
+    e = register_operator(operator)
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
 
 def p_r_seen_equal(p):
     'r_seen_equal : '
@@ -442,10 +491,9 @@ def p_r_seen_factor(p):
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
-def p_r_seen_unary_operator(p):
-    'r_seen_unary_operator : '
-    #e = solve_unary_or_cont(['PLUS_UNARY'])
-    pass #TODO Unary operation
+def p_r_seen_operator_mat(p):
+    'r_seen_operator_mat : '
+    pass #TODO operator with matrices
 
 def p_r_pop_fake_bottom(p):
   'r_pop_fake_bottom : '
@@ -492,6 +540,82 @@ def p_r_for_gen(p):
 def p_r_for_end(p):
     'r_for_end : '
     e = cond_end("for")
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_save_param_func(p):
+    'r_save_param_func : '
+    e = populate_func("numparam", current_func) #Save the number of parameters
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_save_vars(p):
+    'r_save_vars : '
+    e = populate_func("numvar", current_func) #save the number of variables
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_func_set(p):
+    'r_func_set : '
+    e = func_set(current_func) #Set the quad-pointer to start the function
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_func_end(p):
+    'r_func_end : '
+    e = func_end(current_func) #End var table, create_quadruple ENDFunc
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_check_func(p):
+    'r_check_func : '
+    e = func_check(p[-1]) #Checa que exista la funcion en el symbol_table
+    global call_func
+    call_func = p[-1]
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_check_param(p):
+    'r_check_param : '
+    global call_func, current_func
+    e = check_param(call_func)
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_go_sub(p):
+    'r_go_sub : '
+    global call_func
+    e = go_sub(call_func)
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_goto_main(p):
+    'r_goto_main : '
+    e = goto_main(p[-1])
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_regresa(p):
+    'r_regresa : '
+    e = default_function("REGRESA")
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_escribe(p):
+    'r_escribe : '
+    e = default_function("ESCRIBE")
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_lee(p):
+    'r_lee : '
+    e = default_function("LEE")
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_print_constants(p):
+    'r_print_constants : '
+    e = print_constants()
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 

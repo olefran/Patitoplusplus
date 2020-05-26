@@ -4,6 +4,7 @@
 # Created 04/06/2020
 from enum import Enum, IntEnum, auto
 from collections import defaultdict
+import ast
 
 #Stack de Operaciones
 operator_stack = []
@@ -20,10 +21,21 @@ jump_stack = []
 quadruples = []
 quad_pointer = 0
 
+#Counts parameter and variables for function creation
+#                INT, FLOAT, CHAR , STRING
+func_var_count = [0,    0,      0,      0]
+
+#Stores parameters order in function ddeclaration
+func_param_order = []
+
+#Stores the paramenter counter
+func_param_counter = 0
+
 # Variables Auxiliares para currents
 current_type = None
 current_func = 'global' # Scope
 current_var = ''
+call_func = 'global'
 
 # Directorio de funciones y sus variables
 symbol_table = {
@@ -70,42 +82,35 @@ avail_types = ('int', 'float', 'char', 'string', 'void')
 func_types = ('int', 'float', 'char', 'string', 'void')
 
 # Diccionario de Operaciones
-str_operations = ('unary+','unary-','!','*','/','+','-','<','>','!=','==','<=','>=','||','&&','=','(','%')
 Operations = {
-  "PLUS_UNARY" : 1,
-  "MINUS_UNARY" : 2,
-  "NOT" : 3,
-  "TIMES" : 4,
-  "DIV" : 5,
-  "PLUS" : 6,
-  "MINUS" : 7,
-  "LESS_THAN" : 8,
-  "MORE_THAN" : 9,
-  "DIFFERENT" : 10,
-  "IS_EQUAL" : 11,
-  "LESS_EQUAL" : 12,
-  "MORE_EQUAL" : 13,
-  "OR" : 14,
-  "AND" : 15,
-  "EQUAL" : 16,
-  "LEE" : 17,
-  "WRITE" : 18,
-  "GOTO" : 19,
-  "GOTOF" : 20,
-  "GOSUB" : 21,
-  "PARAM" : 22,
-  "ERA" : 23,
-  "RETURN" : 24,
-  "ENDPROC" : 25,
-  "END" : 26,
-  "ENTER_INSTANCE" : 27,
-  "EXIT_INSTANCE" : 28,
-  "GET_RETURN" : 29,
-  "FAKE_BOTTOM" : 30,
-  "VER" : 31,
-  "SET_FOREIGN" : 32,
-  "UNSET_FOREIGN" : 33,
-  "MOD" : 34
+    "PLUS_UNARY" : 1,
+    "MINUS_UNARY" : 2,
+    "!" : 3,
+    "*" : 4,
+    "%" : 5,
+    "+" : 6,
+    "-" : 7,
+    "<" : 8,
+    ">" : 9,
+    "!=" : 10,
+    "==" : 11,
+    "<=" : 12,
+    ">=" : 13,
+    "||" : 14,
+    "&&" : 15,
+    "=" : 16,
+    "LEE" : 17,
+    "ESCRIBE" : 18,
+    "GOTO" : 19,
+    "GOTOF" : 20,
+    "GOSUB" : 21,
+    "PARAM" : 22,
+    "ERA" : 23,
+    "RETURN" : 24,
+    "ENDFunc" : 25,
+    "END" : 26,
+    "FAKE_BOTTOM" : 27,
+    "VER" : 28
  }
 
 # Semantic cube for Operations
@@ -123,6 +128,7 @@ semantic_cube['int']['int']['+'] = 'int'
 semantic_cube['int']['int']['-'] = 'int'
 semantic_cube['int']['int']['*'] = 'int'
 semantic_cube['int']['int']['/'] = 'int'
+semantic_cube['int']['int']['%'] = 'int'
 semantic_cube['int']['int']['='] = 'int'
 semantic_cube['int']['lee']['='] = 'int'
 semantic_cube['int']['unary+'] = 'int'
@@ -149,21 +155,27 @@ semantic_cube['float']['!'] = 'int'
 
 semantic_cube['char']['char']['&&'] = 'int'
 semantic_cube['char']['char']['||'] = 'int'
-semantic_cube['char']['char']['<'] = 'int'
-semantic_cube['char']['char']['>'] = 'int'
 semantic_cube['char']['char']['!='] = 'int'
 semantic_cube['char']['char']['=='] = 'int'
-semantic_cube['char']['char']['>='] = 'int'
-semantic_cube['char']['char']['<='] = 'int'
-semantic_cube['char']['char']['+'] = 'char'
-semantic_cube['char']['char']['-'] = 'char'
-semantic_cube['char']['char']['*'] = 'char'
-semantic_cube['char']['char']['/'] = 'char'
+semantic_cube['char']['char']['+'] = 'str'
 semantic_cube['char']['char']['='] = 'char'
 semantic_cube['char']['lee']['='] = 'char'
-semantic_cube['char']['unary+'] = None
-semantic_cube['char']['unary-'] = None
-semantic_cube['char']['!'] = 'char'
+# semantic_cube['int']['char']['='] = 'int'
+# semantic_cube['char']['int']['='] = 'char'
+# semantic_cube['float']['char']['='] = 'float'
+# semantic_cube['char']['float']['='] = 'char'
+
+semantic_cube['string']['string']['&&'] = 'int'
+semantic_cube['string']['string']['||'] = 'int'
+semantic_cube['string']['string']['!='] = 'int'
+semantic_cube['string']['string']['=='] = 'int'
+semantic_cube['string']['string']['+'] = 'str'
+semantic_cube['string']['string']['='] = 'string'
+semantic_cube['string']['lee']['='] = 'string'
+# semantic_cube['int']['string']['='] = 'int'
+# semantic_cube['string']['int']['='] = 'string'
+# semantic_cube['float']['string']['='] = 'float'
+# semantic_cube['string']['float']['='] = 'string'
 
 semantic_cube['int']['float']['&&'] = semantic_cube['float']['int']['&&'] = 'int'
 semantic_cube['int']['float']['||'] = semantic_cube['float']['int']['||'] = 'int'
@@ -179,34 +191,3 @@ semantic_cube['int']['float']['*'] = semantic_cube['float']['int']['*'] = 'float
 semantic_cube['int']['float']['/'] = semantic_cube['float']['int']['/'] = 'float'
 semantic_cube['int']['float']['='] = 'int'
 semantic_cube['float']['int']['='] = 'float'
-
-semantic_cube['int']['char']['&&'] = semantic_cube['char']['int']['&&'] = 'int'
-semantic_cube['int']['char']['||'] = semantic_cube['char']['int']['||'] = 'int'
-semantic_cube['int']['char']['<'] = semantic_cube['char']['int']['<'] = 'int'
-semantic_cube['int']['char']['>'] = semantic_cube['char']['int']['>'] = 'int'
-semantic_cube['int']['char']['!='] = semantic_cube['char']['int']['!='] = 'int'
-semantic_cube['int']['char']['=='] = semantic_cube['char']['int']['=='] = 'int'
-semantic_cube['int']['char']['<='] = semantic_cube['char']['int']['<='] = 'int'
-semantic_cube['int']['char']['>='] = semantic_cube['char']['int']['>='] = 'int'
-semantic_cube['int']['char']['+'] = semantic_cube['char']['int']['+'] = 'int'
-semantic_cube['int']['char']['-'] = semantic_cube['char']['int']['-'] = 'int'
-semantic_cube['int']['char']['*'] = semantic_cube['char']['int']['*'] = 'int'
-semantic_cube['int']['char']['/'] = semantic_cube['char']['int']['/'] = 'int'
-semantic_cube['int']['char']['='] = 'int'
-semantic_cube['char']['int']['='] = 'char'
-
-semantic_cube['float']['char']['&&'] = semantic_cube['char']['float']['&&'] = 'int'
-semantic_cube['float']['char']['||'] = semantic_cube['char']['float']['||'] = 'int'
-semantic_cube['float']['char']['<'] = semantic_cube['char']['float']['<'] = 'int'
-semantic_cube['float']['char']['>'] = semantic_cube['char']['float']['>'] = 'int'
-semantic_cube['float']['char']['!='] = semantic_cube['char']['float']['!='] = 'int'
-semantic_cube['float']['char']['=='] = semantic_cube['char']['float']['=='] = 'int'
-semantic_cube['float']['char']['<='] = semantic_cube['char']['float']['<='] = 'int'
-semantic_cube['float']['char']['>='] = semantic_cube['char']['float']['>='] = 'int'
-semantic_cube['float']['char']['+'] = semantic_cube['char']['float']['+'] = 'float'
-semantic_cube['float']['char']['-'] = semantic_cube['char']['float']['-'] = 'float'
-semantic_cube['float']['char']['*'] = semantic_cube['char']['float']['*'] = 'float'
-semantic_cube['float']['char']['/'] = semantic_cube['char']['float']['/'] = 'float'
-semantic_cube['float']['char']['='] = 'float'
-semantic_cube['char']['float']['='] = 'char'
-semantic_cube['char']['lee']['='] = 'char'

@@ -1,0 +1,18 @@
+%% Example for Patitoplusplus
+programa patito;
+var
+int i,j,k;
+
+funcion void fact(int t, int h)
+{
+	i = t;
+	i = h;
+}
+
+principal()
+var
+int p, y;
+{
+	p = 5;
+	fact(p, y);
+}

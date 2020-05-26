@@ -1,0 +1,38 @@
+%% Example for Patitoplusplus
+programa patito;
+
+var
+int i,j, p;
+int Arreglo[10], OtroArreglo[10];
+float valor;
+int Matriz[3][8], OtraMatriz[3][3];
+
+funcion int func1 (float j, char q)
+var int i;
+float g, h ,b;
+char c;
+{
+	i = 4 + 6;
+
+	regresa(5+6);
+}
+
+funcion void func2(int y)
+var int x;
+{
+	x = 6;
+	func1(3.5, 'c');
+	escribe(x);
+}
+
+
+principal()
+var int k;
+float m, n;
+char c;
+{
+  func1(1+2.5,c);
+	k = 0;
+	lee(n);
+	func2(5);
+}
