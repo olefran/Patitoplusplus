@@ -25,6 +25,10 @@ quad_pointer = 0
 #                INT, FLOAT, CHAR , STRING
 func_var_count = [0,    0,      0,      0]
 
+# Count temporals for function creation
+#                 INT   FLOAT  CHAR  STRING
+func_temp_count = [0,     0,    0,    0]
+
 #Stores parameters order in function ddeclaration
 func_param_order = []
 
