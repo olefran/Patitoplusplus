@@ -19,10 +19,12 @@ char c;
 
 funcion void func2(int y)
 var int x;
+char k;
+float o;
 {
+	k = 'h';
 	x = 6;
-	func1(3.5, 'c');
-	escribe(x);
+	escribe(k);
 }
 
 
@@ -31,7 +33,9 @@ var int k;
 float m, n;
 char c;
 {
-  func1(1+2.5,c);
+	m = 3.5;
+	c = 'o';
+  func1(m,c);
 	k = 0;
 	lee(n);
 	func2(5);

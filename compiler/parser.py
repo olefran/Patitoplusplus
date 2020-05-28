@@ -301,12 +301,12 @@ def p_WRITE_AUXSUB(p):
 
 # READ → lee ( READ_AUX )
 def p_READ(p):
-    'READ : LEE LPAREN READ_AUX RPAREN r_lee'
+    'READ : LEE LPAREN READ_AUX RPAREN'
     pass
 
 # READ_AUX → id ARRDIM READ_AUXSUB
 def p_READ_AUX(p):
-    'READ_AUX : ID r_seen_operand_id ARRDIM READ_AUXSUB'
+    'READ_AUX : ID r_seen_operand_id ARRDIM r_lee READ_AUXSUB'
     pass
 
 # READ_AUXSUB →, READ_AUX | empty

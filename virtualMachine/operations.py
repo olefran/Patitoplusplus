@@ -55,10 +55,10 @@ def get_last_context_value(dir):
         else:
             return const_table[dir]['value']
     else:
-        print("holi")
         if temp_memory[-2].get(dir) is None:
             raise Exception("Undefined dir: " + str(dir) )
         else:
+            print(dir)
             return temp_memory[-2][dir]
 
 
@@ -164,7 +164,8 @@ def param_solve(first, second, dst):
     global temp_memory
     e = True
     #print("HI",get_last_context_value(first))
-    #print(temp_memory[-2])
+    #rint(temp_memory[-2])
+    #print(get_value(first))
     try:
         top(temp_memory)[first] = get_last_context_value(first) #Search for the last context and copy it ot the new one
     except:

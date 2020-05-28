@@ -122,9 +122,11 @@ def create_operand(raw_operand):
         type_op = 'int'
     elif t == float:
         type_op = 'float'
-    elif t == str and len(raw_operand) == 1 :
+    elif t == str and raw_operand[0] == '\'' : #ERROR registers wrong 'char' (counts '')
+        raw_operand = raw_operand.replace('\'','')
         type_op = 'char'
     elif t == str:
+        raw_operand = raw_operand.replace('\"','')
         type_op = 'string'
     e = None
     address = -1
@@ -373,13 +375,14 @@ def check_param(current_func):
     argumentType, value = operand_stack.pop()
     paramsize = len(symbol_table[current_func]['param'])
     tempParam = func_param_counter + 1
-
-    try:
-        if argumentType == symbol_table[current_func]['param'][func_param_counter] and func_param_counter < paramsize:
-            create_quadruple("PARAM", value, None, tempParam)
-            func_param_counter = func_param_counter + 1
-    except:
+    if func_param_counter >= paramsize:
         e = "Too many parameters on: " + current_func
+        return e
+    if argumentType == symbol_table[current_func]['param'][func_param_counter]:
+        create_quadruple("PARAM", value, None, tempParam)
+        func_param_counter = func_param_counter + 1
+    else:
+        e = "Type error on " + current_func + " parameter " + str(func_param_counter + 1) + " erronuos type of " + argumentType
     return e
 
 def go_sub(current_func):
@@ -390,8 +393,10 @@ def go_sub(current_func):
         create_quadruple('=', symbol_table['global']['vars'][current_func]['address'], None, temp)
 
 def default_function(func):
-    Type, value = operand_stack.pop()
-    create_quadruple(func, None, None, value)
+    if func == "LEE":
+        Type, value = operand_stack.pop()
+        create_quadruple(func, None, None, value)
+    if func == "ESCRIBE":
 
 # Save elements for virtual machine on Ouput.txt
 def print_constants():
