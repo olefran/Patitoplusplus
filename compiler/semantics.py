@@ -353,7 +353,7 @@ def get_func_count(current_type, current_var):
     if result < 0:
         e = "Invalid type on counter addition on: " + current_var
     func_var_count[result] = func_var_count[result] + 1
-    func_param_order.append(current_type)
+    func_param_order.append( (current_type, current_var) )
     return e
 
 def func_check(current_func):
@@ -378,7 +378,7 @@ def check_param(current_func):
     if func_param_counter >= paramsize:
         e = "Too many parameters on: " + current_func
         return e
-    if argumentType == symbol_table[current_func]['param'][func_param_counter]:
+    if argumentType == symbol_table[current_func]['param'][func_param_counter][0]:
         create_quadruple("PARAM", value, None, tempParam)
         func_param_counter = func_param_counter + 1
     else:
@@ -394,7 +394,6 @@ def go_sub(current_func):
 
 def default_function(func):
     Type, value = operand_stack.pop()
-    print(Type, value, func)
     create_quadruple(func, None, None, value)
 
 # Save elements for virtual machine on Ouput.txt

@@ -405,7 +405,7 @@ def p_r_register_var(p):
         if e:
             handle_error(p.lineno(-1), p.lexpos(-1), e)
 
-        e = get_func_count(current_type, current_var) #Add the counter to variable / param counter
+        e = get_func_count(current_type, current_dir) #Add the counter to variable / param counter
 
         if e:
             handle_error(p.lineno(-1), p.lexpos(-1), e)

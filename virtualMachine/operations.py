@@ -229,10 +229,11 @@ def gosub_solve(first, second, dst):
     quad_pointer = dst
     return False
 
+#TODO: Save the real parameter values
 def param_solve(first, second, dst):
     global temp_memory, current_temp_memory
     e = True
-    current_temp_memory[first] = get_value(first)
+    current_temp_memory[ symbol_table[top(execution_stack)]['param'][dst-1][1] ] = get_value(first)
     return e
 
 #TODO: Use the size of the function somewhere
