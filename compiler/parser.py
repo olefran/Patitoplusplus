@@ -12,6 +12,9 @@ input_str = ''
 # Punto de partida
 start = 'PROGRAM'
 
+#Valor booleano de error just incase
+error = False
+
 # Produccion vacía para epsilon
 def p_empty(p):
     'empty :'
@@ -285,12 +288,12 @@ def p_FOR2(p):
 
 # WRITE → escribe ( WRITE_AUX )
 def p_WRITE(p):
-    'WRITE : ESCRIBE LPAREN WRITE_AUX RPAREN r_escribe'
+    'WRITE : ESCRIBE LPAREN WRITE_AUX RPAREN'
     pass
 
 # WRITE_AUX → EXPRESION WRITE_AUXSUB
 def p_WRITE_AUX(p):
-    'WRITE_AUX : EXPRESION WRITE_AUXSUB'
+    'WRITE_AUX : EXPRESION r_escribe WRITE_AUXSUB'
     pass
 
 # WRITE_AUXSUB → , WRITE_AUX | empty
@@ -597,7 +600,7 @@ def p_r_goto_main(p):
 
 def p_r_regresa(p):
     'r_regresa : '
-    e = default_function("REGRESA")
+    e = default_function("RETURN")
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 

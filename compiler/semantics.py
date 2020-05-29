@@ -393,10 +393,9 @@ def go_sub(current_func):
         create_quadruple('=', symbol_table['global']['vars'][current_func]['address'], None, temp)
 
 def default_function(func):
-    if func == "LEE":
-        Type, value = operand_stack.pop()
-        create_quadruple(func, None, None, value)
-    if func == "ESCRIBE":
+    Type, value = operand_stack.pop()
+    print(Type, value, func)
+    create_quadruple(func, None, None, value)
 
 # Save elements for virtual machine on Ouput.txt
 def print_constants():

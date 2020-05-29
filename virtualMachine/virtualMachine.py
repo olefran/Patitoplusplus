@@ -50,7 +50,7 @@ def main():
           print("Error on quad:", quad_pointer, ": ", e)
           break
       quad_pointer = get_pointer()
-  print_structs()
+  #print_structs()
 
 # Correr el main
 if __name__ == "__main__":
