@@ -7,19 +7,19 @@ int Arreglo[10], OtroArreglo[10];
 float valor;
 int Matriz[3][8], OtraMatriz[3][3];
 
-funcion void func1 (float j, float q)
+funcion void func1 (float j)
 var int i;
 float g, h ,b;
 char c;
 {
   si (j == 0) entonces
     {
-      escribe("termine!", j, q);
+      escribe("termine!", j);
     }
     sino
     {
-      escribe(j,q);
-      func1(j-1, q-1);
+      escribe(j);
+      func1(j-1);
     }
 }
 
@@ -41,5 +41,5 @@ char c;
 {
 	m = 10;
 	n = 15;
-  func1(m, n);
+  func1(m);
 }

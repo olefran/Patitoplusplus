@@ -5,6 +5,7 @@
 import yacc
 from scanner import tokens
 from semantics import *
+import pprint
 
 # String para errores
 input_str = ''
@@ -52,15 +53,19 @@ def p_TIPO(p):
 
 # IDS → id ARRDIM ; | id ARRDIM , IDS
 def p_IDS(p):
-    '''IDS : ID r_register_var ARRDIM DOTCOMA
-    | ID r_register_var ARRDIM COMA IDS'''
+    '''IDS : ID r_register_var ARRDIM r_populate_r DOTCOMA
+    | ID r_register_var ARRDIM r_populate_r COMA IDS'''
     pass
 
-# ARRDIM → [ EXPRESION ] | [ EXPRESION ] [ EXPRESION ] | [ EXPRESION , EXPRESION ] | empty
+# ARRDIM → [ CTE_I ARRDIM_AUX ] ARRDIM | empty
 def p_ARRDIM(p):
-    '''ARRDIM : LSTAPLE EXPRESION RSTAPLE
-    | LSTAPLE EXPRESION RSTAPLE LSTAPLE EXPRESION RSTAPLE
-    | LSTAPLE EXPRESION COMA EXPRESION RSTAPLE
+    '''ARRDIM : r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM
+    | empty'''
+    pass
+
+# ARRDIM → , CTE_I ARRDIM_AUX | empty
+def p_ARRDIM_AUX(p):
+    '''ARRDIM_AUX : COMA CTE_I r_register_dim ARRDIM_AUX
     | empty'''
     pass
 
@@ -119,8 +124,20 @@ def p_ESTATUTO(p):
 
 # ASIGNACION → id ARRDIM = EXPRESION | id ARRDIM = CTE_ARR
 def p_ASIGNACION(p):
-    '''ASIGNACION : ID r_seen_operand_id ARRDIM EQUAL r_seen_operator EXPRESION r_seen_equal
-    | ID r_seen_operand_id ARRDIM EQUAL r_seen_operator CTE_ARR'''
+    '''ASIGNACION : ID r_seen_operand_id ARRACC EQUAL r_seen_operator EXPRESION r_seen_equal
+    | ID r_seen_operand_id ARRACC EQUAL r_seen_operator CTE_ARR'''
+    pass
+
+# ARRDIM → [ CTE_I ARRDIM_AUX ] ARRDIM | empty
+def p_ARRACC(p):
+    '''ARRACC : LSTAPLE CTE_I ARRACC_AUX RSTAPLE ARRACC_AUX
+    | empty'''
+    pass
+
+# ARRDIM → , CTE_I ARRDIM_AUX | empty
+def p_ARRACC_AUX(p):
+    '''ARRACC_AUX : COMA CTE_I ARRACC_AUX
+    | empty'''
     pass
 
 # EXPRESION → SUBEXP EXPRESION_AUX
@@ -412,10 +429,68 @@ def p_r_register_var(p):
 
 
         symbol_table[current_func]['vars'][current_var] = {
-            'type': current_type, 'address': current_dir,
+            'type': current_type, 'address': current_dir, 'isArray': False
         }
     else:
         handle_error(p.lineno(-1), p.lexpos(-1), "multiple var name declaration: " + current_var )
+
+def p_r_register_arr(p):
+    'r_register_arr : '
+    global symbol_table, current_var
+    if current_var is not None:
+        if symbol_table[current_func]['vars'][current_var].get('isArray') is False:
+            symbol_table[current_func]['vars'][current_var]['isArray'] = {}
+
+
+def p_r_register_dim(p):
+    'r_register_dim : '
+    global symbol_table, current_var, func_dim_counter, current_var_aux, r_dim
+
+    if current_var_aux == current_var:
+        func_dim_counter = func_dim_counter + 1
+
+    else:
+        current_var_aux = current_var
+        func_dim_counter = 0
+        r_dim = 1
+
+    if symbol_table[current_func]['vars'][current_var]['isArray'] is not False:
+        r_dim = (p[-1] - 0 + 1) * r_dim
+        symbol_table[current_func]['vars'][current_var]['isArray'][func_dim_counter] = {
+        'Li' : 0,
+        'Ls' : p[-1],
+        'R' : r_dim
+        }
+
+def p_r_populate_r(p):
+    'r_populate_r : '
+    global symbol_table, current_var, func_dim_counter, current_var_aux, r_dim, glo
+    func_dim_counter = 0
+    last_node = 0
+    offset = 0
+    arr_size = 0
+    m_dim = 0
+    k = 0
+    if symbol_table[current_func]['vars'][current_var]['isArray'] is not False:
+        for key in symbol_table[current_func]['vars'][current_var]['isArray'].items():
+            m_dim = r_dim / ( key[1]['Ls'] - key[1]['Li'] + 1)
+            symbol_table[current_func]['vars'][current_var]['isArray'][key[0]]['m_dim'] = m_dim
+            r_dim = m_dim
+            offset = offset + key[1]['Li'] * m_dim
+            last_node = key[0]
+        k = offset
+        symbol_table[current_func]['vars'][current_var]['isArray'][last_node]['m_dim'] = -k
+        arr_size = symbol_table[current_func]['vars'][current_var]['isArray'][last_node]['R'] - 1
+        e = None
+        print(current_func)
+        if current_func == 'global':
+            e = set_global_size_arr(symbol_table[current_func]['vars'][current_var]['type'],arr_size)
+        else:
+            e = set_var_size_arr(symbol_table[current_func]['vars'][current_var]['type'],arr_size)
+        if e:
+            handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+
 
 def p_r_register_princ(p):
     'r_register_princ : '

@@ -35,6 +35,12 @@ func_param_order = []
 #Stores the paramenter counter
 func_param_counter = 0
 
+#Array auxiliar variables
+func_dim_counter = 0
+current_var_aux = None
+r_dim = 1
+
+
 # Variables Auxiliares para currents
 current_type = None
 current_func = 'global' # Scope
