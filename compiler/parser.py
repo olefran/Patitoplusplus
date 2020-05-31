@@ -130,13 +130,13 @@ def p_ASIGNACION(p):
 
 # ARRDIM → [ EXPRESION ARRDIM_AUX ] | empty
 def p_ARRACC(p):
-    '''ARRACC : LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE
+    '''ARRACC : LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc
     | empty'''
     pass
 
 # ARRDIM → , CTE_I ARRDIM_AUX | empty
 def p_ARRACC_AUX(p):
-    '''ARRACC_AUX : COMA EXPRESION ARRACC_AUX
+    '''ARRACC_AUX : COMA r_add_dim EXPRESION ARRACC_AUX
     | empty'''
     pass
 
@@ -495,19 +495,43 @@ def p_r_check_dim(p):
     global symbol_table, r_dim, operator_stack, pila_dim
     if symbol_table[current_func]['vars'][current_var]['isArray'] is not False:
         r_dim = 1
-        pila_dim.append( (current_var, r_dim) )
+        pila_dim.append( (p[-3], r_dim) )
         operator_stack.append("(")
 
 #
 def p_r_create_quad(p):
     'r_create_quad : '
-    global operand_stack
+    global operand_stackcurre
     e = None
+    temp_current = current_func
     if top(operand_stack)[0] != 'int':
         e = "Expected int on array: " + str(current_var) + " but recieved + " + top(operand_stack)[0]
-    create_quadruple("VER", top(operand_stack)[1] ,symbol_table[current_func]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['Li'], symbol_table[current_func]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['Ls'] )
+
+    if symbol_table[temp_current]['vars'].get(top(pila_dim)[0]) is None:
+        if symbol_table['global']['vars'].get(top(pila_dim)[0]) is None:
+            e = "Undefined Arr " + top(pila_dim)[[0]]
+        else:
+            temp_current = 'global'
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+    if symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['Li'] is not None:
+        create_quadruple("VER", top(operand_stack)[1] ,symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['Li'], symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['Ls'] )
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+    if symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'].get(r_dim) is not None:
+        aux_type, aux = operand_stack.pop()
+        temp, e = get_temp_dir(aux_type)
+        create_quadruple("*", aux, symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['m_dim'], temp)
+        operand_stack.append((aux_type, temp))
+
+    if r_dim > 1:
+        aux_type, aux = operand_stack.pop()
+        aux2_type, aux2 = operand_stack.pop()
+        temp, e = get_temp_dir(aux_type)
+        create_quadruple("+", aux, aux2, temp)
+        operand_stack.append((aux_type, temp))
 
 def p_r_register_princ(p):
     'r_register_princ : '
@@ -515,6 +539,48 @@ def p_r_register_princ(p):
     symbol_table[current_func] = {
         'vars': {}
     }
+
+def p_r_add_dim(p):
+    'r_add_dim : '
+    global r_dim, pila_dim
+    r_dim = r_dim + 1
+    top(pila_dim)[1] = r_dim
+
+def p_r_close_arracc(p):
+    'r_close_arracc : '
+    global operand_stack
+    aux_type, aux = operand_stack.pop()
+    temp_current = current_func
+    e = None
+    if symbol_table[temp_current]['vars'].get(top(pila_dim)[0]) is None:
+        temp_current = 'global'
+        if symbol_table[temp_current]['vars'].get(top(pila_dim)[0]) is None:
+            e = "Undefined Arr " + top(pila_dim)[0]
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+    temp, e = get_temp_dir(aux_type)
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+    temp2, e = get_temp_dir(aux_type)
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+    create_quadruple("+", aux, symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['m_dim'], temp)
+
+    #Create a new operand with the virtual address of the array, AS a value of a new const
+    e, (virtualAddress_type, virtualAddress) = create_operand(symbol_table[temp_current]['vars'][top(pila_dim)[0]]['address'])
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+    # ( + temp virtualAddress(arr) newtemp)
+    create_quadruple("+", temp, virtualAddress, temp2)
+
+    operand_stack.append( (aux_type, temp2) )
+
+    pop_fake_bottom()
+
+
 
 # Registra la direción para el salto inicial de programa "goto main"
 def p_r_end_princ(p):
