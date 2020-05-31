@@ -10,5 +10,5 @@ principal()
 var
 int Arreglo[4], OtroArreglo[5];
 {
-	Arreglo[0] = 1;
+	Arreglo[1] = 1;
 }

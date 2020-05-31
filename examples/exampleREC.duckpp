@@ -7,14 +7,14 @@ int Arreglo[10], OtroArreglo[10];
 float valor;
 int Matriz[3][8], OtraMatriz[3][3];
 
-funcion void func1 (float j)
+funcion int func1 (float j)
 var int i;
 float g, h ,b;
 char c;
 {
   si (j == 0) entonces
     {
-      escribe("termine!", j);
+      regresa(j);
     }
     sino
     {
@@ -41,5 +41,6 @@ char c;
 {
 	m = 10;
 	n = 15;
-  func1(m);
+  k = func1(m);
+  escribe("termine ",k);
 }

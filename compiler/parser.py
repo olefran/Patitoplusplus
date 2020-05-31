@@ -128,15 +128,15 @@ def p_ASIGNACION(p):
     | ID r_seen_operand_id ARRACC EQUAL r_seen_operator CTE_ARR'''
     pass
 
-# ARRDIM → [ CTE_I ARRDIM_AUX ] ARRDIM | empty
+# ARRDIM → [ EXPRESION ARRDIM_AUX ] | empty
 def p_ARRACC(p):
-    '''ARRACC : LSTAPLE CTE_I ARRACC_AUX RSTAPLE ARRACC_AUX
+    '''ARRACC : LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE
     | empty'''
     pass
 
 # ARRDIM → , CTE_I ARRDIM_AUX | empty
 def p_ARRACC_AUX(p):
-    '''ARRACC_AUX : COMA CTE_I ARRACC_AUX
+    '''ARRACC_AUX : COMA EXPRESION ARRACC_AUX
     | empty'''
     pass
 
@@ -482,7 +482,6 @@ def p_r_populate_r(p):
         symbol_table[current_func]['vars'][current_var]['isArray'][last_node]['m_dim'] = -k
         arr_size = symbol_table[current_func]['vars'][current_var]['isArray'][last_node]['R'] - 1
         e = None
-        print(current_func)
         if current_func == 'global':
             e = set_global_size_arr(symbol_table[current_func]['vars'][current_var]['type'],arr_size)
         else:
@@ -490,7 +489,25 @@ def p_r_populate_r(p):
         if e:
             handle_error(p.lineno(-1), p.lexpos(-1), e)
 
+#Checa las dimeciones de un arreglo declarado
+def p_r_check_dim(p):
+    'r_check_dim : '
+    global symbol_table, r_dim, operator_stack, pila_dim
+    if symbol_table[current_func]['vars'][current_var]['isArray'] is not False:
+        r_dim = 1
+        pila_dim.append( (current_var, r_dim) )
+        operator_stack.append("(")
 
+#
+def p_r_create_quad(p):
+    'r_create_quad : '
+    global operand_stack
+    e = None
+    if top(operand_stack)[0] != 'int':
+        e = "Expected int on array: " + str(current_var) + " but recieved + " + top(operand_stack)[0]
+    create_quadruple("VER", top(operand_stack)[1] ,symbol_table[current_func]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['Li'], symbol_table[current_func]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['Ls'] )
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 def p_r_register_princ(p):
     'r_register_princ : '

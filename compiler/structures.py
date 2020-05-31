@@ -40,6 +40,9 @@ func_dim_counter = 0
 current_var_aux = None
 r_dim = 1
 
+#Array Access structures and VARIABLES
+pila_dim = []
+
 
 # Variables Auxiliares para currents
 current_type = None

@@ -44,7 +44,6 @@ def set_var_size_arr(current_type, arr_size):
             e = "Too many " + current_type + " vars"
             return e
         var_dir_count[result] = var_dir_count[result] + arr_size - 1
-        print(var_dir_count[result])
         return e
 
 def set_global_size_arr(current_type, arr_size):
@@ -66,6 +65,9 @@ def set_global_size_arr(current_type, arr_size):
         global_dir_count[result] = global_dir_count[result] + arr_size - 1
         return e
 
+def pop_operand():
+    o = operand_stack.pop()
+    return o
 
 # Manejo de la dirección digital de variables en funciones
 def get_var_dir(current_type):
@@ -436,10 +438,6 @@ def go_sub(current_func):
 def default_function(func):
     Type, value = operand_stack.pop()
     create_quadruple(func, None, None, value)
-
-def pop_operand():
-    o = operand_stack.pop()
-    return o
 
 # Save elements for virtual machine on Ouput.txt
 def print_constants():
