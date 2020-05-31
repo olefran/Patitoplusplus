@@ -242,7 +242,7 @@ def solve_op_or_cont(ops: [Operations], mark_assigned):
       operand_stack.append( (result_type, temp) ) #Se quedan los results en el stack
     elif operator == ')':
         operator_stack.pop()
-        print(top(operator))
+        #print(top(operator))
         if top(operator) != '(':
             e = "Expected: ')'"
         else:

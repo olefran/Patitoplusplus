@@ -136,7 +136,7 @@ def p_ARRACC(p):
 
 # ARRDIM → , CTE_I ARRDIM_AUX | empty
 def p_ARRACC_AUX(p):
-    '''ARRACC_AUX : COMA r_add_dim EXPRESION ARRACC_AUX
+    '''ARRACC_AUX : COMA r_add_dim EXPRESION r_create_quad ARRACC_AUX
     | empty'''
     pass
 
@@ -501,7 +501,7 @@ def p_r_check_dim(p):
 #
 def p_r_create_quad(p):
     'r_create_quad : '
-    global operand_stackcurre
+    global operand_stack
     e = None
     temp_current = current_func
     if top(operand_stack)[0] != 'int':
@@ -515,20 +515,28 @@ def p_r_create_quad(p):
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
-    if symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['Li'] is not None:
-        create_quadruple("VER", top(operand_stack)[1] ,symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['Li'], symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['Ls'] )
-    if e:
-        handle_error(p.lineno(-1), p.lexpos(-1), e)
+    if symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'].get(r_dim-1) is not None:
+        e, (inferior_type, inferior_address) = create_operand(symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['Li'])
+        if e:
+            handle_error(p.lineno(-1), p.lexpos(-1), e)
+        e, (superior_type, superior_address) = create_operand(symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['Ls'])
+        if e:
+            handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+        create_quadruple("VER", top(operand_stack)[1], inferior_address, superior_address)
 
     if symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'].get(r_dim) is not None:
         aux_type, aux = operand_stack.pop()
         temp, e = get_temp_dir(aux_type)
-        create_quadruple("*", aux, symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['m_dim'], temp)
+        e, (m_dim_type, m_dim_address) = create_operand( symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['m_dim'])
+        if e:
+            handle_error(p.lineno(-1), p.lexpos(-1), e)
+        create_quadruple("*", aux, m_dim_address, temp)
         operand_stack.append((aux_type, temp))
 
     if r_dim > 1:
+        aux_type2, aux2 = operand_stack.pop()
         aux_type, aux = operand_stack.pop()
-        aux2_type, aux2 = operand_stack.pop()
         temp, e = get_temp_dir(aux_type)
         create_quadruple("+", aux, aux2, temp)
         operand_stack.append((aux_type, temp))
@@ -544,7 +552,8 @@ def p_r_add_dim(p):
     'r_add_dim : '
     global r_dim, pila_dim
     r_dim = r_dim + 1
-    top(pila_dim)[1] = r_dim
+    temp, temp_dim  = pila_dim.pop()
+    pila_dim.append( (temp, r_dim) )
 
 def p_r_close_arracc(p):
     'r_close_arracc : '
@@ -566,7 +575,11 @@ def p_r_close_arracc(p):
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
-    create_quadruple("+", aux, symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['m_dim'], temp)
+    e, (m_dim_type, m_dim_address) = create_operand( symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['m_dim'])
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+    create_quadruple("+", aux, m_dim_address, temp)
 
     #Create a new operand with the virtual address of the array, AS a value of a new const
     e, (virtualAddress_type, virtualAddress) = create_operand(symbol_table[temp_current]['vars'][top(pila_dim)[0]]['address'])
@@ -574,8 +587,8 @@ def p_r_close_arracc(p):
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
     # ( + temp virtualAddress(arr) newtemp)
+    # temp2 = offset + base(dir)
     create_quadruple("+", temp, virtualAddress, temp2)
-
     operand_stack.append( (aux_type, temp2) )
 
     pop_fake_bottom()

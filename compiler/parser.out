@@ -48,7 +48,7 @@ Rule 38    ASIGNACION -> ID r_seen_operand_id ARRACC EQUAL r_seen_operator EXPRE
 Rule 39    ASIGNACION -> ID r_seen_operand_id ARRACC EQUAL r_seen_operator CTE_ARR
 Rule 40    ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc
 Rule 41    ARRACC -> empty
-Rule 42    ARRACC_AUX -> COMA r_add_dim EXPRESION ARRACC_AUX
+Rule 42    ARRACC_AUX -> COMA r_add_dim EXPRESION r_create_quad ARRACC_AUX
 Rule 43    ARRACC_AUX -> empty
 Rule 44    EXPRESION -> SUBEXP r_seen_subexp EXPRESION_AUX
 Rule 45    EXPRESION_AUX -> AND r_seen_operator EXPRESION
@@ -294,7 +294,7 @@ r_check_func         : 83
 r_check_int          : 90 95
 r_check_param        : 84 85
 r_close_arracc       : 40
-r_create_quad        : 40
+r_create_quad        : 40 42
 r_else_start         : 93
 r_end_princ          : 3
 r_escribe            : 104
@@ -3870,7 +3870,7 @@ state 239
 state 240
 
     (40) ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad . ARRACC_AUX RSTAPLE r_close_arracc
-    (42) ARRACC_AUX -> . COMA r_add_dim EXPRESION ARRACC_AUX
+    (42) ARRACC_AUX -> . COMA r_add_dim EXPRESION r_create_quad ARRACC_AUX
     (43) ARRACC_AUX -> . empty
     (1) empty -> .
 
@@ -4581,7 +4581,7 @@ state 275
 
 state 276
 
-    (42) ARRACC_AUX -> COMA . r_add_dim EXPRESION ARRACC_AUX
+    (42) ARRACC_AUX -> COMA . r_add_dim EXPRESION r_create_quad ARRACC_AUX
     (132) r_add_dim -> .
 
     NOT             reduce using rule 132 (r_add_dim -> .)
@@ -4974,7 +4974,7 @@ state 303
 
 state 304
 
-    (42) ARRACC_AUX -> COMA r_add_dim . EXPRESION ARRACC_AUX
+    (42) ARRACC_AUX -> COMA r_add_dim . EXPRESION r_create_quad ARRACC_AUX
     (44) EXPRESION -> . SUBEXP r_seen_subexp EXPRESION_AUX
     (48) SUBEXP -> . EXP r_seen_exp SUBEXP_AUX
     (57) EXP -> . TERMINO r_seen_term EXP_AUX
@@ -5214,16 +5214,13 @@ state 318
 
 state 319
 
-    (42) ARRACC_AUX -> COMA r_add_dim EXPRESION . ARRACC_AUX
-    (42) ARRACC_AUX -> . COMA r_add_dim EXPRESION ARRACC_AUX
-    (43) ARRACC_AUX -> . empty
-    (1) empty -> .
+    (42) ARRACC_AUX -> COMA r_add_dim EXPRESION . r_create_quad ARRACC_AUX
+    (130) r_create_quad -> .
 
-    COMA            shift and go to state 276
-    RSTAPLE         reduce using rule 1 (empty -> .)
+    COMA            reduce using rule 130 (r_create_quad -> .)
+    RSTAPLE         reduce using rule 130 (r_create_quad -> .)
 
-    ARRACC_AUX                     shift and go to state 325
-    empty                          shift and go to state 277
+    r_create_quad                  shift and go to state 325
 
 state 320
 
@@ -5273,10 +5270,16 @@ state 324
 
 state 325
 
-    (42) ARRACC_AUX -> COMA r_add_dim EXPRESION ARRACC_AUX .
+    (42) ARRACC_AUX -> COMA r_add_dim EXPRESION r_create_quad . ARRACC_AUX
+    (42) ARRACC_AUX -> . COMA r_add_dim EXPRESION r_create_quad ARRACC_AUX
+    (43) ARRACC_AUX -> . empty
+    (1) empty -> .
 
-    RSTAPLE         reduce using rule 42 (ARRACC_AUX -> COMA r_add_dim EXPRESION ARRACC_AUX .)
+    COMA            shift and go to state 276
+    RSTAPLE         reduce using rule 1 (empty -> .)
 
+    ARRACC_AUX                     shift and go to state 328
+    empty                          shift and go to state 277
 
 state 326
 
@@ -5297,4 +5300,11 @@ state 327
     (120) CTE_ARR_AUX2SUB -> COMA CTE_ARR_AUX2 .
 
     RBRACKET        reduce using rule 120 (CTE_ARR_AUX2SUB -> COMA CTE_ARR_AUX2 .)
+
+
+state 328
+
+    (42) ARRACC_AUX -> COMA r_add_dim EXPRESION r_create_quad ARRACC_AUX .
+
+    RSTAPLE         reduce using rule 42 (ARRACC_AUX -> COMA r_add_dim EXPRESION r_create_quad ARRACC_AUX .)
 
