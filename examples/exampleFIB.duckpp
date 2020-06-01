@@ -1,0 +1,17 @@
+%% Example for Patitoplusplus
+programa patito;
+
+funcion int fibo(int i)
+{
+	si (i <= 1) entonces {
+			regresa(1);
+	} sino {
+			regresa ( fibo(i-1) + fibo(i-2) );
+	}
+
+}
+
+principal()
+{
+	escribe( fibo(3) );
+}

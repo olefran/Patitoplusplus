@@ -84,7 +84,7 @@ Rule 74    CTE -> CTE_F r_seen_operand
 Rule 75    CTE -> CTE_CH r_seen_operand
 Rule 76    CTE -> CTE_STRING r_seen_operand
 Rule 77    CTE -> FUN
-Rule 78    CTE -> ID r_seen_operand_id ARRDIM
+Rule 78    CTE -> ID r_seen_operand_id ARRACC
 Rule 79    ARROP -> DET_ARR r_seen_operator_mat
 Rule 80    ARROP -> TRANS_ARR r_seen_operator_mat
 Rule 81    ARROP -> INV_ARR r_seen_operator_mat
@@ -231,9 +231,9 @@ error                :
 
 Nonterminals, with rules where they appear
 
-ARRACC               : 38 39
+ARRACC               : 38 39 78
 ARRACC_AUX           : 40 42
-ARRDIM               : 12 13 14 78 108
+ARRDIM               : 12 13 14 108
 ARRDIM_AUX           : 14 16
 ARROP                : 69
 ASIGNACION           : 32 100
@@ -742,26 +742,6 @@ state 40
     DOTCOMA         reduce using rule 15 (ARRDIM -> empty .)
     COMA            reduce using rule 15 (ARRDIM -> empty .)
     RPAREN          reduce using rule 15 (ARRDIM -> empty .)
-    DET_ARR         reduce using rule 15 (ARRDIM -> empty .)
-    TRANS_ARR       reduce using rule 15 (ARRDIM -> empty .)
-    INV_ARR         reduce using rule 15 (ARRDIM -> empty .)
-    MULT            reduce using rule 15 (ARRDIM -> empty .)
-    DIV             reduce using rule 15 (ARRDIM -> empty .)
-    MOD             reduce using rule 15 (ARRDIM -> empty .)
-    PLUS            reduce using rule 15 (ARRDIM -> empty .)
-    MINUS           reduce using rule 15 (ARRDIM -> empty .)
-    MORE            reduce using rule 15 (ARRDIM -> empty .)
-    LESS            reduce using rule 15 (ARRDIM -> empty .)
-    COMPARE         reduce using rule 15 (ARRDIM -> empty .)
-    DIFFERENT       reduce using rule 15 (ARRDIM -> empty .)
-    MOREEQUAL       reduce using rule 15 (ARRDIM -> empty .)
-    LESSEQUAL       reduce using rule 15 (ARRDIM -> empty .)
-    AND             reduce using rule 15 (ARRDIM -> empty .)
-    OR              reduce using rule 15 (ARRDIM -> empty .)
-    HACER           reduce using rule 15 (ARRDIM -> empty .)
-    RSTAPLE         reduce using rule 15 (ARRDIM -> empty .)
-    HASTA           reduce using rule 15 (ARRDIM -> empty .)
-    RBRACKET        reduce using rule 15 (ARRDIM -> empty .)
 
 
 state 41
@@ -1053,26 +1033,6 @@ state 69
     DOTCOMA         reduce using rule 1 (empty -> .)
     COMA            reduce using rule 1 (empty -> .)
     RPAREN          reduce using rule 1 (empty -> .)
-    DET_ARR         reduce using rule 1 (empty -> .)
-    TRANS_ARR       reduce using rule 1 (empty -> .)
-    INV_ARR         reduce using rule 1 (empty -> .)
-    MULT            reduce using rule 1 (empty -> .)
-    DIV             reduce using rule 1 (empty -> .)
-    MOD             reduce using rule 1 (empty -> .)
-    PLUS            reduce using rule 1 (empty -> .)
-    MINUS           reduce using rule 1 (empty -> .)
-    MORE            reduce using rule 1 (empty -> .)
-    LESS            reduce using rule 1 (empty -> .)
-    COMPARE         reduce using rule 1 (empty -> .)
-    DIFFERENT       reduce using rule 1 (empty -> .)
-    MOREEQUAL       reduce using rule 1 (empty -> .)
-    LESSEQUAL       reduce using rule 1 (empty -> .)
-    AND             reduce using rule 1 (empty -> .)
-    OR              reduce using rule 1 (empty -> .)
-    HACER           reduce using rule 1 (empty -> .)
-    RSTAPLE         reduce using rule 1 (empty -> .)
-    HASTA           reduce using rule 1 (empty -> .)
-    RBRACKET        reduce using rule 1 (empty -> .)
 
     r_register_arr                 shift and go to state 39
     ARRDIM                         shift and go to state 75
@@ -1142,26 +1102,6 @@ state 75
     DOTCOMA         reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
     COMA            reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
     RPAREN          reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    DET_ARR         reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    TRANS_ARR       reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    INV_ARR         reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    MULT            reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    DIV             reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    MOD             reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    PLUS            reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    MINUS           reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    MORE            reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    LESS            reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    COMPARE         reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    DIFFERENT       reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    MOREEQUAL       reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    LESSEQUAL       reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    AND             reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    OR              reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    HACER           reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    RSTAPLE         reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    HASTA           reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
-    RBRACKET        reduce using rule 14 (ARRDIM -> r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM .)
 
 
 state 76
@@ -1962,6 +1902,29 @@ state 140
     (41) ARRACC -> empty .
 
     EQUAL           reduce using rule 41 (ARRACC -> empty .)
+    DET_ARR         reduce using rule 41 (ARRACC -> empty .)
+    TRANS_ARR       reduce using rule 41 (ARRACC -> empty .)
+    INV_ARR         reduce using rule 41 (ARRACC -> empty .)
+    MULT            reduce using rule 41 (ARRACC -> empty .)
+    DIV             reduce using rule 41 (ARRACC -> empty .)
+    MOD             reduce using rule 41 (ARRACC -> empty .)
+    PLUS            reduce using rule 41 (ARRACC -> empty .)
+    MINUS           reduce using rule 41 (ARRACC -> empty .)
+    MORE            reduce using rule 41 (ARRACC -> empty .)
+    LESS            reduce using rule 41 (ARRACC -> empty .)
+    COMPARE         reduce using rule 41 (ARRACC -> empty .)
+    DIFFERENT       reduce using rule 41 (ARRACC -> empty .)
+    MOREEQUAL       reduce using rule 41 (ARRACC -> empty .)
+    LESSEQUAL       reduce using rule 41 (ARRACC -> empty .)
+    AND             reduce using rule 41 (ARRACC -> empty .)
+    OR              reduce using rule 41 (ARRACC -> empty .)
+    COMA            reduce using rule 41 (ARRACC -> empty .)
+    RPAREN          reduce using rule 41 (ARRACC -> empty .)
+    HACER           reduce using rule 41 (ARRACC -> empty .)
+    RSTAPLE         reduce using rule 41 (ARRACC -> empty .)
+    DOTCOMA         reduce using rule 41 (ARRACC -> empty .)
+    HASTA           reduce using rule 41 (ARRACC -> empty .)
+    RBRACKET        reduce using rule 41 (ARRACC -> empty .)
 
 
 state 141
@@ -2160,7 +2123,7 @@ state 150
     (75) CTE -> . CTE_CH r_seen_operand
     (76) CTE -> . CTE_STRING r_seen_operand
     (77) CTE -> . FUN
-    (78) CTE -> . ID r_seen_operand_id ARRDIM
+    (78) CTE -> . ID r_seen_operand_id ARRACC
     (83) FUN -> . ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub
 
     LPAREN          shift and go to state 174
@@ -2780,7 +2743,7 @@ state 180
 
 state 181
 
-    (78) CTE -> ID . r_seen_operand_id ARRDIM
+    (78) CTE -> ID . r_seen_operand_id ARRACC
     (83) FUN -> ID . r_check_func LPAREN FUN_AUX RPAREN r_go_sub
     (136) r_seen_operand_id -> .
     (157) r_check_func -> .
@@ -3742,13 +3705,12 @@ state 230
 
 state 231
 
-    (78) CTE -> ID r_seen_operand_id . ARRDIM
-    (14) ARRDIM -> . r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM
-    (15) ARRDIM -> . empty
-    (126) r_register_arr -> .
+    (78) CTE -> ID r_seen_operand_id . ARRACC
+    (40) ARRACC -> . LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc
+    (41) ARRACC -> . empty
     (1) empty -> .
 
-    LSTAPLE         reduce using rule 126 (r_register_arr -> .)
+    LSTAPLE         shift and go to state 139
     DET_ARR         reduce using rule 1 (empty -> .)
     TRANS_ARR       reduce using rule 1 (empty -> .)
     INV_ARR         reduce using rule 1 (empty -> .)
@@ -3773,9 +3735,8 @@ state 231
     HASTA           reduce using rule 1 (empty -> .)
     RBRACKET        reduce using rule 1 (empty -> .)
 
-    ARRDIM                         shift and go to state 262
-    r_register_arr                 shift and go to state 39
-    empty                          shift and go to state 40
+    ARRACC                         shift and go to state 262
+    empty                          shift and go to state 140
 
 state 232
 
@@ -3845,7 +3806,7 @@ state 239
     (75) CTE -> . CTE_CH r_seen_operand
     (76) CTE -> . CTE_STRING r_seen_operand
     (77) CTE -> . FUN
-    (78) CTE -> . ID r_seen_operand_id ARRDIM
+    (78) CTE -> . ID r_seen_operand_id ARRACC
     (117) CTE_ARR_AUXSUB -> . COMA CTE_ARR_AUX
     (118) CTE_ARR_AUXSUB -> . empty
     (83) FUN -> . ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub
@@ -4363,31 +4324,31 @@ state 261
 
 state 262
 
-    (78) CTE -> ID r_seen_operand_id ARRDIM .
+    (78) CTE -> ID r_seen_operand_id ARRACC .
 
-    DET_ARR         reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    TRANS_ARR       reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    INV_ARR         reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    MULT            reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    DIV             reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    MOD             reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    PLUS            reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    MINUS           reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    MORE            reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    LESS            reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    COMPARE         reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    DIFFERENT       reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    MOREEQUAL       reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    LESSEQUAL       reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    AND             reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    OR              reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    COMA            reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    RPAREN          reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    HACER           reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    RSTAPLE         reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    DOTCOMA         reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    HASTA           reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
-    RBRACKET        reduce using rule 78 (CTE -> ID r_seen_operand_id ARRDIM .)
+    DET_ARR         reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    TRANS_ARR       reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    INV_ARR         reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    MULT            reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    DIV             reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    MOD             reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    PLUS            reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    MINUS           reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    MORE            reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    LESS            reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    COMPARE         reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    DIFFERENT       reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    MOREEQUAL       reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    LESSEQUAL       reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    AND             reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    OR              reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    COMA            reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    RPAREN          reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    HACER           reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    RSTAPLE         reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    DOTCOMA         reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    HASTA           reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
+    RBRACKET        reduce using rule 78 (CTE -> ID r_seen_operand_id ARRACC .)
 
 
 state 263
@@ -4487,7 +4448,7 @@ state 268
     (75) CTE -> . CTE_CH r_seen_operand
     (76) CTE -> . CTE_STRING r_seen_operand
     (77) CTE -> . FUN
-    (78) CTE -> . ID r_seen_operand_id ARRDIM
+    (78) CTE -> . ID r_seen_operand_id ARRACC
     (117) CTE_ARR_AUXSUB -> . COMA CTE_ARR_AUX
     (118) CTE_ARR_AUXSUB -> . empty
     (83) FUN -> . ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub
@@ -4545,7 +4506,7 @@ state 273
     (75) CTE -> . CTE_CH r_seen_operand
     (76) CTE -> . CTE_STRING r_seen_operand
     (77) CTE -> . FUN
-    (78) CTE -> . ID r_seen_operand_id ARRDIM
+    (78) CTE -> . ID r_seen_operand_id ARRACC
     (117) CTE_ARR_AUXSUB -> . COMA CTE_ARR_AUX
     (118) CTE_ARR_AUXSUB -> . empty
     (83) FUN -> . ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub
@@ -4969,6 +4930,29 @@ state 303
     (133) r_close_arracc -> .
 
     EQUAL           reduce using rule 133 (r_close_arracc -> .)
+    DET_ARR         reduce using rule 133 (r_close_arracc -> .)
+    TRANS_ARR       reduce using rule 133 (r_close_arracc -> .)
+    INV_ARR         reduce using rule 133 (r_close_arracc -> .)
+    MULT            reduce using rule 133 (r_close_arracc -> .)
+    DIV             reduce using rule 133 (r_close_arracc -> .)
+    MOD             reduce using rule 133 (r_close_arracc -> .)
+    PLUS            reduce using rule 133 (r_close_arracc -> .)
+    MINUS           reduce using rule 133 (r_close_arracc -> .)
+    MORE            reduce using rule 133 (r_close_arracc -> .)
+    LESS            reduce using rule 133 (r_close_arracc -> .)
+    COMPARE         reduce using rule 133 (r_close_arracc -> .)
+    DIFFERENT       reduce using rule 133 (r_close_arracc -> .)
+    MOREEQUAL       reduce using rule 133 (r_close_arracc -> .)
+    LESSEQUAL       reduce using rule 133 (r_close_arracc -> .)
+    AND             reduce using rule 133 (r_close_arracc -> .)
+    OR              reduce using rule 133 (r_close_arracc -> .)
+    COMA            reduce using rule 133 (r_close_arracc -> .)
+    RPAREN          reduce using rule 133 (r_close_arracc -> .)
+    HACER           reduce using rule 133 (r_close_arracc -> .)
+    RSTAPLE         reduce using rule 133 (r_close_arracc -> .)
+    DOTCOMA         reduce using rule 133 (r_close_arracc -> .)
+    HASTA           reduce using rule 133 (r_close_arracc -> .)
+    RBRACKET        reduce using rule 133 (r_close_arracc -> .)
 
     r_close_arracc                 shift and go to state 318
 
@@ -5210,6 +5194,29 @@ state 318
     (40) ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .
 
     EQUAL           reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    DET_ARR         reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    TRANS_ARR       reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    INV_ARR         reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    MULT            reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    DIV             reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    MOD             reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    PLUS            reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    MINUS           reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    MORE            reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    LESS            reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    COMPARE         reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    DIFFERENT       reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    MOREEQUAL       reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    LESSEQUAL       reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    AND             reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    OR              reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    COMA            reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    RPAREN          reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    HACER           reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    RSTAPLE         reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    DOTCOMA         reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    HASTA           reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
+    RBRACKET        reduce using rule 40 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
 
 
 state 319

@@ -220,14 +220,14 @@ def p_SIGN(p):
     | MINUS r_seen_unary_operator
     | empty'''
 
-# CTE → cte_i | cte_f | ct_ch | cte_string | FUN | ID ARRDIM
+# CTE → cte_i | cte_f | ct_ch | cte_string | FUN | ID ARRACC
 def p_CTE(p):
     '''CTE : CTE_I r_seen_operand
     | CTE_F r_seen_operand
     | CTE_CH r_seen_operand
     | CTE_STRING r_seen_operand
     | FUN
-    | ID r_seen_operand_id ARRDIM '''
+    | ID r_seen_operand_id ARRACC '''
     pass
 
 # ARROP→ $ | ! | ?
@@ -445,7 +445,6 @@ def p_r_register_arr(p):
 def p_r_register_dim(p):
     'r_register_dim : '
     global symbol_table, current_var, func_dim_counter, current_var_aux, r_dim
-
     if current_var_aux == current_var:
         func_dim_counter = func_dim_counter + 1
 
@@ -495,8 +494,9 @@ def p_r_check_dim(p):
     global symbol_table, r_dim, operator_stack, pila_dim
     if symbol_table[current_func]['vars'][current_var]['isArray'] is not False:
         r_dim = 1
+        operand_stack.pop()
         pila_dim.append( (p[-3], r_dim) )
-        operator_stack.append("(")
+        register_operator("(")
 
 #
 def p_r_create_quad(p):
@@ -571,7 +571,8 @@ def p_r_close_arracc(p):
     temp, e = get_temp_dir(aux_type)
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
-    temp2, e = get_temp_dir(aux_type)
+        #temp 2 is a pointer array!
+    temp2, e = get_point_dir()
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
@@ -588,9 +589,8 @@ def p_r_close_arracc(p):
 
     # ( + temp virtualAddress(arr) newtemp)
     # temp2 = offset + base(dir)
-    create_quadruple("+", temp, virtualAddress, temp2)
+    create_quadruple("+dir", temp, virtualAddress, temp2)
     operand_stack.append( (aux_type, temp2) )
-
     pop_fake_bottom()
 
 

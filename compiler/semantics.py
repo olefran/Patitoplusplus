@@ -129,6 +129,16 @@ def get_const_dir(current_type):
     const_dir_count[result] = const_dir_count[result] + 1
     return const_dir_count[result] -1, e
 
+# Manejo de la dirección digital de pointers!
+def get_point_dir():
+    global point_dir_count
+    e = None
+    if point_dir_count[0] > POINT_UPPER_LIMIT[0]:
+        e = "Too many " + current_type + " temps"
+        return -1, e
+    point_dir_count[0] = point_dir_count[0] + 1
+    return point_dir_count[0] -1, e
+
 # Funciones
 
 # Registrar un operando en el operand_stack, con su tipo
@@ -154,6 +164,7 @@ def register_operand_id(raw_operand, current_func):
         operand = (symbol_table[current_func]['vars'][raw_operand]['type'], symbol_table[current_func]['vars'][raw_operand]['address']) #Return id by address
         #operand = (symbol_table[current_func]['vars'][raw_operand]['type'], raw_operand) #Return id by name
         operand_stack.append(operand)
+    print("hi ", operand_stack)
     return e
 
 # Esta función llena la operand table y registra cualquier unknown const variables
@@ -181,6 +192,19 @@ def create_operand(raw_operand):
         const_table[raw_operand] = {
             'address': address,
             'type': type_op
+        }
+    else:
+        address = const_table[raw_operand]['address']
+    #return e, (type_op, raw_operand)  #Return constant by name
+    return e, (type_op, address) # Return constant by address
+#
+def create_pointer(raw_operand):
+    e = None
+    if const_table.get(raw_operand) is None:
+        address, e = get_pointer_dir()
+        const_table[raw_operand] = {
+            'address': address,
+            'type': 'pointer'
         }
     else:
         address = const_table[raw_operand]['address']
@@ -222,6 +246,7 @@ def create_quadruple(operator, left_operand, right_operand, result):
 def solve_op_or_cont(ops: [Operations], mark_assigned):
     global operator_stack, operand_stack
     e = None
+    print(operand_stack)
     operator = top(operator_stack)
     if operator in ops:
       right_type, right_operand = operand_stack.pop()
@@ -376,7 +401,7 @@ def func_end(current_func):
     try:
         #symbol_table[current_func]['vars'] = None    #DELETE THE VAR TABLE
         temp_dir_count = list(TEMP_LOWER_LIMIT) #RESET the temp counter
-        var_dir_count = list(VAR_LOWER_LIMIT) #RESET the temp countre
+        var_dir_count = list(VAR_LOWER_LIMIT) #RESET the temp func_dim_counter
     except:
         e = "Not able to delete var table on function: " + current_func
     create_quadruple("ENDFunc", None, None, None)

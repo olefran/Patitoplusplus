@@ -21,7 +21,7 @@ def debugging(result):
     pprint.pprint(symbol_table)
     print("Const Table: ")
     pprint.pprint(const_table)
-    print("Cuadruples: ")
+    print("Quadruples: ")
     i = 0
     for element in quadruples:
        print( i,": ", element)

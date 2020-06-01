@@ -81,14 +81,17 @@ CONST_UPPER_LIMIT =     [20_499, 21_999, 23_499, 24_999]
 TEMP_LOWER_LIMIT =      [25_000, 26_500, 28_000, 29_500]
 TEMP_UPPER_LIMIT =     [26_499, 27_999, 29_499, 30_999]
 
-#CONSTANT_UPPER_LIMIT = 30_999
+#POINTERS                  INT
+POINT_LOWER_LIMIT =     [50_000]
+POINT_UPPER_LIMIT =     [51_499]
+
 
 # Contadores de memoria virutal
 global_dir_count = list(GLOBAL_LOWER_LIMIT)
 var_dir_count = list(VAR_LOWER_LIMIT)
 temp_dir_count = list(TEMP_LOWER_LIMIT)
 const_dir_count = list(CONST_LOWER_LIMIT)
-
+point_dir_count = list(POINT_LOWER_LIMIT)
 # Enumeracion de tipos de datos
 var_types = ('int', 'float', 'char', 'string')
 avail_types = ('int', 'float', 'char', 'string', 'void')

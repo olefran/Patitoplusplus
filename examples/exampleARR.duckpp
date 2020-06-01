@@ -3,13 +3,13 @@ programa patito;
 
 var
 int x, y;
-int Matriz[3, 8], OtraMatriz[3, 3];
+int Matriz[3][8][3], OtraMatriz[3][3][3];
 
 
 principal()
 var
 int Arreglo[4], OtroArreglo[5];
 {
-	Matriz[1,1] = 1;
-	escribe(1 + Matriz[1,1]);
+	Matriz[1,1,1] = 1;
+	escribe(1 + Matriz[1,1,1]);
 }

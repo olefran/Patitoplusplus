@@ -64,9 +64,30 @@ def check_type(dir):
         return 'char'
     if dir < 31000:
         return 'string'
+    if dir < 50000:
+        return 'pointer'
 
 
 def get_value(dir):
+    if dir > 4999 and dir < 12500:
+        if global_memory.get(dir) is None:
+            raise Exception("Undefined dir: " + str(dir) )
+        else:
+            return global_memory[dir]
+    elif dir > 18999 and dir < 25000:
+        if const_table.get(dir) is None:
+            raise Exception("Undefined dir: " + str(dir) )
+        else:
+            return const_table[dir]['value']
+    elif dir > 49999:
+        return get_value(get_value_for_address(dir))
+    else:
+        if top(temp_memory).get(dir) is None:
+            raise Exception("Undefined dir: " + str(dir) )
+        else:
+            return top(temp_memory)[dir]
+
+def get_value_for_address(dir):
     if dir > 4999 and dir < 12500:
         if global_memory.get(dir) is None:
             raise Exception("Undefined dir: " + str(dir) )
@@ -83,26 +104,22 @@ def get_value(dir):
         else:
             return top(temp_memory)[dir]
 
-def get_last_context_value(dir):
-    if dir > 4999 and dir < 12500:
-        if global_memory.get(dir) is None:
-            raise Exception("Undefined dir: " + str(dir) )
-        else:
-            return global_memory[dir]
-    elif dir > 18999 and dir < 25000:
-        if const_table.get(dir) is None:
-            raise Exception("Undefined dir: " + str(dir) )
-        else:
-            return const_table[dir]['value']
-    else:
-        if temp_memory[-2].get(dir) is None:
-            raise Exception("Undefined dir: " + str(dir) )
-        else:
-            print(dir)
-            return temp_memory[-2][dir]
-
 
 def set_value(value, dir):
+    global temp_memory, global_memory
+    e = True
+    try:
+        if dir > 4999 and dir < 12500:
+            global_memory[dir] = value
+        elif dir > 49999:
+            set_value(value, get_value_for_address(dir))
+        else:
+            top(temp_memory)[dir] = value
+    except:
+        e = "Error on assingning value " + str(value) + " to dir " + str(dir)
+    return e
+
+def set_value_for_address(value, dir):
     global temp_memory, global_memory
     e = True
     try:
@@ -111,7 +128,7 @@ def set_value(value, dir):
         else:
             top(temp_memory)[dir] = value
     except:
-        e = "Error on assingning value " + value + " to dir " + dir
+        e = "Error on assingning value " + str(value) + " to dir " + str(dir)
     return e
 
 def goto_solve(first, second, dst):
@@ -262,6 +279,10 @@ def endfunc_solve(first, second, dst):
 #What is this function?!
 def end_solve(first, second, dst):
     return True
+
+def plus_add_solve(first, second, dst):
+    return set_value_for_address( (int) (get_value(first) + get_value(second)), dst)
+
 
 def verify_solve(first, second, dst):
     temp = get_value(dst)
