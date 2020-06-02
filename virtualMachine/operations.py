@@ -196,40 +196,103 @@ def equal_solve(first, second, dst):
     return set_value(get_value(first), dst)
 
 def equal_mat_solve(first, second, dst):
-    for x in range(first[1]):
+    size = 1
+    temp = 0
+    for dim in first[1]:
+        size = size * dim
+    for x in range(size):
         temp = set_value(get_value(first[0] + x), dst[0] + x )
         if temp is not True:
             return temp
     return temp
     #Aqui hay que hacer lo de igualar matrices
 
+def plus_unary_mat_solve(first, second, dst):
+    size = 1
+    temp = 0
+    for dim in first[1]:
+        size = size * dim
+    for x in range(size):
+        temp = set_value(+get_value(first[0] + x), dst[0] + x )
+        if temp is not True:
+            return temp
+    return temp
+
+def minus_unary_mat_solve(first, second, dst):
+    size = 1
+    temp = 0
+    for dim in first[1]:
+        size = size * dim
+    for x in range(size):
+        temp = set_value(-get_value(first[0] + x), dst[0] + x )
+        if temp is not True:
+            return temp
+    return temp
+
+def get_cofactor(first):
+    i = j = 0
+    for row in range(first[1][0]):
+        for col in range(first[1][0]):
+            pass
+
+#Determinante de matrices
 def det_mat_solve(first, second, dst):
-    #Aqui hay que hacer lo de igualar matrices
-    return set_value(get_value(first), dst)
+    return True
 
+#Transpose matrix
 def trans_mat_solve(first, second, dst):
-    #Aqui hay que hacer lo de igualar matrices
-    return set_value(get_value(first), dst)
+    size = 1
+    temp = None
+    for x in range(first[1][0]):
+        for y in range(first[1][1]):
+            temp = set_value(get_value(first[0] + x*first[1][0] + y), dst[0] + y*first[1][1] + x )
+            if temp is not True:
+                return temp
+    return temp
 
+
+#Mar inverse
 def inv_mat_solve(first, second, dst):
-    #Aqui hay que hacer lo de igualar matrices
-    return set_value(get_value(first), dst)
+    return True
 
 def plus_mat_solve(first, second, dst):
-    #Aqui hay que hacer lo de igualar matrices
-    for x in range(first[1]):
+    #Aqui hay que hacer lo de sumar matrices
+    size = 1
+    temp = None
+    for dim in first[1]:
+        size = size * dim
+    for x in range(size):
         temp = set_value(get_value(first[0] + x) + get_value(second[0] + x), dst[0] + x )
         if temp is not True:
             return temp
     return temp
 
 def minus_mat_solve(first, second, dst):
-    #Aqui hay que hacer lo de igualar matrices
-    for x in range(first[1]):
+    #Aqui hay que hacer lo de restar matrices
+    size = 1
+    temp = None
+    for dim in first[1]:
+        size = size * dim
+    for x in range(size):
         temp = set_value(get_value(first[0] + x) - get_value(second[0] + x), dst[0] + x )
         if temp is not True:
             return temp
     return temp
+
+def times_mat_solve(first, second, dst):
+    #Aqui hay que hacer lo de multiplicar matrices (solo de 2 dimensiones)
+    result = 0
+    temp = None
+    for i in range( first[1][0] ):
+        for j in range ( second[1][1] ):
+            for k in range( first[1][1] ):
+                # result += X[i][k] + Y[k][j]
+                result = result + get_value(first[0] + i * first[1][0] + k) * get_value(second[0] + k * second[1][0] + j)
+            temp = set_value(result, dst[0] + i * first[1][0] + j)
+            if temp is not True:
+                return temp
+    return temp
+
 
 #Does not distingish between a char and a string
 #Also this is a dumb way to check types, jesus

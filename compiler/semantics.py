@@ -304,20 +304,35 @@ def solve_op_or_cont(ops: [Operations], mark_assigned):
 #Checa operaciones matriciales especiales de operador, dentro de solve_op_or_cont (Que fea esat esta funcion)
 def check_mat_op(operator, right_operand, right_name, left_operand, left_name, result_type, mark_assigned):
     e = None
+    size_right = []
+    size_left = []
 
     if symbol_table[current_func]['vars'].get(right_name) is None:
         size_right = right_name
     else:
-        size_right = size_arr_calc(symbol_table[current_func]['vars'][right_name]['isArray'])
+        for element in symbol_table[current_func]['vars'][right_name]['isArray'].items():
+            size_right.append(element[1]['Ls'])
+        size_right = tuple(size_right)
 
     if symbol_table[current_func]['vars'].get(left_name) is None:
         size_left = left_name
     else:
-        size_left = size_arr_calc(symbol_table[current_func]['vars'][left_name]['isArray'])
+        for element in symbol_table[current_func]['vars'][left_name]['isArray'].items():
+            size_left.append(element[1]['Ls'])
+        size_left = tuple(size_left)
 
-    if size_right != size_left:
-        e = "Matrices (" + str(right_name) + ", " + str(left_name) + ") don't have size (" + str(size_right) + "," + str(size_left) + ") for the op: " + operator
-        return result_type, -1, e
+    if operator != "*":
+        if size_right != size_left:
+            e = "Matrices (" + str(right_name) + ", " + str(left_name) + ") don't have size (" + str(size_right) + "," + str(size_left) + ") for the op: " + operator
+            return result_type, -1, e
+    else:
+        if len(size_right) != 2:
+            e = "Matrix multiplication can only be done in 2 dimentions, recieved" + str(right_name) + ", size :" + str(size_right)
+            return result_type, -1, e
+        elif size_right[1] != size_left[0]:
+            e = "Incorrect Matrix multiplication dimentions, recieved:" + str(size_right[1]) + " != " + str(size_left[0])
+            return result_type, -1, e
+
     operator = operator + "mat"
 
     if mark_assigned:
@@ -326,8 +341,12 @@ def check_mat_op(operator, right_operand, right_name, left_operand, left_name, r
     else:
         temp, e = get_temp_dir(result_type)
         create_operand_point(temp, size_right)
-        set_temp_size_arr(result_type, size_right)
-        create_quadruple(operator, (left_operand, size_left), (right_operand, size_right) , (temp, size_left) )
+        set_temp_size_arr(result_type, sum(size_right) )
+        if operator == "*":
+            size_temp = (size_right[0], size_left[1])
+            create_quadruple(operator, (left_operand, size_left), (right_operand, size_right) , (temp, size_temp) )
+        else:
+            create_quadruple(operator, (left_operand, size_left), (right_operand, size_right) , (temp, size_left) )
 
     return result_type, temp, e
 
@@ -349,29 +368,49 @@ def solve_unary_or_cont(ops: [Operations]):
             return f"Type mismatch: Invalid operation \'{operator}\' on given operand \'{operand_name}\'"
         temp, e = get_temp_dir(result_type)
 
-        if operator == '¡':
+        #Caso especial para operadores unarios
+        if const_table[operand_name].get('name') is not None:
+            size = []
             name = const_table[operand_name]['name']
             if symbol_table[current_func]['vars'].get(name) is None:
                 size = name
             else:
-                size = size_arr_calc(symbol_table[current_func]['vars'][name]['isArray'])
-            create_operand_point(temp, size)
-            set_temp_size_arr(result_type, size)
-            create_quadruple(operator, (operand_name, size), None , (temp, size) )
+                for element in symbol_table[current_func]['vars'][name]['isArray'].items():
+                    size.append(element[1]['Ls'])
+                size = tuple(size)
 
-        elif operator == '?':
-            name = const_table[operand_name]['name']
-            if symbol_table[current_func]['vars'].get(name) is None:
-                size = name
+            if operator == '$':
+                if size[0] != size[1]:
+                    return "Incorrect dim for operator " + str(operator) + ": " + str(size[0]) + " =!" + str(size[1])
+                create_quadruple(operator, (operand_name, size), None , temp )
+
+            elif operator == '¡':
+                if len(size) != 2:
+                    return "Incorrect dim for operator " + str(operator) + " recieved " + str(len(size)) + " expected 2"
+                temp_size = tuple([size[1], size[0]])
+                create_operand_point(temp, temp_size)
+                set_temp_size_arr(result_type, sum(size) )
+                create_quadruple(operator, (operand_name, size), None , (temp, temp_size) )
+
+            elif operator == '?':
+                if len(size) != 2:
+                    return "Incorrect dim for operator " + str(operator) + " recieved " + str(len(size)) + " expected 2"
+                create_operand_point(temp, size)
+                set_temp_size_arr(result_type, sum(size) )
+                create_quadruple(operator, (operand_name, size), None , (temp, size) )
+
             else:
-                size = size_arr_calc(symbol_table[current_func]['vars'][name]['isArray'])
-            create_operand_point(temp, size)
-            set_temp_size_arr(result_type, size)
-            create_quadruple(operator, (operand_name, size), None , (temp, size) )
+                operator = operator + "mat"
+                create_operand_point(temp, size)
+                set_temp_size_arr(result_type, sum(size) )
+                create_quadruple(operator, (operand_name, size), None , (temp, size) )
 
+        elif operator == '$' or operator == '¡' or operator == '?':
+            return "Operator " + str(operator) + " not given a Matrix, recived: " + str(result_type)
         else :
             create_quadruple(operator, operand_name, None, temp)
-            operand_stack.append((result_type, temp))
+
+        operand_stack.append((result_type, temp))
 
     return e
 

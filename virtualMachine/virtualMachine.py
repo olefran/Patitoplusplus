@@ -41,7 +41,10 @@ operations = {
     "¡" : trans_mat_solve,
     "?" : inv_mat_solve,
     "+mat" : plus_mat_solve,
-    "-mat" : minus_mat_solve
+    "-mat" : minus_mat_solve,
+    "*mat" : times_mat_solve,
+    "unary+mat": plus_unary_mat_solve,
+    "unary-mat": minus_unary_mat_solve
  } #TODO: Implement functions, AND implement matrix based operations
 
 
