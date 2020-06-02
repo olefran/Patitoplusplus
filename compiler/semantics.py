@@ -65,6 +65,25 @@ def set_global_size_arr(current_type, arr_size):
         global_dir_count[result] = global_dir_count[result] + arr_size - 1
         return e
 
+def set_temp_size_arr(current_type, arr_size):
+        global global_dir_count
+        switcher = {
+        "int": 0,
+        "float": 1,
+        "char": 2,
+        "string": 3
+        }
+        e = None
+        result = switcher.get(current_type, -1)
+        if result < 0:
+            e = "Undefined type: " + current_type
+            return e
+        if temp_dir_count[result] + arr_size - 1 > TEMP_UPPER_LIMIT[result]:
+            e = "Too many " + current_type + " vars"
+            return e
+        temp_dir_count[result] = temp_dir_count[result] + arr_size - 1
+        return e
+
 def pop_operand():
     o = operand_stack.pop()
     return o
@@ -261,7 +280,7 @@ def solve_op_or_cont(ops: [Operations], mark_assigned):
       #Checa si ambos operandos son matrices y genera los cuadruplos
       if const_table.get(right_operand) is not None and const_table.get(left_operand) is not None:
           if const_table[right_operand].get('name') is not None and const_table[left_operand].get('name') is not None:
-              operator, e = check_mat_op(operator, right_operand, const_table[right_operand]['name'], left_operand, const_table[left_operand]['name'], result_type, mark_assigned)
+              result_type, temp, e = check_mat_op(operator, right_operand, const_table[right_operand]['name'], left_operand, const_table[left_operand]['name'], result_type, mark_assigned)
               if e:
                   return e
 
@@ -285,25 +304,47 @@ def solve_op_or_cont(ops: [Operations], mark_assigned):
 #Checa operaciones matriciales especiales de operador, dentro de solve_op_or_cont (Que fea esat esta funcion)
 def check_mat_op(operator, right_operand, right_name, left_operand, left_name, result_type, mark_assigned):
     e = None
-    dim_right = symbol_table[current_func]['vars'][right_name]['isArray']
-    dim_left = symbol_table[current_func]['vars'][left_name]['isArray']
-    if dim_right != dim_left:
-        e = "Matrices" "don't have dim (" + dim_right + "," + dim_left + ") for the op: " + operador
-        return operador, e
+    # dim_right = None
+    # dim_left = None
+    # if symbol_table[current_func]['vars'].get(right_name) is None:
+    #     dim_right = right_name
+    # else:
+    #     dim_right = len(symbol_table[current_func]['vars'][right_name]['isArray'])
+    #
+    # if symbol_table[current_func]['vars'].get(left_name) is None:
+    #     dim_left = left_name
+    # else:
+    #     dim_left = len(symbol_table[current_func]['vars'][left_name]['isArray'])
+
+
+    if symbol_table[current_func]['vars'].get(right_name) is None:
+        size_right = right_name
+    else:
+        size_right = size_arr_calc(symbol_table[current_func]['vars'][right_name]['isArray'])
+
+    if symbol_table[current_func]['vars'].get(left_name) is None:
+        size_left = left_name
+    else:
+        size_left = size_arr_calc(symbol_table[current_func]['vars'][left_name]['isArray'])
+
+    #if dim_right != dim_left:
+    if size_right != size_left:
+        e = "Matrices (" + str(right_name) + ", " + str(left_name) + ") don't have size (" + str(size_right) + "," + str(size_left) + ") for the op: " + operator
+        return result_type, -1, e
     operator = operator + "mat"
 
-    size_right = size_arr_calc(symbol_table[current_func]['vars'][right_name]['isArray'])
-    size_left = size_arr_calc(symbol_table[current_func]['vars'][left_name]['isArray'])
+
 
     if mark_assigned:
       create_quadruple(operator, (right_operand, size_right) , None, ( left_operand, size_left ) )
       temp = left_operand
     else:
         temp, e = get_temp_dir(result_type)
-        create_quadruple(operator, left_operand, right_operand, temp)
-    operand_stack.append( (result_type, temp) ) #Se quedan los results en el stack
+        create_operand_point(temp, size_right)
+        set_temp_size_arr(result_type, size_right)
+        create_quadruple(operator, (left_operand, size_left), (right_operand, size_right) , (temp, size_left) )
 
-    return operator, e
+    return result_type, temp, e
 
 
 
@@ -329,9 +370,6 @@ def solve_unary_or_cont(ops: [Operations]):
 
     return e
 
-
-
-#
 #def solve_expression(result_type, right_operand, left_operand):
 #    global current_func
     #TODO: Add adresses to variables and CTEs
