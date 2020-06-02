@@ -164,7 +164,6 @@ def register_operand_id(raw_operand, current_func):
         operand = (symbol_table[current_func]['vars'][raw_operand]['type'], symbol_table[current_func]['vars'][raw_operand]['address']) #Return id by address
         #operand = (symbol_table[current_func]['vars'][raw_operand]['type'], raw_operand) #Return id by name
         operand_stack.append(operand)
-    print("hi ", operand_stack)
     return e
 
 # Esta función llena la operand table y registra cualquier unknown const variables
@@ -198,18 +197,19 @@ def create_operand(raw_operand):
     #return e, (type_op, raw_operand)  #Return constant by name
     return e, (type_op, address) # Return constant by address
 #
-def create_pointer(raw_operand):
+def create_operand_point(raw_operand, name):
     e = None
     if const_table.get(raw_operand) is None:
-        address, e = get_pointer_dir()
+        address, e = get_const_dir('int')
         const_table[raw_operand] = {
             'address': address,
-            'type': 'pointer'
+            'type': 'pointer',
+            'name' : name
         }
     else:
         address = const_table[raw_operand]['address']
     #return e, (type_op, raw_operand)  #Return constant by name
-    return e, (type_op, address) # Return constant by address
+    return e, ('int', address) # Return constant by address
 
 #Register a operator (raw_symbol) on the operator_stack
 def register_operator(raw_operator):
@@ -246,7 +246,6 @@ def create_quadruple(operator, left_operand, right_operand, result):
 def solve_op_or_cont(ops: [Operations], mark_assigned):
     global operator_stack, operand_stack
     e = None
-    print(operand_stack)
     operator = top(operator_stack)
     if operator in ops:
       right_type, right_operand = operand_stack.pop()
@@ -258,13 +257,22 @@ def solve_op_or_cont(ops: [Operations], mark_assigned):
           return f'Expression returns no value.'
         return f'Type mismatch: Invalid operation \'{operator}\' on given operand \'{right_operand}\' and \'{left_operand}\''
       temp, e = None, None
-      if mark_assigned:
+
+      #Checa si ambos operandos son matrices y genera los cuadruplos
+      if const_table.get(right_operand) is not None and const_table.get(left_operand) is not None:
+          if const_table[right_operand].get('name') is not None and const_table[left_operand].get('name') is not None:
+              operator, e = check_mat_op(operator, right_operand, const_table[right_operand]['name'], left_operand, const_table[left_operand]['name'], result_type, mark_assigned)
+              if e:
+                  return e
+
+      elif mark_assigned:
           create_quadruple(operator, right_operand, None, left_operand)
           temp = left_operand
       else:
           temp, e = get_temp_dir(result_type)
           create_quadruple(operator, left_operand, right_operand, temp)
       operand_stack.append( (result_type, temp) ) #Se quedan los results en el stack
+
     elif operator == ')':
         operator_stack.pop()
         #print(top(operator))
@@ -273,6 +281,32 @@ def solve_op_or_cont(ops: [Operations], mark_assigned):
         else:
             operator = operator_stack.pop()
     return e
+
+#Checa operaciones matriciales especiales de operador, dentro de solve_op_or_cont (Que fea esat esta funcion)
+def check_mat_op(operator, right_operand, right_name, left_operand, left_name, result_type, mark_assigned):
+    e = None
+    dim_right = symbol_table[current_func]['vars'][right_name]['isArray']
+    dim_left = symbol_table[current_func]['vars'][left_name]['isArray']
+    if dim_right != dim_left:
+        e = "Matrices" "don't have dim (" + dim_right + "," + dim_left + ") for the op: " + operador
+        return operador, e
+    operator = operator + "mat"
+
+    size_right = size_arr_calc(symbol_table[current_func]['vars'][right_name]['isArray'])
+    size_left = size_arr_calc(symbol_table[current_func]['vars'][left_name]['isArray'])
+
+    if mark_assigned:
+      create_quadruple(operator, (right_operand, size_right) , None, ( left_operand, size_left ) )
+      temp = left_operand
+    else:
+        temp, e = get_temp_dir(result_type)
+        create_quadruple(operator, left_operand, right_operand, temp)
+    operand_stack.append( (result_type, temp) ) #Se quedan los results en el stack
+
+    return operator, e
+
+
+
 
 #Generates cuadruples for unary operations
 def solve_unary_or_cont(ops: [Operations]):
@@ -327,10 +361,17 @@ def fill_quad(end, cont):
 # end if OR while statement and fill waiting goto dir
 def cond_end(type_op):
     e = None
-    global jump_stack
+    global jump_stack, for_operand_stack
     end = jump_stack.pop()
     if type_op == "while" or type_op == "for":
         loop_return = jump_stack.pop()
+        if type_op == "for":
+            operand = for_operand_stack.pop()
+            e, (type, address) = create_operand(1)
+            temp, e =  get_temp_dir(type)
+            create_quadruple('+', operand, address, temp)
+            create_quadruple('=', temp, None, operand)
+            loop_return = loop_return - 1
         create_quadruple('GOTO', None , None, loop_return)
     e = fill_quad(end, quad_pointer)
     return e
@@ -357,15 +398,24 @@ def goto_main(function):
     create_quadruple('GOTO', None, None, None)
     jump_stack.append(quad_pointer - 1)
 
+def set_for():
+    global jump_stack, for_operand_stack
+    e = None
+    if top(operand_stack)[0] != 'int':
+        e = "Expected: 'int' type on expression"
+    type, operand = top(operand_stack)
+    for_operand_stack.append(operand)
+
+
 #set quad_pointer
 def gen_for():
-    global jump_stack
+    global jump_stack, for_operand_stack
     e = None
     if top(operand_stack)[0] != 'int':
         e = "Expected: 'int' type on expression"
     else:
-        operator_stack.append(">")
-        e = solve_op_or_cont(['>'], mark_assigned = False)
+        operator_stack.append("<")
+        e = solve_op_or_cont(['<'], mark_assigned = False)
         type, operand = operand_stack.pop()
         create_quadruple('GOTOF', operand, None, None)
         jump_stack.append(quad_pointer - 1)
@@ -489,3 +539,10 @@ def print_constants():
 def end_princ():
     global jump_stack, quadruples
     quadruples[jump_stack.pop()][3] = quad_pointer
+
+
+def size_arr_calc(arr_isArray):
+    size = 1
+    for element in arr_isArray.items():
+        size = size * element[1]['Ls']
+    return size

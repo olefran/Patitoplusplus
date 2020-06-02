@@ -195,6 +195,42 @@ def and_solve(first, second, dst):
 def equal_solve(first, second, dst):
     return set_value(get_value(first), dst)
 
+def equal_mat_solve(first, second, dst):
+    for x in range(first[1]):
+        temp = set_value(get_value(first[0] + x), dst[0] + x )
+        if temp is not True:
+            return temp
+    return temp
+    #Aqui hay que hacer lo de igualar matrices
+
+def det_mat_solve(first, second, dst):
+    #Aqui hay que hacer lo de igualar matrices
+    return set_value(get_value(first), dst)
+
+def trans_mat_solve(first, second, dst):
+    #Aqui hay que hacer lo de igualar matrices
+    return set_value(get_value(first), dst)
+
+def inv_mat_solve(first, second, dst):
+    #Aqui hay que hacer lo de igualar matrices
+    return set_value(get_value(first), dst)
+
+def plus_mat_solve(first, second, dst):
+    #Aqui hay que hacer lo de igualar matrices
+    for x in range(first[1]):
+        temp = set_value(get_value(first[0] + x) + get_value(first[0] + x), dst[0] + x )
+        if temp is not True:
+            return temp
+    return temp
+
+def minus_mat_solve(first, second, dst):
+    #Aqui hay que hacer lo de igualar matrices
+    for x in range(first[1]):
+        temp = set_value(get_value(first[0] + x) - get_value(first[0] + x), dst[0] + x )
+        if temp is not True:
+            return temp
+    return temp
+
 #Does not distingish between a char and a string
 #Also this is a dumb way to check types, jesus
 def lee_solve(first, second, dst):
@@ -233,6 +269,14 @@ def escribe_solve(first, second, dst):
 def gotof_solve(first, second, dst):
     global quad_pointer
     if check_true( get_value(first) ):
+        return True
+    else:
+        quad_pointer = dst
+        return False
+
+def gotov_solve(first, second, dst):
+    global quad_pointer
+    if not check_true( get_value(first) ):
         return True
     else:
         quad_pointer = dst

@@ -294,7 +294,7 @@ def p_WHILE_AUX(p):
 
 # FOR → desde ASIGNACION hasta EXPRESION hacer FOR2
 def p_FOR(p):
-    'FOR : DESDE ASIGNACION HASTA EXPRESION r_for_gen HACER FOR2 r_for_end'
+    'FOR : DESDE ASIGNACION r_set_for HASTA EXPRESION r_for_gen HACER FOR2 r_for_end'
     pass
 
 # FOR2 → BLOQUE | COND
@@ -440,6 +440,9 @@ def p_r_register_arr(p):
     if current_var is not None:
         if symbol_table[current_func]['vars'][current_var].get('isArray') is False:
             symbol_table[current_func]['vars'][current_var]['isArray'] = {}
+        e, (virtualAddress_type, virtualAddress) = create_operand_point(symbol_table[current_func]['vars'][current_var]['address'], current_var)
+        if e:
+            handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 
 def p_r_register_dim(p):
@@ -479,7 +482,7 @@ def p_r_populate_r(p):
             last_node = key[0]
         k = offset
         symbol_table[current_func]['vars'][current_var]['isArray'][last_node]['m_dim'] = -k
-        arr_size = symbol_table[current_func]['vars'][current_var]['isArray'][last_node]['R'] - 1
+        arr_size = size_arr_calc(symbol_table[current_func]['vars'][current_var]['isArray'])
         e = None
         if current_func == 'global':
             e = set_global_size_arr(symbol_table[current_func]['vars'][current_var]['type'],arr_size)
@@ -492,7 +495,11 @@ def p_r_populate_r(p):
 def p_r_check_dim(p):
     'r_check_dim : '
     global symbol_table, r_dim, operator_stack, pila_dim
-    if symbol_table[current_func]['vars'][current_var]['isArray'] is not False:
+    temp_current = current_func
+    if symbol_table[temp_current]['vars'].get(p[-3]) is None:
+        temp_current = 'global'
+
+    if symbol_table[temp_current]['vars'][p[-3]]['isArray'] is not False:
         r_dim = 1
         operand_stack.pop()
         pila_dim.append( (p[-3], r_dim) )
@@ -506,7 +513,6 @@ def p_r_create_quad(p):
     temp_current = current_func
     if top(operand_stack)[0] != 'int':
         e = "Expected int on array: " + str(current_var) + " but recieved + " + top(operand_stack)[0]
-
     if symbol_table[temp_current]['vars'].get(top(pila_dim)[0]) is None:
         if symbol_table['global']['vars'].get(top(pila_dim)[0]) is None:
             e = "Undefined Arr " + top(pila_dim)[[0]]
@@ -528,7 +534,7 @@ def p_r_create_quad(p):
     if symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'].get(r_dim) is not None:
         aux_type, aux = operand_stack.pop()
         temp, e = get_temp_dir(aux_type)
-        e, (m_dim_type, m_dim_address) = create_operand( symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['m_dim'])
+        e, (m_dim_type, m_dim_address) = create_operand( symbol_table[temp_current]['vars'][top(pila_dim)[0]]['isArray'][r_dim-1]['m_dim']-1)
         if e:
             handle_error(p.lineno(-1), p.lexpos(-1), e)
         create_quadruple("*", aux, m_dim_address, temp)
@@ -540,6 +546,7 @@ def p_r_create_quad(p):
         temp, e = get_temp_dir(aux_type)
         create_quadruple("+", aux, aux2, temp)
         operand_stack.append((aux_type, temp))
+
 
 def p_r_register_princ(p):
     'r_register_princ : '
@@ -583,7 +590,7 @@ def p_r_close_arracc(p):
     create_quadruple("+", aux, m_dim_address, temp)
 
     #Create a new operand with the virtual address of the array, AS a value of a new const
-    e, (virtualAddress_type, virtualAddress) = create_operand(symbol_table[temp_current]['vars'][top(pila_dim)[0]]['address'])
+    e, (virtualAddress_type, virtualAddress) = create_operand_point(symbol_table[temp_current]['vars'][top(pila_dim)[0]]['address'], top(pila_dim)[0])
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
@@ -704,6 +711,13 @@ def p_r_while_end(p):
     e = cond_end("while")
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_set_for(p):
+    'r_set_for : '
+    e = set_for()
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
 
 def p_r_for_gen(p):
     'r_for_gen : '

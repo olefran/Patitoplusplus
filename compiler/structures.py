@@ -44,6 +44,9 @@ r_dim = 1
 pila_dim = []
 
 
+#Contador de operandos para for
+for_operand_stack = []
+
 # Variables Auxiliares para currents
 current_type = None
 current_func = 'global' # Scope

@@ -27,6 +27,7 @@ operations = {
     "ESCRIBE" : escribe_solve, #Escribe varias
     "GOTO" : goto_solve,
     "GOTOF" : gotof_solve,
+    "GOTOV" : gotov_solve,
     "GOSUB" : gosub_solve,
     "PARAM" : param_solve,
     "ERA" : era_solve,
@@ -34,7 +35,13 @@ operations = {
     "ENDFunc" : endfunc_solve,
     "END" : end_solve,
     "VER" : verify_solve,
-    "+dir" : plus_add_solve
+    "+dir" : plus_add_solve,
+    "=mat" : equal_mat_solve,
+    "$" : det_mat_solve,
+    "¡" : trans_mat_solve,
+    "?" : inv_mat_solve,
+    "+mat" : plus_mat_solve,
+    "-mat" : minus_mat_solve
  } #TODO: Implement functions, AND implement matrix based operations
 
 
@@ -51,7 +58,7 @@ def main():
           print("Error on quad:", quad_pointer, ": ", e)
           break
       quad_pointer = get_pointer()
-  # print_structs()
+  #print_structs()
 
 # Correr el main
 if __name__ == "__main__":
