@@ -145,12 +145,12 @@ Rule 135   r_seen_operand -> <empty>
 Rule 136   r_seen_operand_id -> <empty>
 Rule 137   r_seen_operator -> <empty>
 Rule 138   r_seen_unary_operator -> <empty>
-Rule 139   r_seen_equal -> <empty>
-Rule 140   r_seen_subexp -> <empty>
-Rule 141   r_seen_exp -> <empty>
-Rule 142   r_seen_term -> <empty>
-Rule 143   r_seen_factor -> <empty>
-Rule 144   r_seen_operator_mat -> <empty>
+Rule 139   r_seen_operator_mat -> <empty>
+Rule 140   r_seen_equal -> <empty>
+Rule 141   r_seen_subexp -> <empty>
+Rule 142   r_seen_exp -> <empty>
+Rule 143   r_seen_term -> <empty>
+Rule 144   r_seen_factor -> <empty>
 Rule 145   r_pop_fake_bottom -> <empty>
 Rule 146   r_check_int -> <empty>
 Rule 147   r_if_end -> <empty>
@@ -1991,89 +1991,89 @@ state 143
 state 144
 
     (44) EXPRESION -> SUBEXP . r_seen_subexp EXPRESION_AUX
-    (140) r_seen_subexp -> .
+    (141) r_seen_subexp -> .
 
-    AND             reduce using rule 140 (r_seen_subexp -> .)
-    OR              reduce using rule 140 (r_seen_subexp -> .)
-    COMA            reduce using rule 140 (r_seen_subexp -> .)
-    RPAREN          reduce using rule 140 (r_seen_subexp -> .)
-    RSTAPLE         reduce using rule 140 (r_seen_subexp -> .)
-    HACER           reduce using rule 140 (r_seen_subexp -> .)
-    DOTCOMA         reduce using rule 140 (r_seen_subexp -> .)
-    HASTA           reduce using rule 140 (r_seen_subexp -> .)
+    AND             reduce using rule 141 (r_seen_subexp -> .)
+    OR              reduce using rule 141 (r_seen_subexp -> .)
+    COMA            reduce using rule 141 (r_seen_subexp -> .)
+    RPAREN          reduce using rule 141 (r_seen_subexp -> .)
+    RSTAPLE         reduce using rule 141 (r_seen_subexp -> .)
+    HACER           reduce using rule 141 (r_seen_subexp -> .)
+    DOTCOMA         reduce using rule 141 (r_seen_subexp -> .)
+    HASTA           reduce using rule 141 (r_seen_subexp -> .)
 
     r_seen_subexp                  shift and go to state 169
 
 state 145
 
     (48) SUBEXP -> EXP . r_seen_exp SUBEXP_AUX
-    (141) r_seen_exp -> .
+    (142) r_seen_exp -> .
 
-    MORE            reduce using rule 141 (r_seen_exp -> .)
-    LESS            reduce using rule 141 (r_seen_exp -> .)
-    COMPARE         reduce using rule 141 (r_seen_exp -> .)
-    DIFFERENT       reduce using rule 141 (r_seen_exp -> .)
-    MOREEQUAL       reduce using rule 141 (r_seen_exp -> .)
-    LESSEQUAL       reduce using rule 141 (r_seen_exp -> .)
-    AND             reduce using rule 141 (r_seen_exp -> .)
-    OR              reduce using rule 141 (r_seen_exp -> .)
-    COMA            reduce using rule 141 (r_seen_exp -> .)
-    RPAREN          reduce using rule 141 (r_seen_exp -> .)
-    RSTAPLE         reduce using rule 141 (r_seen_exp -> .)
-    HACER           reduce using rule 141 (r_seen_exp -> .)
-    DOTCOMA         reduce using rule 141 (r_seen_exp -> .)
-    HASTA           reduce using rule 141 (r_seen_exp -> .)
+    MORE            reduce using rule 142 (r_seen_exp -> .)
+    LESS            reduce using rule 142 (r_seen_exp -> .)
+    COMPARE         reduce using rule 142 (r_seen_exp -> .)
+    DIFFERENT       reduce using rule 142 (r_seen_exp -> .)
+    MOREEQUAL       reduce using rule 142 (r_seen_exp -> .)
+    LESSEQUAL       reduce using rule 142 (r_seen_exp -> .)
+    AND             reduce using rule 142 (r_seen_exp -> .)
+    OR              reduce using rule 142 (r_seen_exp -> .)
+    COMA            reduce using rule 142 (r_seen_exp -> .)
+    RPAREN          reduce using rule 142 (r_seen_exp -> .)
+    RSTAPLE         reduce using rule 142 (r_seen_exp -> .)
+    HACER           reduce using rule 142 (r_seen_exp -> .)
+    DOTCOMA         reduce using rule 142 (r_seen_exp -> .)
+    HASTA           reduce using rule 142 (r_seen_exp -> .)
 
     r_seen_exp                     shift and go to state 170
 
 state 146
 
     (57) EXP -> TERMINO . r_seen_term EXP_AUX
-    (142) r_seen_term -> .
+    (143) r_seen_term -> .
 
-    PLUS            reduce using rule 142 (r_seen_term -> .)
-    MINUS           reduce using rule 142 (r_seen_term -> .)
-    MORE            reduce using rule 142 (r_seen_term -> .)
-    LESS            reduce using rule 142 (r_seen_term -> .)
-    COMPARE         reduce using rule 142 (r_seen_term -> .)
-    DIFFERENT       reduce using rule 142 (r_seen_term -> .)
-    MOREEQUAL       reduce using rule 142 (r_seen_term -> .)
-    LESSEQUAL       reduce using rule 142 (r_seen_term -> .)
-    AND             reduce using rule 142 (r_seen_term -> .)
-    OR              reduce using rule 142 (r_seen_term -> .)
-    COMA            reduce using rule 142 (r_seen_term -> .)
-    RPAREN          reduce using rule 142 (r_seen_term -> .)
-    RSTAPLE         reduce using rule 142 (r_seen_term -> .)
-    HACER           reduce using rule 142 (r_seen_term -> .)
-    DOTCOMA         reduce using rule 142 (r_seen_term -> .)
-    HASTA           reduce using rule 142 (r_seen_term -> .)
+    PLUS            reduce using rule 143 (r_seen_term -> .)
+    MINUS           reduce using rule 143 (r_seen_term -> .)
+    MORE            reduce using rule 143 (r_seen_term -> .)
+    LESS            reduce using rule 143 (r_seen_term -> .)
+    COMPARE         reduce using rule 143 (r_seen_term -> .)
+    DIFFERENT       reduce using rule 143 (r_seen_term -> .)
+    MOREEQUAL       reduce using rule 143 (r_seen_term -> .)
+    LESSEQUAL       reduce using rule 143 (r_seen_term -> .)
+    AND             reduce using rule 143 (r_seen_term -> .)
+    OR              reduce using rule 143 (r_seen_term -> .)
+    COMA            reduce using rule 143 (r_seen_term -> .)
+    RPAREN          reduce using rule 143 (r_seen_term -> .)
+    RSTAPLE         reduce using rule 143 (r_seen_term -> .)
+    HACER           reduce using rule 143 (r_seen_term -> .)
+    DOTCOMA         reduce using rule 143 (r_seen_term -> .)
+    HASTA           reduce using rule 143 (r_seen_term -> .)
 
     r_seen_term                    shift and go to state 171
 
 state 147
 
     (61) TERMINO -> FACTOR . r_seen_factor TERMINO_AUX
-    (143) r_seen_factor -> .
+    (144) r_seen_factor -> .
 
-    MULT            reduce using rule 143 (r_seen_factor -> .)
-    DIV             reduce using rule 143 (r_seen_factor -> .)
-    MOD             reduce using rule 143 (r_seen_factor -> .)
-    PLUS            reduce using rule 143 (r_seen_factor -> .)
-    MINUS           reduce using rule 143 (r_seen_factor -> .)
-    MORE            reduce using rule 143 (r_seen_factor -> .)
-    LESS            reduce using rule 143 (r_seen_factor -> .)
-    COMPARE         reduce using rule 143 (r_seen_factor -> .)
-    DIFFERENT       reduce using rule 143 (r_seen_factor -> .)
-    MOREEQUAL       reduce using rule 143 (r_seen_factor -> .)
-    LESSEQUAL       reduce using rule 143 (r_seen_factor -> .)
-    AND             reduce using rule 143 (r_seen_factor -> .)
-    OR              reduce using rule 143 (r_seen_factor -> .)
-    COMA            reduce using rule 143 (r_seen_factor -> .)
-    RPAREN          reduce using rule 143 (r_seen_factor -> .)
-    RSTAPLE         reduce using rule 143 (r_seen_factor -> .)
-    HACER           reduce using rule 143 (r_seen_factor -> .)
-    DOTCOMA         reduce using rule 143 (r_seen_factor -> .)
-    HASTA           reduce using rule 143 (r_seen_factor -> .)
+    MULT            reduce using rule 144 (r_seen_factor -> .)
+    DIV             reduce using rule 144 (r_seen_factor -> .)
+    MOD             reduce using rule 144 (r_seen_factor -> .)
+    PLUS            reduce using rule 144 (r_seen_factor -> .)
+    MINUS           reduce using rule 144 (r_seen_factor -> .)
+    MORE            reduce using rule 144 (r_seen_factor -> .)
+    LESS            reduce using rule 144 (r_seen_factor -> .)
+    COMPARE         reduce using rule 144 (r_seen_factor -> .)
+    DIFFERENT       reduce using rule 144 (r_seen_factor -> .)
+    MOREEQUAL       reduce using rule 144 (r_seen_factor -> .)
+    LESSEQUAL       reduce using rule 144 (r_seen_factor -> .)
+    AND             reduce using rule 144 (r_seen_factor -> .)
+    OR              reduce using rule 144 (r_seen_factor -> .)
+    COMA            reduce using rule 144 (r_seen_factor -> .)
+    RPAREN          reduce using rule 144 (r_seen_factor -> .)
+    RSTAPLE         reduce using rule 144 (r_seen_factor -> .)
+    HACER           reduce using rule 144 (r_seen_factor -> .)
+    DOTCOMA         reduce using rule 144 (r_seen_factor -> .)
+    HASTA           reduce using rule 144 (r_seen_factor -> .)
 
     r_seen_factor                  shift and go to state 172
 
@@ -3486,81 +3486,81 @@ state 222
 state 223
 
     (79) ARROP -> DET_ARR . r_seen_operator_mat
-    (144) r_seen_operator_mat -> .
+    (139) r_seen_operator_mat -> .
 
-    MULT            reduce using rule 144 (r_seen_operator_mat -> .)
-    DIV             reduce using rule 144 (r_seen_operator_mat -> .)
-    MOD             reduce using rule 144 (r_seen_operator_mat -> .)
-    PLUS            reduce using rule 144 (r_seen_operator_mat -> .)
-    MINUS           reduce using rule 144 (r_seen_operator_mat -> .)
-    MORE            reduce using rule 144 (r_seen_operator_mat -> .)
-    LESS            reduce using rule 144 (r_seen_operator_mat -> .)
-    COMPARE         reduce using rule 144 (r_seen_operator_mat -> .)
-    DIFFERENT       reduce using rule 144 (r_seen_operator_mat -> .)
-    MOREEQUAL       reduce using rule 144 (r_seen_operator_mat -> .)
-    LESSEQUAL       reduce using rule 144 (r_seen_operator_mat -> .)
-    AND             reduce using rule 144 (r_seen_operator_mat -> .)
-    OR              reduce using rule 144 (r_seen_operator_mat -> .)
-    COMA            reduce using rule 144 (r_seen_operator_mat -> .)
-    RPAREN          reduce using rule 144 (r_seen_operator_mat -> .)
-    RSTAPLE         reduce using rule 144 (r_seen_operator_mat -> .)
-    HACER           reduce using rule 144 (r_seen_operator_mat -> .)
-    DOTCOMA         reduce using rule 144 (r_seen_operator_mat -> .)
-    HASTA           reduce using rule 144 (r_seen_operator_mat -> .)
+    MULT            reduce using rule 139 (r_seen_operator_mat -> .)
+    DIV             reduce using rule 139 (r_seen_operator_mat -> .)
+    MOD             reduce using rule 139 (r_seen_operator_mat -> .)
+    PLUS            reduce using rule 139 (r_seen_operator_mat -> .)
+    MINUS           reduce using rule 139 (r_seen_operator_mat -> .)
+    MORE            reduce using rule 139 (r_seen_operator_mat -> .)
+    LESS            reduce using rule 139 (r_seen_operator_mat -> .)
+    COMPARE         reduce using rule 139 (r_seen_operator_mat -> .)
+    DIFFERENT       reduce using rule 139 (r_seen_operator_mat -> .)
+    MOREEQUAL       reduce using rule 139 (r_seen_operator_mat -> .)
+    LESSEQUAL       reduce using rule 139 (r_seen_operator_mat -> .)
+    AND             reduce using rule 139 (r_seen_operator_mat -> .)
+    OR              reduce using rule 139 (r_seen_operator_mat -> .)
+    COMA            reduce using rule 139 (r_seen_operator_mat -> .)
+    RPAREN          reduce using rule 139 (r_seen_operator_mat -> .)
+    RSTAPLE         reduce using rule 139 (r_seen_operator_mat -> .)
+    HACER           reduce using rule 139 (r_seen_operator_mat -> .)
+    DOTCOMA         reduce using rule 139 (r_seen_operator_mat -> .)
+    HASTA           reduce using rule 139 (r_seen_operator_mat -> .)
 
     r_seen_operator_mat            shift and go to state 259
 
 state 224
 
     (80) ARROP -> TRANS_ARR . r_seen_operator_mat
-    (144) r_seen_operator_mat -> .
+    (139) r_seen_operator_mat -> .
 
-    MULT            reduce using rule 144 (r_seen_operator_mat -> .)
-    DIV             reduce using rule 144 (r_seen_operator_mat -> .)
-    MOD             reduce using rule 144 (r_seen_operator_mat -> .)
-    PLUS            reduce using rule 144 (r_seen_operator_mat -> .)
-    MINUS           reduce using rule 144 (r_seen_operator_mat -> .)
-    MORE            reduce using rule 144 (r_seen_operator_mat -> .)
-    LESS            reduce using rule 144 (r_seen_operator_mat -> .)
-    COMPARE         reduce using rule 144 (r_seen_operator_mat -> .)
-    DIFFERENT       reduce using rule 144 (r_seen_operator_mat -> .)
-    MOREEQUAL       reduce using rule 144 (r_seen_operator_mat -> .)
-    LESSEQUAL       reduce using rule 144 (r_seen_operator_mat -> .)
-    AND             reduce using rule 144 (r_seen_operator_mat -> .)
-    OR              reduce using rule 144 (r_seen_operator_mat -> .)
-    COMA            reduce using rule 144 (r_seen_operator_mat -> .)
-    RPAREN          reduce using rule 144 (r_seen_operator_mat -> .)
-    RSTAPLE         reduce using rule 144 (r_seen_operator_mat -> .)
-    HACER           reduce using rule 144 (r_seen_operator_mat -> .)
-    DOTCOMA         reduce using rule 144 (r_seen_operator_mat -> .)
-    HASTA           reduce using rule 144 (r_seen_operator_mat -> .)
+    MULT            reduce using rule 139 (r_seen_operator_mat -> .)
+    DIV             reduce using rule 139 (r_seen_operator_mat -> .)
+    MOD             reduce using rule 139 (r_seen_operator_mat -> .)
+    PLUS            reduce using rule 139 (r_seen_operator_mat -> .)
+    MINUS           reduce using rule 139 (r_seen_operator_mat -> .)
+    MORE            reduce using rule 139 (r_seen_operator_mat -> .)
+    LESS            reduce using rule 139 (r_seen_operator_mat -> .)
+    COMPARE         reduce using rule 139 (r_seen_operator_mat -> .)
+    DIFFERENT       reduce using rule 139 (r_seen_operator_mat -> .)
+    MOREEQUAL       reduce using rule 139 (r_seen_operator_mat -> .)
+    LESSEQUAL       reduce using rule 139 (r_seen_operator_mat -> .)
+    AND             reduce using rule 139 (r_seen_operator_mat -> .)
+    OR              reduce using rule 139 (r_seen_operator_mat -> .)
+    COMA            reduce using rule 139 (r_seen_operator_mat -> .)
+    RPAREN          reduce using rule 139 (r_seen_operator_mat -> .)
+    RSTAPLE         reduce using rule 139 (r_seen_operator_mat -> .)
+    HACER           reduce using rule 139 (r_seen_operator_mat -> .)
+    DOTCOMA         reduce using rule 139 (r_seen_operator_mat -> .)
+    HASTA           reduce using rule 139 (r_seen_operator_mat -> .)
 
     r_seen_operator_mat            shift and go to state 260
 
 state 225
 
     (81) ARROP -> INV_ARR . r_seen_operator_mat
-    (144) r_seen_operator_mat -> .
+    (139) r_seen_operator_mat -> .
 
-    MULT            reduce using rule 144 (r_seen_operator_mat -> .)
-    DIV             reduce using rule 144 (r_seen_operator_mat -> .)
-    MOD             reduce using rule 144 (r_seen_operator_mat -> .)
-    PLUS            reduce using rule 144 (r_seen_operator_mat -> .)
-    MINUS           reduce using rule 144 (r_seen_operator_mat -> .)
-    MORE            reduce using rule 144 (r_seen_operator_mat -> .)
-    LESS            reduce using rule 144 (r_seen_operator_mat -> .)
-    COMPARE         reduce using rule 144 (r_seen_operator_mat -> .)
-    DIFFERENT       reduce using rule 144 (r_seen_operator_mat -> .)
-    MOREEQUAL       reduce using rule 144 (r_seen_operator_mat -> .)
-    LESSEQUAL       reduce using rule 144 (r_seen_operator_mat -> .)
-    AND             reduce using rule 144 (r_seen_operator_mat -> .)
-    OR              reduce using rule 144 (r_seen_operator_mat -> .)
-    COMA            reduce using rule 144 (r_seen_operator_mat -> .)
-    RPAREN          reduce using rule 144 (r_seen_operator_mat -> .)
-    RSTAPLE         reduce using rule 144 (r_seen_operator_mat -> .)
-    HACER           reduce using rule 144 (r_seen_operator_mat -> .)
-    DOTCOMA         reduce using rule 144 (r_seen_operator_mat -> .)
-    HASTA           reduce using rule 144 (r_seen_operator_mat -> .)
+    MULT            reduce using rule 139 (r_seen_operator_mat -> .)
+    DIV             reduce using rule 139 (r_seen_operator_mat -> .)
+    MOD             reduce using rule 139 (r_seen_operator_mat -> .)
+    PLUS            reduce using rule 139 (r_seen_operator_mat -> .)
+    MINUS           reduce using rule 139 (r_seen_operator_mat -> .)
+    MORE            reduce using rule 139 (r_seen_operator_mat -> .)
+    LESS            reduce using rule 139 (r_seen_operator_mat -> .)
+    COMPARE         reduce using rule 139 (r_seen_operator_mat -> .)
+    DIFFERENT       reduce using rule 139 (r_seen_operator_mat -> .)
+    MOREEQUAL       reduce using rule 139 (r_seen_operator_mat -> .)
+    LESSEQUAL       reduce using rule 139 (r_seen_operator_mat -> .)
+    AND             reduce using rule 139 (r_seen_operator_mat -> .)
+    OR              reduce using rule 139 (r_seen_operator_mat -> .)
+    COMA            reduce using rule 139 (r_seen_operator_mat -> .)
+    RPAREN          reduce using rule 139 (r_seen_operator_mat -> .)
+    RSTAPLE         reduce using rule 139 (r_seen_operator_mat -> .)
+    HACER           reduce using rule 139 (r_seen_operator_mat -> .)
+    DOTCOMA         reduce using rule 139 (r_seen_operator_mat -> .)
+    HASTA           reduce using rule 139 (r_seen_operator_mat -> .)
 
     r_seen_operator_mat            shift and go to state 261
 
@@ -3783,10 +3783,10 @@ state 236
 state 237
 
     (38) ASIGNACION -> ID r_seen_operand_id ARRACC EQUAL r_seen_operator EXPRESION . r_seen_equal
-    (139) r_seen_equal -> .
+    (140) r_seen_equal -> .
 
-    DOTCOMA         reduce using rule 139 (r_seen_equal -> .)
-    HASTA           reduce using rule 139 (r_seen_equal -> .)
+    DOTCOMA         reduce using rule 140 (r_seen_equal -> .)
+    HASTA           reduce using rule 140 (r_seen_equal -> .)
 
     r_seen_equal                   shift and go to state 267
 
@@ -4646,48 +4646,48 @@ state 283
 state 284
 
     (63) TERMINO_AUX -> DIV r_seen_operator TERMINO . r_seen_term
-    (142) r_seen_term -> .
+    (143) r_seen_term -> .
 
-    PLUS            reduce using rule 142 (r_seen_term -> .)
-    MINUS           reduce using rule 142 (r_seen_term -> .)
-    MORE            reduce using rule 142 (r_seen_term -> .)
-    LESS            reduce using rule 142 (r_seen_term -> .)
-    COMPARE         reduce using rule 142 (r_seen_term -> .)
-    DIFFERENT       reduce using rule 142 (r_seen_term -> .)
-    MOREEQUAL       reduce using rule 142 (r_seen_term -> .)
-    LESSEQUAL       reduce using rule 142 (r_seen_term -> .)
-    AND             reduce using rule 142 (r_seen_term -> .)
-    OR              reduce using rule 142 (r_seen_term -> .)
-    COMA            reduce using rule 142 (r_seen_term -> .)
-    RPAREN          reduce using rule 142 (r_seen_term -> .)
-    RSTAPLE         reduce using rule 142 (r_seen_term -> .)
-    HACER           reduce using rule 142 (r_seen_term -> .)
-    DOTCOMA         reduce using rule 142 (r_seen_term -> .)
-    HASTA           reduce using rule 142 (r_seen_term -> .)
+    PLUS            reduce using rule 143 (r_seen_term -> .)
+    MINUS           reduce using rule 143 (r_seen_term -> .)
+    MORE            reduce using rule 143 (r_seen_term -> .)
+    LESS            reduce using rule 143 (r_seen_term -> .)
+    COMPARE         reduce using rule 143 (r_seen_term -> .)
+    DIFFERENT       reduce using rule 143 (r_seen_term -> .)
+    MOREEQUAL       reduce using rule 143 (r_seen_term -> .)
+    LESSEQUAL       reduce using rule 143 (r_seen_term -> .)
+    AND             reduce using rule 143 (r_seen_term -> .)
+    OR              reduce using rule 143 (r_seen_term -> .)
+    COMA            reduce using rule 143 (r_seen_term -> .)
+    RPAREN          reduce using rule 143 (r_seen_term -> .)
+    RSTAPLE         reduce using rule 143 (r_seen_term -> .)
+    HACER           reduce using rule 143 (r_seen_term -> .)
+    DOTCOMA         reduce using rule 143 (r_seen_term -> .)
+    HASTA           reduce using rule 143 (r_seen_term -> .)
 
     r_seen_term                    shift and go to state 303
 
 state 285
 
     (64) TERMINO_AUX -> MOD r_seen_operator TERMINO . r_seen_term
-    (142) r_seen_term -> .
+    (143) r_seen_term -> .
 
-    PLUS            reduce using rule 142 (r_seen_term -> .)
-    MINUS           reduce using rule 142 (r_seen_term -> .)
-    MORE            reduce using rule 142 (r_seen_term -> .)
-    LESS            reduce using rule 142 (r_seen_term -> .)
-    COMPARE         reduce using rule 142 (r_seen_term -> .)
-    DIFFERENT       reduce using rule 142 (r_seen_term -> .)
-    MOREEQUAL       reduce using rule 142 (r_seen_term -> .)
-    LESSEQUAL       reduce using rule 142 (r_seen_term -> .)
-    AND             reduce using rule 142 (r_seen_term -> .)
-    OR              reduce using rule 142 (r_seen_term -> .)
-    COMA            reduce using rule 142 (r_seen_term -> .)
-    RPAREN          reduce using rule 142 (r_seen_term -> .)
-    RSTAPLE         reduce using rule 142 (r_seen_term -> .)
-    HACER           reduce using rule 142 (r_seen_term -> .)
-    DOTCOMA         reduce using rule 142 (r_seen_term -> .)
-    HASTA           reduce using rule 142 (r_seen_term -> .)
+    PLUS            reduce using rule 143 (r_seen_term -> .)
+    MINUS           reduce using rule 143 (r_seen_term -> .)
+    MORE            reduce using rule 143 (r_seen_term -> .)
+    LESS            reduce using rule 143 (r_seen_term -> .)
+    COMPARE         reduce using rule 143 (r_seen_term -> .)
+    DIFFERENT       reduce using rule 143 (r_seen_term -> .)
+    MOREEQUAL       reduce using rule 143 (r_seen_term -> .)
+    LESSEQUAL       reduce using rule 143 (r_seen_term -> .)
+    AND             reduce using rule 143 (r_seen_term -> .)
+    OR              reduce using rule 143 (r_seen_term -> .)
+    COMA            reduce using rule 143 (r_seen_term -> .)
+    RPAREN          reduce using rule 143 (r_seen_term -> .)
+    RSTAPLE         reduce using rule 143 (r_seen_term -> .)
+    HACER           reduce using rule 143 (r_seen_term -> .)
+    DOTCOMA         reduce using rule 143 (r_seen_term -> .)
+    HASTA           reduce using rule 143 (r_seen_term -> .)
 
     r_seen_term                    shift and go to state 304
 

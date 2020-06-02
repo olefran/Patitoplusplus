@@ -202,7 +202,7 @@ def p_TERMINO_AUX(p):
 def p_FACTOR(p):
     '''FACTOR : NOT r_seen_unary_operator FACTOR_AUX
     | FACTOR_AUX'''
-    e = solve_unary_or_cont(["MINUS_UNARY", "PLUS_UNARY", "!"])
+    e = solve_unary_or_cont(["MINUS_UNARY", "PLUS_UNARY", "!", "$", "¡", "?"])
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
@@ -210,7 +210,7 @@ def p_FACTOR(p):
 def p_FACTOR_AUX(p):
     '''FACTOR_AUX : SIGN LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom
     | SIGN CTE ARROP'''
-    e = solve_unary_or_cont(["MINUS_UNARY", "PLUS_UNARY", "!"])
+    e = solve_unary_or_cont(["MINUS_UNARY", "PLUS_UNARY", "!", "$", "¡", "?"])
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
@@ -641,6 +641,13 @@ def p_r_seen_unary_operator(p):
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
+def p_r_seen_operator_mat(p):
+    'r_seen_operator_mat : '
+    raw_operator = p[-1]
+    e = register_operator(raw_operator)
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
+
 
 def p_r_seen_equal(p):
     'r_seen_equal : '
@@ -671,10 +678,6 @@ def p_r_seen_factor(p):
     e = solve_op_or_cont(['*', '/', '%'], mark_assigned=False)
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
-
-def p_r_seen_operator_mat(p):
-    'r_seen_operator_mat : '
-    pass #TODO operator with matrices
 
 def p_r_pop_fake_bottom(p):
   'r_pop_fake_bottom : '

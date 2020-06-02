@@ -304,18 +304,6 @@ def solve_op_or_cont(ops: [Operations], mark_assigned):
 #Checa operaciones matriciales especiales de operador, dentro de solve_op_or_cont (Que fea esat esta funcion)
 def check_mat_op(operator, right_operand, right_name, left_operand, left_name, result_type, mark_assigned):
     e = None
-    # dim_right = None
-    # dim_left = None
-    # if symbol_table[current_func]['vars'].get(right_name) is None:
-    #     dim_right = right_name
-    # else:
-    #     dim_right = len(symbol_table[current_func]['vars'][right_name]['isArray'])
-    #
-    # if symbol_table[current_func]['vars'].get(left_name) is None:
-    #     dim_left = left_name
-    # else:
-    #     dim_left = len(symbol_table[current_func]['vars'][left_name]['isArray'])
-
 
     if symbol_table[current_func]['vars'].get(right_name) is None:
         size_right = right_name
@@ -327,13 +315,10 @@ def check_mat_op(operator, right_operand, right_name, left_operand, left_name, r
     else:
         size_left = size_arr_calc(symbol_table[current_func]['vars'][left_name]['isArray'])
 
-    #if dim_right != dim_left:
     if size_right != size_left:
         e = "Matrices (" + str(right_name) + ", " + str(left_name) + ") don't have size (" + str(size_right) + "," + str(size_left) + ") for the op: " + operator
         return result_type, -1, e
     operator = operator + "mat"
-
-
 
     if mark_assigned:
       create_quadruple(operator, (right_operand, size_right) , None, ( left_operand, size_left ) )
@@ -345,9 +330,6 @@ def check_mat_op(operator, right_operand, right_name, left_operand, left_name, r
         create_quadruple(operator, (left_operand, size_left), (right_operand, size_right) , (temp, size_left) )
 
     return result_type, temp, e
-
-
-
 
 #Generates cuadruples for unary operations
 def solve_unary_or_cont(ops: [Operations]):
@@ -361,12 +343,35 @@ def solve_unary_or_cont(ops: [Operations]):
             operator = 'unary+'
         elif operator == 'MINUS_UNARY':
             operator = 'unary-'
+
         result_type = semantic_cube[operand_type][operator]
         if not result_type:
             return f"Type mismatch: Invalid operation \'{operator}\' on given operand \'{operand_name}\'"
         temp, e = get_temp_dir(result_type)
-        create_quadruple(operator, operand_name, None, temp)
-        operand_stack.append((result_type, temp))
+
+        if operator == '¡':
+            name = const_table[operand_name]['name']
+            if symbol_table[current_func]['vars'].get(name) is None:
+                size = name
+            else:
+                size = size_arr_calc(symbol_table[current_func]['vars'][name]['isArray'])
+            create_operand_point(temp, size)
+            set_temp_size_arr(result_type, size)
+            create_quadruple(operator, (operand_name, size), None , (temp, size) )
+
+        elif operator == '?':
+            name = const_table[operand_name]['name']
+            if symbol_table[current_func]['vars'].get(name) is None:
+                size = name
+            else:
+                size = size_arr_calc(symbol_table[current_func]['vars'][name]['isArray'])
+            create_operand_point(temp, size)
+            set_temp_size_arr(result_type, size)
+            create_quadruple(operator, (operand_name, size), None , (temp, size) )
+
+        else :
+            create_quadruple(operator, operand_name, None, temp)
+            operand_stack.append((result_type, temp))
 
     return e
 

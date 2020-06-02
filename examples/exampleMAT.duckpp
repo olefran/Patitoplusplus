@@ -37,4 +37,7 @@ int Arreglo[4], OtroArreglo[5], det, trans, inv;
 	Mat2 = Mat1;
 	Mat3 = Mat1+Mat2;
 	imprime();
+	det = Mat1$;
+	trans = Mat1¡;
+	inv = Mat1?;
 }

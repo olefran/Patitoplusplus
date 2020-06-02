@@ -218,7 +218,7 @@ def inv_mat_solve(first, second, dst):
 def plus_mat_solve(first, second, dst):
     #Aqui hay que hacer lo de igualar matrices
     for x in range(first[1]):
-        temp = set_value(get_value(first[0] + x) + get_value(first[0] + x), dst[0] + x )
+        temp = set_value(get_value(first[0] + x) + get_value(second[0] + x), dst[0] + x )
         if temp is not True:
             return temp
     return temp
@@ -226,7 +226,7 @@ def plus_mat_solve(first, second, dst):
 def minus_mat_solve(first, second, dst):
     #Aqui hay que hacer lo de igualar matrices
     for x in range(first[1]):
-        temp = set_value(get_value(first[0] + x) - get_value(first[0] + x), dst[0] + x )
+        temp = set_value(get_value(first[0] + x) - get_value(second[0] + x), dst[0] + x )
         if temp is not True:
             return temp
     return temp
