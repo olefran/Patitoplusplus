@@ -6,33 +6,38 @@ from enum import Enum, IntEnum, auto
 from collections import defaultdict
 import ast
 
+# ========================================================================== #
+# Estructuras de Semanticas
+# ========================================================================== #
+#Valor booleano de error just incase
+p_error = False
+
 #Stack de Operaciones
 operator_stack = []
 
 # Stack para operandos
-# Pila0
 # Guarda typo y nombre
 operand_stack = []
 
 #Stack de salto durante ejecucion
 jump_stack = []
 
-# Generated quadruples
+# Almacenamiento de cuadruplos
 quadruples = []
 quad_pointer = 0
 
-#Counts parameter and variables for function creation
+# Cuenta de parametros y variables para creación de functiones
 #                INT, FLOAT, CHAR , STRING
 func_var_count = [0,    0,      0,      0]
 
-# Count temporals for function creation
+# Cuenta de temporales para creación de funciones
 #                 INT   FLOAT  CHAR  STRING
 func_temp_count = [0,     0,    0,    0]
 
-#Stores parameters order in function ddeclaration
+#Guarda parametros en orden de su declaración
 func_param_order = []
 
-#Stores the paramenter counter
+# Guarda el conteo de parametros
 func_param_counter = 0
 
 #Array auxiliar variables
@@ -40,11 +45,11 @@ func_dim_counter = 0
 current_var_aux = None
 r_dim = 1
 
-#Array Access structures and VARIABLES
+# Estructuras de arreglos y variables
 pila_dim = []
 
 
-#Contador de operandos para for
+# Contador de operandos para for
 for_operand_stack = []
 
 # Variables Auxiliares para currents
@@ -66,7 +71,9 @@ const_table = {}
 # Operador Temporal de for
 temp_for_op = None
 
+# ========================================================================== #
 # Limites de memoria virtual
+# ========================================================================== #
 # Gracias a la siguiente configuración, solo pueden existir un total de 1500 variables de un tipo
 # VARIABLES GLOBALES    INT     FLOAT   CHAR    STRINGS  VOID
 GLOBAL_LOWER_LIMIT =    [5_000, 6_500, 8_000, 9_500, 11_000]
@@ -132,7 +139,10 @@ Operations = {
     "VER" : 28
  }
 
-# Semantic cube for Operations
+# ========================================================================== #
+# Cubo Semantico
+# ========================================================================== #
+
 semantic_cube = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: None)))
 
 semantic_cube['int']['int']['&&'] = 'int'
