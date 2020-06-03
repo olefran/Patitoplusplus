@@ -51,7 +51,7 @@ operations = {
     "unary-mat": minus_unary_mat_solve
  }
 
-# Ejecuta los cuadruplos desde  un quad point = 0 
+# Ejecuta los cuadruplos desde  un quad point = 0
 def main():
   '''Grab the object code file and run it.'''
   global quad_size, quadruples
@@ -59,6 +59,7 @@ def main():
   quad_pointer = 0
   while quad_pointer < quad_size:
       e = operations[quadruples[quad_pointer][0]](quadruples[quad_pointer][1], quadruples[quad_pointer][2], quadruples[quad_pointer][3])
+      # print(quadruples[quad_pointer][0], quadruples[quad_pointer][1], quadruples[quad_pointer][2], quadruples[quad_pointer][3])
       if e == True:
           set_pointer(quad_pointer+1)
       elif e is not None and e is not False:

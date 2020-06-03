@@ -396,7 +396,7 @@ def return_solve(first, second, dst):
 
 def endfunc_solve(first, second, dst):
     global temp_memory, jump_stack, quad_pointer
-    #temp_memory.pop() #destroy context
+    temp_memory.pop() #destroy context
     execution_stack.pop() #Return context to previous function
     if top(jump_stack):
         quad_pointer = jump_stack.pop() #Return to previuos pointer (not nesesary if in main)
@@ -412,9 +412,9 @@ def plus_add_solve(first, second, dst):
 
 
 def verify_solve(first, second, dst):
-    temp = get_value(dst)
-    first_val = get_value(first)
-    second_val = get_value(second)
-    if (temp >= first_val and temp > second_val ):
+    second_val = get_value(dst)
+    temp = get_value(first)
+    first_val = get_value(second)
+    if (temp >= first_val and temp < second_val ):
         return True
     return "Index out of bounds: " + str(temp) + " on (" + str(first_val) + ", " + str(second_val) + ")"
