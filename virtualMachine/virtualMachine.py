@@ -5,6 +5,10 @@
 import pprint
 from operations import *
 
+# ========================================================================== #
+# Matrix de operaciones
+# ========================================================================== #
+
 operations = {
     "unary+" : plus_unary_solve,
     "unary-" : minus_unary_solve,
@@ -45,13 +49,13 @@ operations = {
     "*mat" : times_mat_solve,
     "unary+mat": plus_unary_mat_solve,
     "unary-mat": minus_unary_mat_solve
- } #TODO: Implement functions, AND implement matrix based operations
+ }
 
-
+# Ejecuta los cuadruplos desde  un quad point = 0 
 def main():
   '''Grab the object code file and run it.'''
   global quad_size, quadruples
-  #Execute the quadruples one by one
+  #Executa cuadruplos uno por uno
   quad_pointer = 0
   while quad_pointer < quad_size:
       e = operations[quadruples[quad_pointer][0]](quadruples[quad_pointer][1], quadruples[quad_pointer][2], quadruples[quad_pointer][3])
