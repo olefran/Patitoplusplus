@@ -1,5 +1,5 @@
 #Virtual machine implementation
-# Ceasar Buenfil A0120
+# Ceasar Buenfil A01207499
 # Oscar Lerma A01380817
 
 import pprint
@@ -27,13 +27,24 @@ operations = {
     "ESCRIBE" : escribe_solve, #Escribe varias
     "GOTO" : goto_solve,
     "GOTOF" : gotof_solve,
+    "GOTOV" : gotov_solve,
     "GOSUB" : gosub_solve,
     "PARAM" : param_solve,
     "ERA" : era_solve,
     "RETURN" : return_solve,
     "ENDFunc" : endfunc_solve,
     "END" : end_solve,
-    "VER" : verify_solve
+    "VER" : verify_solve,
+    "+dir" : plus_add_solve,
+    "=mat" : equal_mat_solve,
+    "$" : det_mat_solve,
+    "¡" : trans_mat_solve,
+    "?" : inv_mat_solve,
+    "+mat" : plus_mat_solve,
+    "-mat" : minus_mat_solve,
+    "*mat" : times_mat_solve,
+    "unary+mat": plus_unary_mat_solve,
+    "unary-mat": minus_unary_mat_solve
  } #TODO: Implement functions, AND implement matrix based operations
 
 
@@ -50,7 +61,7 @@ def main():
           print("Error on quad:", quad_pointer, ": ", e)
           break
       quad_pointer = get_pointer()
-  print_structs()
+  #print_structs()
 
 # Correr el main
 if __name__ == "__main__":

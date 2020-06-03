@@ -1,0 +1,35 @@
+%% Example for Patitoplusplus
+programa patito;
+
+var
+int MatA[1][2], MatB[2][1];
+
+funcion void inicia()
+var int j, k;
+{
+	desde j = 0 hasta 1 hacer
+		desde k = 0 hasta 2 hacer
+		{
+			MatA[j, k] = j+k;
+			escribe(Mat1[j, k]);
+		}
+}
+
+funcion void imprime()
+var int j, k;
+{
+	desde j = 0 hasta 2 hacer
+		desde k = 0 hasta 1 hacer
+		{
+			escribe(MatB[j, k]);
+		}
+}
+
+principal()
+var
+int Arreglo[4], OtroArreglo[5], det, trans, inv;
+{
+	inicia();
+	Mat3 = Mat1¡;
+	imprime();
+}

@@ -13,6 +13,7 @@ principal()
 var
 int p, y;
 {
+	y = 7;
 	p = 5;
 	fact(p, y);
 }

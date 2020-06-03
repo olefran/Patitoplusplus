@@ -1,7 +1,7 @@
 # Oscar Lerma A01380817
 # Cesar Buenfil Vazquez A01207499
 # Scanner with lex of Patitoplusplus
-# Created 04/25/2020
+# Created on 04/25/2020
 import lex
 import math
 
@@ -39,6 +39,7 @@ tokens = [
     'COMMENT', 'MOREEQUAL', 'LESSEQUAL', 'LSTAPLE', 'RSTAPLE'
     ] + list(reserved.values())
 
+# Definición de Tokens
 t_DOTCOMA   = r';'
 t_LBRACKET  = r'{'
 t_RBRACKET  = r'}'
@@ -67,9 +68,13 @@ t_INV_ARR   = r'\?'
 t_DIFFERENT = r'!='
 t_LSTAPLE   = r'\['
 t_RSTAPLE   = r'\]'
-t_ignore_COMMENT = r'%%.*'
 
-# Función para tokens de constantes de int y float
+# Función para comentarios
+def t_COMMENT(t):
+     r'\%%.*'
+     pass
+
+# Función que diferencia tokens de constantes de int y float
 def t_CTE_F(t):
   r'([0-9]*[.])?[0-9]+'
   if int(math.floor(float(t.value))) == float(t.value):
@@ -86,15 +91,16 @@ def t_ID(t):
   t.type = reserved.get(t.value, 'ID')
   return t
 
-# Para las nuevas líneas
+# Función de contador de nuevas líneas
 def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
+    r'[\n]+'
+    t.lexer.lineno += t.value.count("\n")
 
-# Para ignorar los tabs
+
+# Ignorar los tabs
 t_ignore = ' \t'
 
-# Para errores en el lexer
+# Función para errores en el lexer
 def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)

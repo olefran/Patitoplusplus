@@ -25,11 +25,27 @@ quad_pointer = 0
 #                INT, FLOAT, CHAR , STRING
 func_var_count = [0,    0,      0,      0]
 
+# Count temporals for function creation
+#                 INT   FLOAT  CHAR  STRING
+func_temp_count = [0,     0,    0,    0]
+
 #Stores parameters order in function ddeclaration
 func_param_order = []
 
 #Stores the paramenter counter
 func_param_counter = 0
+
+#Array auxiliar variables
+func_dim_counter = 0
+current_var_aux = None
+r_dim = 1
+
+#Array Access structures and VARIABLES
+pila_dim = []
+
+
+#Contador de operandos para for
+for_operand_stack = []
 
 # Variables Auxiliares para currents
 current_type = None
@@ -68,14 +84,17 @@ CONST_UPPER_LIMIT =     [20_499, 21_999, 23_499, 24_999]
 TEMP_LOWER_LIMIT =      [25_000, 26_500, 28_000, 29_500]
 TEMP_UPPER_LIMIT =     [26_499, 27_999, 29_499, 30_999]
 
-#CONSTANT_UPPER_LIMIT = 30_999
+#POINTERS                  INT
+POINT_LOWER_LIMIT =     [50_000]
+POINT_UPPER_LIMIT =     [51_499]
+
 
 # Contadores de memoria virutal
 global_dir_count = list(GLOBAL_LOWER_LIMIT)
 var_dir_count = list(VAR_LOWER_LIMIT)
 temp_dir_count = list(TEMP_LOWER_LIMIT)
 const_dir_count = list(CONST_LOWER_LIMIT)
-
+point_dir_count = list(POINT_LOWER_LIMIT)
 # Enumeracion de tipos de datos
 var_types = ('int', 'float', 'char', 'string')
 avail_types = ('int', 'float', 'char', 'string', 'void')
@@ -134,6 +153,9 @@ semantic_cube['int']['lee']['='] = 'int'
 semantic_cube['int']['unary+'] = 'int'
 semantic_cube['int']['unary-'] = 'int'
 semantic_cube['int']['!'] = 'int'
+semantic_cube['int']['$'] = 'int'
+semantic_cube['int']['¡'] = 'int'
+semantic_cube['int']['?'] = 'int'
 
 semantic_cube['float']['float']['&&'] = 'int'
 semantic_cube['float']['float']['||'] = 'int'
@@ -152,9 +174,12 @@ semantic_cube['float']['lee']['='] = 'float'
 semantic_cube['float']['unary+'] = 'float'
 semantic_cube['float']['unary-'] = 'float'
 semantic_cube['float']['!'] = 'int'
+semantic_cube['int']['$'] = 'float'
+semantic_cube['int']['¡'] = 'float'
+semantic_cube['int']['?'] = 'float'
 
-semantic_cube['char']['char']['&&'] = 'int'
-semantic_cube['char']['char']['||'] = 'int'
+# semantic_cube['char']['char']['&&'] = 'int'
+# semantic_cube['char']['char']['||'] = 'int'
 semantic_cube['char']['char']['!='] = 'int'
 semantic_cube['char']['char']['=='] = 'int'
 semantic_cube['char']['char']['+'] = 'str'
@@ -165,8 +190,8 @@ semantic_cube['char']['lee']['='] = 'char'
 # semantic_cube['float']['char']['='] = 'float'
 # semantic_cube['char']['float']['='] = 'char'
 
-semantic_cube['string']['string']['&&'] = 'int'
-semantic_cube['string']['string']['||'] = 'int'
+# semantic_cube['string']['string']['&&'] = 'int'
+# semantic_cube['string']['string']['||'] = 'int'
 semantic_cube['string']['string']['!='] = 'int'
 semantic_cube['string']['string']['=='] = 'int'
 semantic_cube['string']['string']['+'] = 'str'

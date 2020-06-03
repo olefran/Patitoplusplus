@@ -9,5 +9,6 @@ int j, i, p, x, y,k ;
 		desde k= 0 hasta 7 hacer
 		{
 			j = k;
+			escribe(j);
 		}
 }

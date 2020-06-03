@@ -6,6 +6,8 @@ import pprint
 
 temp_memory = [{}] # Can temp memory be used as a execution_stack?
 
+current_temp_memory = {} #Dictionary for ERA declaration
+
 global_memory = {}
 
 execution_stack = ['main']

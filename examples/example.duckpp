@@ -37,7 +37,7 @@ principal()
 var int k;
 {
   lee(p) ; j =p*2;
-  inicia (p*j - 5.5) ;
+  inicia (p*j - 5) ;
 
   desde i=0 hasta 9 hacer
   {

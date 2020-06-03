@@ -5,7 +5,11 @@
 from structures import *
 import ast
 
+# ========================================================================== #
 # Manejo de la dirección digital de variables globales
+# ========================================================================== #
+
+# Regresa error en caso de superar la dimension límite de globales
 def get_global_dir(current_type):
     global global_dir_count
     switcher = {
@@ -26,7 +30,77 @@ def get_global_dir(current_type):
     global_dir_count[result] = global_dir_count[result] + 1
     return global_dir_count[result] - 1, e
 
+# Aumento de la dirrecion de memoria de variables temporales con tamaño del arreglo
+# Regresa error en caso de superar la dimension límite de variables locales
+def set_var_size_arr(current_type, arr_size):
+        global var_dir_count
+        switcher = {
+        "int": 0,
+        "float": 1,
+        "char": 2,
+        "string": 3
+        }
+        e = None
+        result = switcher.get(current_type, -1)
+        if result < 0:
+            e = "Undefined type: " + current_type
+            return e
+        if var_dir_count[result] + arr_size - 1 > VAR_UPPER_LIMIT[result]:
+            e = "Too many " + current_type + " vars"
+            return e
+        var_dir_count[result] = var_dir_count[result] + arr_size - 1
+        return e
+
+# Aumento de la dirrecion de memoria de variables globales con tamaño del arreglo
+# Regresa error en caso de superar la dimension límite de globales
+def set_global_size_arr(current_type, arr_size):
+        global global_dir_count
+        switcher = {
+        "int": 0,
+        "float": 1,
+        "char": 2,
+        "string": 3
+        }
+        e = None
+        result = switcher.get(current_type, -1)
+        if result < 0:
+            e = "Undefined type: " + current_type
+            return e
+        if global_dir_count[result] + arr_size - 1 > GLOBAL_UPPER_LIMIT[result]:
+            e = "Too many " + current_type + " vars"
+            return e
+        global_dir_count[result] = global_dir_count[result] + arr_size - 1
+        return e
+
+# Aumento de la dirrecion de memoria de variables temporales con tamaño del arreglo
+# Regresa error en caso de superar la dimension límite de temporales
+def set_temp_size_arr(current_type, arr_size):
+        global global_dir_count
+        switcher = {
+        "int": 0,
+        "float": 1,
+        "char": 2,
+        "string": 3
+        }
+        e = None
+        result = switcher.get(current_type, -1)
+        if result < 0:
+            e = "Undefined type: " + current_type
+            return e
+        if temp_dir_count[result] + arr_size - 1 > TEMP_UPPER_LIMIT[result]:
+            e = "Too many " + current_type + " vars"
+            return e
+        temp_dir_count[result] = temp_dir_count[result] + arr_size - 1
+        return e
+
+#Sacá un operando del operand_stack
+def pop_operand():
+    o = operand_stack.pop()
+    return o
+
 # Manejo de la dirección digital de variables en funciones
+# Regresa error encaso de encontrar un typo no especificado
+# Regresa error en caso de superar la dimension límite de variables locales
 def get_var_dir(current_type):
     global var_dir_count
     switcher = {
@@ -47,6 +121,8 @@ def get_var_dir(current_type):
     return var_dir_count[result] - 1, e
 
 # Manejo de la dirección digital de variables temporales
+# Regresa error encaso de encontrar un typo no especificado
+# Regresa error en caso de superar la dimension límite de variables temporales
 def get_temp_dir(current_type):
     global temp_dir_count
     switcher = {
@@ -67,6 +143,8 @@ def get_temp_dir(current_type):
     return temp_dir_count[result] -1, e
 
 # Manejo de la dirección digital de constantes
+# Regresa error encaso de encontrar un typo no especificado
+# Regresa error en caso de superar la dimension límite de constantes
 def get_const_dir(current_type):
     global const_dir_count
     switcher = {
@@ -86,17 +164,28 @@ def get_const_dir(current_type):
     const_dir_count[result] = const_dir_count[result] + 1
     return const_dir_count[result] -1, e
 
-# Funciones
+# Manejo de la dirección digital de pointers!
+# Regresa error en caso de superar la dimension límite de pointers
+def get_point_dir():
+    global point_dir_count
+    e = None
+    if point_dir_count[0] > POINT_UPPER_LIMIT[0]:
+        e = "Too many " + current_type + " temps"
+        return -1, e
+    point_dir_count[0] = point_dir_count[0] + 1
+    return point_dir_count[0] -1, e
+
 
 # Registrar un operando en el operand_stack, con su tipo
-# TODO: Modify to use addreses? And IDS
+# Regresa error en caso de superar un límite de dimension
 def register_operand(raw_operand):
     global operand_stack
     e, operand = create_operand(raw_operand)
     operand_stack.append(operand)
     return e
 
-
+# Registrar un id en el operand_stack, con su tipo
+# Regresa error en caso de superar el límite de direcciones constante
 def register_operand_id(raw_operand, current_func):
     global operand_stack
     e = None
@@ -105,16 +194,16 @@ def register_operand_id(raw_operand, current_func):
             e = "Variable not defined: " + raw_operand
         else:
             operand = (symbol_table['global']['vars'][raw_operand]['type'], symbol_table['global']['vars'][raw_operand]['address']) #Return id by address
-            #operand = (symbol_table['global']['vars'][raw_operand]['type'], raw_operand) # Return id by name
+            # operand = (symbol_table['global']['vars'][raw_operand]['type'], raw_operand) # Return id by name
             operand_stack.append(operand)
     else:
         operand = (symbol_table[current_func]['vars'][raw_operand]['type'], symbol_table[current_func]['vars'][raw_operand]['address']) #Return id by address
-        #operand = (symbol_table[current_func]['vars'][raw_operand]['type'], raw_operand) #Return id by name
+        # operand = (symbol_table[current_func]['vars'][raw_operand]['type'], raw_operand) #Return id by name
         operand_stack.append(operand)
     return e
 
-# Esta función llena la operand table y registra cualquier unknown const variables
-#It is unkownable by this humble programmer if this is the correct implementation
+# Función que llena la operand table y registra cualquier unknown const variables
+# Regresa error en caso de superar el límite de direcciones constante
 def create_operand(raw_operand):
     t = type(raw_operand)
     type_op = ''
@@ -122,9 +211,11 @@ def create_operand(raw_operand):
         type_op = 'int'
     elif t == float:
         type_op = 'float'
-    elif t == str and len(raw_operand) == 1 :
+    elif t == str and raw_operand[0] == '\'' : # ERROR registers wrong 'char' (counts '')
+        raw_operand = raw_operand.replace('\'','')
         type_op = 'char'
     elif t == str:
+        raw_operand = raw_operand.replace('\"','')
         type_op = 'string'
     e = None
     address = -1
@@ -139,41 +230,55 @@ def create_operand(raw_operand):
         }
     else:
         address = const_table[raw_operand]['address']
-    #return e, (type_op, raw_operand)  #Return constant by name
+    # return e, (type_op, raw_operand)  #Return constant by name
     return e, (type_op, address) # Return constant by address
 
-#Register a operator (raw_symbol) on the operator_stack
+# Función que llena la operand table y registra cualquier unknown const variables
+# Regresa error en caso de superar el límite de direcciones constante
+def create_operand_point(raw_operand, name):
+    e = None
+    if const_table.get(raw_operand) is None:
+        address, e = get_const_dir('int')
+        const_table[raw_operand] = {
+            'address': address,
+            'type': 'pointer',
+            'name' : name
+        }
+    else:
+        address = const_table[raw_operand]['address']
+    # return e, (type_op, raw_operand)  #Return constant by name
+    return e, ('int', address) # Return constant by address
+
+# Register a operator (raw_symbol) on the operator_stack
 def register_operator(raw_operator):
     global operator_stack
     operator_stack.append(raw_operator)
 
-#Gets top element of stack without popping it and if there is none is doesn't crash
+#Saca el elemento top de lista y regresa None
 def top(l):
   if len(l) > 0:
     return l[-1]
   return None
 
-#Pops ( aka fake bottom form the operator_stack
+# Elimina el elemento "(" de operator_stack
+# Regresa error en caso de no encontrar '('
 def pop_fake_bottom():
   global operator_stack
   operator = operator_stack.pop()
   if operator != '(':
       e = 'Expected: )'
 
-# TODO: Realizar los operandos especiales unitarios para matrices
-
-
-# Create cuadruples and add to quad_pointer
+# Crea los cuadruplos y amenta el quad_pointer
 def create_quadruple(operator, left_operand, right_operand, result):
     global quadruples, quad_pointer
     quadruples.append([operator, left_operand, right_operand, result])
     quad_pointer = quad_pointer + 1
 
+# Genera cuadruplos para la siguiento operacion (en caso de que exista) en ops.
+# Resulve la siguiente operacion (del operador_stack) si esta incluido en ops.
+# Regresa error si la operación no puede ser resulta con los operandos dados
+# Regresa error si intenta realizar una operación a una operación void
 
-# '''Generates quadruple for next operation if it exists in ops.
-# Solves the next operation (from the operation stack) if it is included in ops.
-# Returns error if operation cannot be performed on the given operands.
-# Returns error if trying to perform an operation on a call to a void function.'''
 def solve_op_or_cont(ops: [Operations], mark_assigned):
     global operator_stack, operand_stack
     e = None
@@ -188,23 +293,84 @@ def solve_op_or_cont(ops: [Operations], mark_assigned):
           return f'Expression returns no value.'
         return f'Type mismatch: Invalid operation \'{operator}\' on given operand \'{right_operand}\' and \'{left_operand}\''
       temp, e = None, None
-      if mark_assigned:
+
+      # Checa si ambos operandos son matrices y genera los cuadruplos
+      if const_table.get(right_operand) is not None and const_table.get(left_operand) is not None:
+          if const_table[right_operand].get('name') is not None and const_table[left_operand].get('name') is not None:
+              result_type, temp, e = check_mat_op(operator, right_operand, const_table[right_operand]['name'], left_operand, const_table[left_operand]['name'], result_type, mark_assigned)
+              if e:
+                  return e
+
+      elif mark_assigned:
           create_quadruple(operator, right_operand, None, left_operand)
           temp = left_operand
       else:
           temp, e = get_temp_dir(result_type)
           create_quadruple(operator, left_operand, right_operand, temp)
       operand_stack.append( (result_type, temp) ) #Se quedan los results en el stack
+
     elif operator == ')':
         operator_stack.pop()
-        print(top(operator))
         if top(operator) != '(':
             e = "Expected: ')'"
         else:
             operator = operator_stack.pop()
     return e
 
-#Generates cuadruples for unary operations
+# Checa operaciones matriciales especiales de operador
+# Regresa error en caso de intentar realizar operaciones con dimensiones incorrectas (en caso de matrices)
+# Regresa error si se intenta realizar una operación con un tipo incorrecto.
+def check_mat_op(operator, right_operand, right_name, left_operand, left_name, result_type, mark_assigned):
+    e = None
+    size_right = []
+    size_left = []
+
+    if symbol_table[current_func]['vars'].get(right_name) is None:
+        size_right = right_name
+    else:
+        for element in symbol_table[current_func]['vars'][right_name]['isArray'].items():
+            size_right.append(element[1]['Ls'])
+        size_right = tuple(size_right)
+
+    if symbol_table[current_func]['vars'].get(left_name) is None:
+        size_left = left_name
+    else:
+        for element in symbol_table[current_func]['vars'][left_name]['isArray'].items():
+            size_left.append(element[1]['Ls'])
+        size_left = tuple(size_left)
+
+    if operator != "*":
+        if size_right != size_left:
+            e = "Matrices (" + str(right_name) + ", " + str(left_name) + ") don't have size (" + str(size_right) + "," + str(size_left) + ") for the op: " + operator
+            return result_type, -1, e
+    else:
+        if len(size_right) != 2:
+            e = "Matrix multiplication can only be done in 2 dimentions, recieved" + str(right_name) + ", size :" + str(size_right)
+            return result_type, -1, e
+        elif size_right[1] != size_left[0]:
+            e = "Incorrect Matrix multiplication dimentions, recieved:" + str(size_right[1]) + " != " + str(size_left[0])
+            return result_type, -1, e
+
+    operator = operator + "mat"
+
+    if mark_assigned:
+      create_quadruple(operator, (right_operand, size_right) , None, ( left_operand, size_left ) )
+      temp = left_operand
+    else:
+        temp, e = get_temp_dir(result_type)
+        create_operand_point(temp, size_right)
+        set_temp_size_arr(result_type, sum(size_right) )
+        if operator == "*":
+            size_temp = (size_right[0], size_left[1])
+            create_quadruple(operator, (left_operand, size_left), (right_operand, size_right) , (temp, size_temp) )
+        else:
+            create_quadruple(operator, (left_operand, size_left), (right_operand, size_right) , (temp, size_left) )
+
+    return result_type, temp, e
+
+# Checa operaciones matriciales especiales de operadores unarios
+# Regresa error en caso de intentar realizar operaciones con dimensiones incorrectas (en caso de matrices)
+# Regresa error si se intenta realizar una operación con un tipo incorrecto.
 def solve_unary_or_cont(ops: [Operations]):
     global operator_stack, operand_stack
     e = None
@@ -216,24 +382,60 @@ def solve_unary_or_cont(ops: [Operations]):
             operator = 'unary+'
         elif operator == 'MINUS_UNARY':
             operator = 'unary-'
+
         result_type = semantic_cube[operand_type][operator]
         if not result_type:
             return f"Type mismatch: Invalid operation \'{operator}\' on given operand \'{operand_name}\'"
         temp, e = get_temp_dir(result_type)
-        create_quadruple(operator, operand_name, None, temp)
+
+        #Caso especial para operadores unarios
+        if const_table[operand_name].get('name') is not None:
+            size = []
+            name = const_table[operand_name]['name']
+            if symbol_table[current_func]['vars'].get(name) is None:
+                size = name
+            else:
+                for element in symbol_table[current_func]['vars'][name]['isArray'].items():
+                    size.append(element[1]['Ls'])
+                size = tuple(size)
+
+            if operator == '$':
+                if size[0] != size[1]:
+                    return "Incorrect dim for operator " + str(operator) + ": " + str(size[0]) + " =!" + str(size[1])
+                create_quadruple(operator, (operand_name, size), None , temp )
+
+            elif operator == '¡':
+                if len(size) != 2:
+                    return "Incorrect dim for operator " + str(operator) + " recieved " + str(len(size)) + " expected 2"
+                temp_size = tuple([size[1], size[0]])
+                create_operand_point(temp, temp_size)
+                set_temp_size_arr(result_type, sum(size) )
+                create_quadruple(operator, (operand_name, size), None , (temp, temp_size) )
+
+            elif operator == '?':
+                if len(size) != 2:
+                    return "Incorrect dim for operator " + str(operator) + " recieved " + str(len(size)) + " expected 2"
+                create_operand_point(temp, size)
+                set_temp_size_arr(result_type, sum(size) )
+                create_quadruple(operator, (operand_name, size), None , (temp, size) )
+
+            else:
+                operator = operator + "mat"
+                create_operand_point(temp, size)
+                set_temp_size_arr(result_type, sum(size) )
+                create_quadruple(operator, (operand_name, size), None , (temp, size) )
+
+        elif operator == '$' or operator == '¡' or operator == '?':
+            return "Operator " + str(operator) + " not given a Matrix, recived: " + str(result_type)
+        else :
+            create_quadruple(operator, operand_name, None, temp)
+
         operand_stack.append((result_type, temp))
 
     return e
 
-
-
-#
-#def solve_expression(result_type, right_operand, left_operand):
-#    global current_func
-    #TODO: Add adresses to variables and CTEs
-#    pass
-
-# check value ("int") for if / while expressions
+# Checa el valor de un entero en la expresion
+# Regrea error si no existe tal entero.
 def check_int():
     global jump_stack
     e = None
@@ -244,7 +446,8 @@ def check_int():
         create_quadruple('GOTOF', result, None, None)
         jump_stack.append(quad_pointer - 1)
 
-# fill waiting goto staement
+# Llenar un elemento del goto
+# Regresa error si no se puede modificar el cuadruplo goto
 def fill_quad(end, cont):
     global quadruples
     e = None
@@ -257,10 +460,17 @@ def fill_quad(end, cont):
 # end if OR while statement and fill waiting goto dir
 def cond_end(type_op):
     e = None
-    global jump_stack
+    global jump_stack, for_operand_stack
     end = jump_stack.pop()
     if type_op == "while" or type_op == "for":
         loop_return = jump_stack.pop()
+        if type_op == "for":
+            operand = for_operand_stack.pop()
+            e, (type, address) = create_operand(1)
+            temp, e =  get_temp_dir(type)
+            create_quadruple('+', operand, address, temp)
+            create_quadruple('=', temp, None, operand)
+            loop_return = loop_return - 1
         create_quadruple('GOTO', None , None, loop_return)
     e = fill_quad(end, quad_pointer)
     return e
@@ -287,15 +497,24 @@ def goto_main(function):
     create_quadruple('GOTO', None, None, None)
     jump_stack.append(quad_pointer - 1)
 
+def set_for():
+    global jump_stack, for_operand_stack
+    e = None
+    if top(operand_stack)[0] != 'int':
+        e = "Expected: 'int' type on expression"
+    type, operand = top(operand_stack)
+    for_operand_stack.append(operand)
+
+
 #set quad_pointer
 def gen_for():
-    global jump_stack
+    global jump_stack, for_operand_stack
     e = None
     if top(operand_stack)[0] != 'int':
         e = "Expected: 'int' type on expression"
     else:
-        operator_stack.append(">")
-        e = solve_op_or_cont(['>'], mark_assigned = False)
+        operator_stack.append("<")
+        e = solve_op_or_cont(['<'], mark_assigned = False)
         type, operand = operand_stack.pop()
         create_quadruple('GOTOF', operand, None, None)
         jump_stack.append(quad_pointer - 1)
@@ -331,7 +550,7 @@ def func_end(current_func):
     try:
         #symbol_table[current_func]['vars'] = None    #DELETE THE VAR TABLE
         temp_dir_count = list(TEMP_LOWER_LIMIT) #RESET the temp counter
-        var_dir_count = list(VAR_LOWER_LIMIT) #RESET the temp countre
+        var_dir_count = list(VAR_LOWER_LIMIT) #RESET the temp func_dim_counter
     except:
         e = "Not able to delete var table on function: " + current_func
     create_quadruple("ENDFunc", None, None, None)
@@ -351,7 +570,7 @@ def get_func_count(current_type, current_var):
     if result < 0:
         e = "Invalid type on counter addition on: " + current_var
     func_var_count[result] = func_var_count[result] + 1
-    func_param_order.append(current_type)
+    func_param_order.append( (current_type, current_var) )
     return e
 
 def func_check(current_func):
@@ -373,13 +592,14 @@ def check_param(current_func):
     argumentType, value = operand_stack.pop()
     paramsize = len(symbol_table[current_func]['param'])
     tempParam = func_param_counter + 1
-
-    try:
-        if argumentType == symbol_table[current_func]['param'][func_param_counter] and func_param_counter < paramsize:
-            create_quadruple("PARAM", value, None, tempParam)
-            func_param_counter = func_param_counter + 1
-    except:
+    if func_param_counter >= paramsize:
         e = "Too many parameters on: " + current_func
+        return e
+    if argumentType == symbol_table[current_func]['param'][func_param_counter][0]:
+        create_quadruple("PARAM", value, None, tempParam)
+        func_param_counter = func_param_counter + 1
+    else:
+        e = "Type error on " + current_func + " parameter " + str(func_param_counter + 1) + " erronuos type of " + argumentType
     return e
 
 def go_sub(current_func):
@@ -418,3 +638,10 @@ def print_constants():
 def end_princ():
     global jump_stack, quadruples
     quadruples[jump_stack.pop()][3] = quad_pointer
+
+
+def size_arr_calc(arr_isArray):
+    size = 1
+    for element in arr_isArray.items():
+        size = size * element[1]['Ls']
+    return size
