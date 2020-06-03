@@ -3,6 +3,9 @@
 # Cubo de semantica y tabla de simbolos de Patitoplusplus
 # Created 04/25/2020
 from structures import *
+# ========================================================================== #
+# Semantics.py
+# ========================================================================== #
 
 # ========================================================================== #
 # Manejo de la dirección digital de variables globales, constantes, temporales

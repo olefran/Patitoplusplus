@@ -5,4 +5,3 @@ if [ $? -eq 0 ]
 then
 	 python3 virtualMachine/virtualMachine.py
 fi
-

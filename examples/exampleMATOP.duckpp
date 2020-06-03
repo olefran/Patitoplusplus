@@ -1,13 +1,13 @@
-%% Example for Patitoplusplus
+%% Example MATOP for Patitoplusplus
 programa patito;
 
 var
-int MatA[1][2], MatB[2][1], MatC[1][2];
+int MatA[2][2], MatB[2][2], MatC[2][2];
 
 funcion void inicia()
 var int j, k;
 {
-	desde j = 0 hasta 1 hacer
+	desde j = 0 hasta 2 hacer
 		desde k = 0 hasta 2 hacer
 		{
 			MatA[j, k] = j+k;
@@ -19,9 +19,9 @@ funcion void imprime()
 var int j, k;
 {
 	desde j = 0 hasta 2 hacer
-		desde k = 0 hasta 1 hacer
+		desde k = 0 hasta 2 hacer
 		{
-			escribe(MatB[j, k]);
+			escribe(MatC[j, k]);
 		}
 }
 
@@ -30,5 +30,7 @@ var
 int Arreglo[4], OtroArreglo[5], det, trans, inv;
 {
 	inicia();
-	MatC = MatA¡;
+	MatB = MatA * MatA;
+	MatC = MatA + MatB;
+	imprime();
 }

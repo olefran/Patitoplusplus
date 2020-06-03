@@ -1,6 +1,5 @@
-%% Example for Patitoplusplus
+%% Example UNARY for Patitoplusplus
 programa patito;
-
 
 principal()
 var int k;

@@ -2,6 +2,9 @@
 # Cesar Buenfil Vazquez A01207499
 # Scanner with lex of Patitoplusplus
 # Created on 04/25/2020
+# ========================================================================== #
+# Scanner.py
+# ========================================================================== #
 import lex
 import math
 

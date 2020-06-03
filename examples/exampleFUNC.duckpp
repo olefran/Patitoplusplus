@@ -1,4 +1,4 @@
-%% Example for Patitoplusplus
+%% Example FUNCION for Patitoplusplus
 programa patito;
 
 var
@@ -13,7 +13,6 @@ float g, h ,b;
 char c;
 {
 	i = 4 + 6;
-
 	regresa(5+6);
 }
 
