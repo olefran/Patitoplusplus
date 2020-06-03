@@ -53,7 +53,7 @@ var int k;
 			OtraMatriz[j , k ] = k + j;
 	}
 
-	valor = OtraMatriz$;
+	valor = 5;
 	escribe ("el determinante es: ", valor);
 
 	mientras( i < 10) {
