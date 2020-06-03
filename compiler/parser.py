@@ -36,7 +36,6 @@ def p_PROGRAM(p):
 # r_end_princ : Guarda el cuadruplo de salto al final de la operación
 # r_func_set : Guarda el instruction pointer en el jump_stack
 # r_func_end : Destruye la var table de la funcion, crea el cueadruplo de ERA
-
 def p_MAIN(p):
     'MAIN : PRINCIPAL r_save_func LPAREN RPAREN r_register_princ r_save_param_func VARS r_save_vars r_end_princ r_func_set BLOQUE r_func_end '
     pass
@@ -103,23 +102,17 @@ def p_FUNCTION(p):
     | FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end'''
     pass
 
-# PARAM → TIPO id PARENTESIS PARAM_AUX
+# PARAM → TIPO id PARAM_AUX
 # Sólo acepta ids ya declaradas, no acepta constantes
 # r_register_var : Salva el nombre de variable en la variable global current_var
 def p_PARAM(p):
-    '''PARAM : TIPO ID r_register_var PARENTESIS PARAM_AUX
+    '''PARAM : TIPO ID r_register_var PARAM_AUX
     | empty'''
     pass
 
 # PARAM_AUX → , PARAM  | empty
 def p_PARAM_AUX(p):
     '''PARAM_AUX : COMA PARAM
-    | empty'''
-    pass
-
-# PARENTESIS → [ ] PARENTESIS | empty
-def p_PARENTESIS(p):
-    '''PARENTESIS : LSTAPLE RSTAPLE PARENTESIS
     | empty'''
     pass
 

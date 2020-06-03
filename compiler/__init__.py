@@ -51,7 +51,7 @@ def main():
 
     result = parser.parse(data)
 
-    # debugging(result)
+    debugging(result)
 
     if error:
         sys.exit(1)

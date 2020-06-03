@@ -6,7 +6,7 @@ from structures import *
 import ast
 
 # ========================================================================== #
-# Manejo de la dirección digital de variables globales
+# Manejo de la dirección digital de variables globales, constantes, temporales
 # ========================================================================== #
 
 # Regresa error en caso de superar la dimension límite de globales
@@ -175,6 +175,9 @@ def get_point_dir():
     point_dir_count[0] = point_dir_count[0] + 1
     return point_dir_count[0] -1, e
 
+# ========================================================================== #
+# Registro de operandos en tablas de variables, tabla de constantes
+# ========================================================================== #
 
 # Registrar un operando en el operand_stack, con su tipo
 # Regresa error en caso de superar un límite de dimension
