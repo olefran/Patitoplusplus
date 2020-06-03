@@ -16,6 +16,11 @@ start = 'PROGRAM'
 #Valor booleano de error just incase
 error = False
 
+
+# ========================================================================== #
+# Gramática Libre de Contexto
+# ========================================================================== #
+
 # Produccion vacía para epsilon
 def p_empty(p):
     'empty :'# goto_main : Crea cuadruplo principal para salto a MAIN
@@ -411,7 +416,9 @@ precedence = (
     ('left', 'AND', 'OR'),
 )
 
+# ========================================================================== #
 # Funciones para guardar en symbol_table
+# ========================================================================== #
 
 # r_save_type : Salva el tipo en la varable global current_type
 def p_r_save_type(p):
@@ -828,7 +835,7 @@ def p_r_check_func(p):
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
-# r_check_param : Create cuadruples PARAM
+# r_check_param : Crea cuadruplos PARAM
 def p_r_check_param(p):
     'r_check_param : '
     global call_func, current_func
@@ -878,6 +885,10 @@ def p_r_print_constants(p):
     e = print_constants()
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+# ========================================================================== #
+# Manejo de Errores
+# ========================================================================== #
 
 # Función para controlar errores
 def handle_error(line, lexpos, mssg):

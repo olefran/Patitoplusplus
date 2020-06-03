@@ -5,30 +5,38 @@
 from structures import *
 import ast
 
+# ========================================================================== #
+# Funciones miscelánias
+# ========================================================================== #
+
+# Regresa el último elemento de una lista, ó en caso de None, regresa None
 def top(l):
   if len(l) > 0:
     return l[-1]
   return None
 
+# Regresa el quad_pointer
 def get_pointer():
     global quad_pointer
     return quad_pointer
 
+# Regresa quad_pointer
 def set_pointer(value):
     global quad_pointer
     quad_pointer = value
 
+# Transforma int hacia booleano
 def check_true(input):
     return not input == 0
 
+# Transforma bool hacia intbool
 def get_bool_int(input):
     if input == False:
         return 0
     else:
         return 1
 
-#This is an ugly function, made by an ugly guy,
-#i blame not one but myself for the idea, jesus i hate this function
+# Regresa el tipo de la variable conforme a su dieecion virtual
 def check_type(dir):
     if dir < 6500:
         return 'int'
@@ -68,6 +76,11 @@ def check_type(dir):
         return 'pointer'
 
 
+# ========================================================================== #
+# Operaciones de Máquina virtual
+# ========================================================================== #
+
+# Regresa el valor asocioado con la direción
 def get_value(dir):
     if dir > 4999 and dir < 12500:
         if global_memory.get(dir) is None:
@@ -87,6 +100,7 @@ def get_value(dir):
         else:
             return top(temp_memory)[dir]
 
+# Regresa el valor asocioado con la direción (sin busqueda de pointers)
 def get_value_for_address(dir):
     if dir > 4999 and dir < 12500:
         if global_memory.get(dir) is None:
@@ -104,7 +118,7 @@ def get_value_for_address(dir):
         else:
             return top(temp_memory)[dir]
 
-
+# Escribe el valor que se asocia con la direción dir
 def set_value(value, dir):
     global temp_memory, global_memory
     e = True
@@ -119,6 +133,7 @@ def set_value(value, dir):
         e = "Error on assingning value " + str(value) + " to dir " + str(dir)
     return e
 
+# Escribe el valor que se asocia con la direción dir (sin  busqieda de pointers)
 def set_value_for_address(value, dir):
     global temp_memory, global_memory
     e = True
@@ -131,6 +146,7 @@ def set_value_for_address(value, dir):
         e = "Error on assingning value " + str(value) + " to dir " + str(dir)
     return e
 
+#Cambia quad_pointer
 def goto_solve(first, second, dst):
     global quad_pointer
     quad_pointer = dst

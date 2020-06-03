@@ -4,7 +4,12 @@
 # Created 04/25/2020\
 import pprint
 
-temp_memory = [{}] # Can temp memory be used as a execution_stack?
+# ========================================================================== #
+# Estructuras de Máquina Virtual
+# ========================================================================== #
+
+# Arreglo de dicionarios
+temp_memory = [{}]
 
 current_temp_memory = {} #Dictionary for ERA declaration
 
@@ -24,11 +29,12 @@ quad_size = 0
 
 quad_pointer = 0
 
+# Llenado del archibo obj "Output.txt"
 with open("virtualMachine/Output.txt",'r', newline = '\n') as file:
     text_file = eval(file.read())
 
 const_table = text_file['const_table']
-symbol_table = text_file['symbol_table']
+#symbol_table = text_file['symbol_table']
 quadruples = text_file['quadruples']
 quad_size = len(quadruples)
 
@@ -38,8 +44,8 @@ def print_structs():
     print("Global Memory: ")
     pprint.pprint(global_memory)
 
-    print("Symbol Table: ")
-    pprint.pprint(symbol_table)
+    #print("Symbol Table: ")
+    #pprint.pprint(symbol_table)
     print("Const Table: ")
     pprint.pprint(const_table)
     print("Quadruples: ")
