@@ -4,7 +4,6 @@
 # Created 04/06/2020
 from enum import Enum, IntEnum, auto
 from collections import defaultdict
-import ast
 
 # ========================================================================== #
 # Estructuras de Semanticas
