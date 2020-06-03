@@ -3,7 +3,7 @@
 Proyecto de Compiladores 2020, un patito más complejo.
 Patito++ es un lenguaje procedural, imperativo, basado en sintaxis de c, que permite generar funciones, variables y arreglos, así como operaciones aritméticas entre ellos y la capacidad de declarar y sobre escribir datos.
 
-##  :beginner: Hacerca de
+##  :beginner: Acerca de
 Tomando la ventaja del alto nivel de abstracción del lenguaje python, se espera crear un lenguaje de programación que cumpla con los siguientes lineamientos:
 
 - Contener la estructura: nombre de programa, funciones, y main (principal).
