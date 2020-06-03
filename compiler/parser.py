@@ -13,10 +13,6 @@ input_str = ''
 # Punto de partida
 start = 'PROGRAM'
 
-#Valor booleano de error just incase
-error = False
-
-
 # ========================================================================== #
 # Gramática Libre de Contexto
 # ========================================================================== #
@@ -886,8 +882,8 @@ def p_r_print_constants(p):
 # Función para controlar errores
 def handle_error(line, lexpos, mssg):
   '''Print error message and set error state to true'''
-  global error
-  error = True
+  global p_error
+  p_error = True
   error_prefix(line, lexpos, input_str)
   print(mssg)
 
@@ -896,13 +892,13 @@ def error_prefix(line, lexpos, input_str):
   '''Prints the line and column where an error ocurred.'''
 
   print(f'Error at line = {line} - ', end='')
-  global error
-  error = True
+  global p_error
+  p_error = True
 
 #Funcion para imprimir errores a pantalla.
 def p_error(p):
-  global error
-  error = True
+  global p_error
+  p_error = True
   error_prefix(p.lineno, p.lexpos, input_str)
   print(f'Unexpected token {p.value}.')
   recover_parser(parser)

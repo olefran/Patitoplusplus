@@ -146,17 +146,17 @@ def set_value_for_address(value, dir):
         e = "Error on assingning value " + str(value) + " to dir " + str(dir)
     return e
 
-#Cambia quad_pointer
+# Cambia quad_pointer
 def goto_solve(first, second, dst):
     global quad_pointer
     quad_pointer = dst
     return False
 
-#Suma unaria
+# Suma unaria
 def plus_unary_solve(first, second, dst):
     return set_value(+get_value(first),dst)
 
-#Menos unario
+# Menos unario
 def minus_unary_solve(first, second, dst):
     return set_value(-get_value(first), dst)
 
@@ -170,51 +170,65 @@ def not_unary_solve(first, second, dst):
     return set_value(temp, dst)
     # return set_value( get_bool_int( not check_true(first) ), dst )
 
-# 
+# multiplicar
 def times_solve(first, second, dst):
     return set_value( get_value(first) * get_value(second), dst)
 
+# dividir
 def divide_solve(first, second, dst):
     return set_value( get_value(first) / get_value(second), dst)
 
+# Modulo
 def mod_solve(first, second, dst):
     return set_value( get_value(first) % get_value(second), dst)
 
+# Suma
 def plus_solve(first, second, dst):
     return set_value( get_value(first) + get_value(second), dst)
 
+# Resta
 def minus_solve(first, second, dst):
     return set_value( get_value(first) - get_value(second), dst)
 
+# Menor que
 def less_solve(first, second, dst):
     return set_value( get_bool_int( get_value(first) < get_value(second) ), dst )
 
+# Mayor que
 def more_solve(first, second, dst):
     return set_value( get_bool_int( get_value(first) > get_value(second) ), dst )
 
+# Differente a
 def different_solve(first, second, dst):
     return set_value( get_bool_int( get_value(first) != get_value(second) ), dst )
 
+# Es igual a
 def comparison_solve(first, second, dst):
     return set_value( get_bool_int( get_value(first) == get_value(second) ), dst )
 
+# Menor o igual
 def less_than_solve(first, second, dst):
     return set_value( get_bool_int( get_value(first) <= get_value(second) ), dst )
 
+#Mayor o igual
 def more_than_solve(first, second, dst):
     return set_value( get_bool_int( get_value(first) >= get_value(second) ), dst )
 
+# Ó
 def or_solve(first, second, dst):
     temp = check_true( get_value(first) ) or check_true( get_value(second) )
     return set_value( get_bool_int( temp ), dst )
 
+# Y
 def and_solve(first, second, dst):
     temp = check_true( get_value(first) ) and check_true( get_value(second) )
     return set_value( get_bool_int( temp ), dst )
 
+# Igual a
 def equal_solve(first, second, dst):
     return set_value(get_value(first), dst)
 
+#Igual a matrix
 def equal_mat_solve(first, second, dst):
     size = 1
     temp = 0
@@ -225,8 +239,9 @@ def equal_mat_solve(first, second, dst):
         if temp is not True:
             return temp
     return temp
-    #Aqui hay que hacer lo de igualar matrices
 
+
+# Suma unaria matrix
 def plus_unary_mat_solve(first, second, dst):
     size = 1
     temp = 0
@@ -238,6 +253,7 @@ def plus_unary_mat_solve(first, second, dst):
             return temp
     return temp
 
+# Resta unaria matriz
 def minus_unary_mat_solve(first, second, dst):
     size = 1
     temp = 0
@@ -249,6 +265,7 @@ def minus_unary_mat_solve(first, second, dst):
             return temp
     return temp
 
+#Get cofactor for determinant calculation
 def get_cofactor(first):
     i = j = 0
     for row in range(first[1][0]):
@@ -259,7 +276,7 @@ def get_cofactor(first):
 def det_mat_solve(first, second, dst):
     return True
 
-#Transpose matrix
+#Matriz transpuesta
 def trans_mat_solve(first, second, dst):
     size = 1
     temp = None
@@ -271,12 +288,12 @@ def trans_mat_solve(first, second, dst):
     return temp
 
 
-#Mar inverse
+# Matriz inversa
 def inv_mat_solve(first, second, dst):
     return True
 
+# Suma de matrices
 def plus_mat_solve(first, second, dst):
-    #Aqui hay que hacer lo de sumar matrices
     size = 1
     temp = None
     for dim in first[1]:
@@ -287,8 +304,8 @@ def plus_mat_solve(first, second, dst):
             return temp
     return temp
 
+# Resta de matrices
 def minus_mat_solve(first, second, dst):
-    #Aqui hay que hacer lo de restar matrices
     size = 1
     temp = None
     for dim in first[1]:
@@ -299,6 +316,7 @@ def minus_mat_solve(first, second, dst):
             return temp
     return temp
 
+# Multiplicacion de matrices
 def times_mat_solve(first, second, dst):
     #Aqui hay que hacer lo de multiplicar matrices (solo de 2 dimensiones)
     result = 0
@@ -314,8 +332,7 @@ def times_mat_solve(first, second, dst):
     return temp
 
 
-#Does not distingish between a char and a string
-#Also this is a dumb way to check types, jesus
+# Lectura (checar el tipo y lanza error en caso de discrepancias)
 def lee_solve(first, second, dst):
     temp = input('patito>')
     var_user = None
@@ -345,10 +362,12 @@ def lee_solve(first, second, dst):
     else:
         return "Error of input type, Expected : " + real_type + " recieved: " + str(type(var_user))
 
+#Escritura a standart ouput
 def escribe_solve(first, second, dst):
     print(get_value(dst))
     return True
 
+#Resuelve GOTOF
 def gotof_solve(first, second, dst):
     global quad_pointer
     if check_true( get_value(first) ):
@@ -357,6 +376,7 @@ def gotof_solve(first, second, dst):
         quad_pointer = dst
         return False
 
+#Resuelve GOTOV
 def gotov_solve(first, second, dst):
     global quad_pointer
     if not check_true( get_value(first) ):
@@ -365,6 +385,7 @@ def gotov_solve(first, second, dst):
         quad_pointer = dst
         return False
 
+# Resuleve GOSUB (Guarda el quad_pointer en jump_stack)
 def gosub_solve(first, second, dst):
     global quad_pointer, jump_stack, current_temp_memory
     temp_memory.append(current_temp_memory)
@@ -373,20 +394,20 @@ def gosub_solve(first, second, dst):
     quad_pointer = dst
     return False
 
-#TODO: Save the real parameter values
+# Mapea el valor de los parametros con el nombre del symbol_table
 def param_solve(first, second, dst):
     global temp_memory, current_temp_memory
     e = True
     current_temp_memory[ symbol_table[top(execution_stack)]['param'][dst-1][1] ] = get_value(first)
     return e
 
-#TODO: Use the size of the function somewhere
+# Crea un nuevo ambiente de ejecucion
 def era_solve(first, second, dst):
     global execution_stack
     execution_stack.append(first)
     return True
 
-
+# Regresa el address de la funcion
 def return_solve(first, second, dst):
     global global_memory
     e = True
@@ -394,6 +415,7 @@ def return_solve(first, second, dst):
     global_memory[ symbol_table['global']['vars'][top(execution_stack)]['address'] ] = get_value(dst)
     return e
 
+#Termina la funcion y destruye su memoria de contexto
 def endfunc_solve(first, second, dst):
     global temp_memory, jump_stack, quad_pointer
     temp_memory.pop() #destroy context
@@ -403,14 +425,11 @@ def endfunc_solve(first, second, dst):
         return False
     return True
 
-#What is this function?!
-def end_solve(first, second, dst):
-    return True
-
+#Suma de direcion de matrices
 def plus_add_solve(first, second, dst):
     return set_value_for_address( (int) (get_value(first) + get_value(second)), dst)
 
-
+# Verificación de indices de matrices
 def verify_solve(first, second, dst):
     second_val = get_value(dst)
     temp = get_value(first)

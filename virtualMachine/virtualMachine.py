@@ -37,7 +37,6 @@ operations = {
     "ERA" : era_solve,
     "RETURN" : return_solve,
     "ENDFunc" : endfunc_solve,
-    "END" : end_solve,
     "VER" : verify_solve,
     "+dir" : plus_add_solve,
     "=mat" : equal_mat_solve,
