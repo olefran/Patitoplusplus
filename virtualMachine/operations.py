@@ -4,6 +4,7 @@
 # Created 04/25/2020
 from structures import *
 import ast
+import numpy as np
 # ========================================================================== #
 # Operations.py
 # ========================================================================== #
@@ -277,23 +278,57 @@ def get_cofactor(first):
 
 #Determinante de matrices
 def det_mat_solve(first, second, dst):
-    return True
+    size = 1
+    temp = None
+    mat = []
+    arr_temp = []
+    for x in range(first[1][0]):
+        for y in range(first[1][1]):
+            arr_temp.append(get_value(first[0] + x*first[1][0] + y ) )
+        mat.append(arr_temp)
+        arr_temp = []
+    answer = np.linalg.det(mat)
+    return set_value(answer, dst)
 
 #Matriz transpuesta
 def trans_mat_solve(first, second, dst):
     size = 1
     temp = None
+    mat = []
+    arr_temp = []
     for x in range(first[1][0]):
         for y in range(first[1][1]):
-            temp = set_value(get_value(first[0] + x*first[1][0] + y), dst[0] + y*first[1][1] + x )
+            arr_temp.append(get_value(first[0] + x*first[1][0] + y ) )
+        mat.append(arr_temp)
+        arr_temp = []
+    matrix = np.array(mat)
+    matrix = matrix.transpose()
+
+    for x in range(dst[1][1]):
+        for y in range(dst[1][0]):
+            temp = set_value(matrix[x][y], dst[0]+x*first[1][0]+y )
             if temp is not True:
                 return temp
     return temp
 
-
 # Matriz inversa
 def inv_mat_solve(first, second, dst):
-    return True
+    size = 1
+    temp = None
+    mat = []
+    arr_temp = []
+    for x in range(first[1][0]):
+        for y in range(first[1][1]):
+            arr_temp.append(get_value(first[0] + x*first[1][0] + y ) )
+        mat.append(arr_temp)
+        arr_temp = []
+    matrix = np.linalg.inv(mat)
+    for x in range(first[1][1]):
+        for y in range(first[1][0]):
+            temp = set_value(matrix[y][x], dst[0]+y*first[1][1]+x )
+            if temp is not True:
+                return temp
+    return temp
 
 # Suma de matrices
 def plus_mat_solve(first, second, dst):
