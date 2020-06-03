@@ -152,12 +152,15 @@ def goto_solve(first, second, dst):
     quad_pointer = dst
     return False
 
+#Suma unaria
 def plus_unary_solve(first, second, dst):
     return set_value(+get_value(first),dst)
 
+#Menos unario
 def minus_unary_solve(first, second, dst):
     return set_value(-get_value(first), dst)
 
+# Not lógico unario
 def not_unary_solve(first, second, dst):
     temp = None
     if check_true( get_value(first) ):
@@ -167,6 +170,7 @@ def not_unary_solve(first, second, dst):
     return set_value(temp, dst)
     # return set_value( get_bool_int( not check_true(first) ), dst )
 
+# 
 def times_solve(first, second, dst):
     return set_value( get_value(first) * get_value(second), dst)
 
