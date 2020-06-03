@@ -1,6 +1,5 @@
 %% Example for Patitoplusplus
 programa patito;
-
 var
 int x, y;
 int Matriz[3, 8], OtraMatriz[3, 3];

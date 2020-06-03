@@ -3,7 +3,7 @@
 # init file de Patitoplusplus
 # Created 04/06/2020
 from parser import parser, error
-from scanner import lexer
+from scanner import *
 from structures import *
 from semantics import symbol_table, const_table
 import sys
@@ -45,17 +45,13 @@ def main():
         print("Usage: " + sys.argv[0] + " file")
         return -1
 
+
     # Dar el input al lexer
     lexer.input(data)
 
-    # Tokenize
-    while True:
-        tok = lexer.token()
-        if not tok:
-            break
     result = parser.parse(data)
 
-    debugging(result)
+    # debugging(result)
 
     if error:
         sys.exit(1)
