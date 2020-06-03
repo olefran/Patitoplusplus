@@ -2,7 +2,7 @@
 programa patito;
 
 var
-int MatA[1][2], MatB[2][1];
+int MatA[1][2], MatB[2][1], MatC[1][2];
 
 funcion void inicia()
 var int j, k;
@@ -11,7 +11,7 @@ var int j, k;
 		desde k = 0 hasta 2 hacer
 		{
 			MatA[j, k] = j+k;
-			escribe(Mat1[j, k]);
+			escribe(MatA[j, k]);
 		}
 }
 
@@ -30,6 +30,5 @@ var
 int Arreglo[4], OtroArreglo[5], det, trans, inv;
 {
 	inicia();
-	Mat3 = Mat1¡;
-	imprime();
+	MatC = MatA¡;
 }

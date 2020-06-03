@@ -400,44 +400,45 @@ def solve_unary_or_cont(ops: [Operations]):
         temp, e = get_temp_dir(result_type)
 
         #Caso especial para operadores unarios
-        if const_table[operand_name].get('name') is not None:
-            size = []
-            name = const_table[operand_name]['name']
-            if symbol_table[current_func]['vars'].get(name) is None:
-                size = name
-            else:
-                for element in symbol_table[current_func]['vars'][name]['isArray'].items():
-                    size.append(element[1]['Ls'])
-                size = tuple(size)
+        if const_table.get(operand_name) is not None:
+            if const_table[operand_name].get('name') is not None:
+                size = []
+                name = const_table[operand_name]['name']
+                if symbol_table[current_func]['vars'].get(name) is None:
+                    size = name
+                else:
+                    for element in symbol_table[current_func]['vars'][name]['isArray'].items():
+                        size.append(element[1]['Ls'])
+                    size = tuple(size)
 
-            if operator == '$':
-                if size[0] != size[1]:
-                    return "Incorrect dim for operator " + str(operator) + ": " + str(size[0]) + " =!" + str(size[1])
-                create_quadruple(operator, (operand_name, size), None , temp )
+                if operator == '$':
+                    if size[0] != size[1]:
+                        return "Incorrect dim for operator " + str(operator) + ": " + str(size[0]) + " =!" + str(size[1])
+                    create_quadruple(operator, (operand_name, size), None , temp )
 
-            elif operator == '¡':
-                if len(size) != 2:
-                    return "Incorrect dim for operator " + str(operator) + " recieved " + str(len(size)) + " expected 2"
-                temp_size = tuple([size[1], size[0]])
-                create_operand_point(temp, temp_size)
-                set_temp_size_arr(result_type, multiply_tuple(size) )
-                create_quadruple(operator, (operand_name, size), None , (temp, temp_size) )
+                elif operator == '¡':
+                    if len(size) != 2:
+                        return "Incorrect dim for operator " + str(operator) + " recieved " + str(len(size)) + " expected 2"
+                    temp_size = tuple([size[1], size[0]])
+                    create_operand_point(temp, temp_size)
+                    set_temp_size_arr(result_type, multiply_tuple(size) )
+                    create_quadruple(operator, (operand_name, size), None , (temp, temp_size) )
 
-            elif operator == '?':
-                if len(size) != 2:
-                    return "Incorrect dim for operator " + str(operator) + " recieved " + str(len(size)) + " expected 2"
-                create_operand_point(temp, size)
-                set_temp_size_arr(result_type, multiply_tuple(size) )
-                create_quadruple(operator, (operand_name, size), None , (temp, size) )
+                elif operator == '?':
+                    if len(size) != 2:
+                        return "Incorrect dim for operator " + str(operator) + " recieved " + str(len(size)) + " expected 2"
+                    create_operand_point(temp, size)
+                    set_temp_size_arr(result_type, multiply_tuple(size) )
+                    create_quadruple(operator, (operand_name, size), None , (temp, size) )
 
-            else:
-                operator = operator + "mat"
-                create_operand_point(temp, size)
-                set_temp_size_arr(result_type, multiply_tuple(size) )
-                create_quadruple(operator, (operand_name, size), None , (temp, size) )
+                else:
+                    operator = operator + "mat"
+                    create_operand_point(temp, size)
+                    set_temp_size_arr(result_type, multiply_tuple(size) )
+                    create_quadruple(operator, (operand_name, size), None , (temp, size) )
 
         elif operator == '$' or operator == '¡' or operator == '?':
-            return "Operator " + str(operator) + " not given a Matrix, recived: " + str(result_type)
+            return "Operator " + str(operator) + " not given a Matrix, recieved: " + str(result_type)
         else :
             create_quadruple(operator, operand_name, None, temp)
 
@@ -665,7 +666,7 @@ def print_constants():
 
     text_file = open("virtualMachine/Output.txt", "w")
     text_file.write('{\n')
-    #text_file.write('\'symbol_table\': ' + str(symbol_table) + ',\n')
+    text_file.write('\'symbol_table\': ' + str(symbol_table) + ',\n')
     text_file.write('\'const_table\': ' + str(constant_dir) + ',\n')
     text_file.write('\'quadruples\': ' + str(quadruples) + '\n')
     text_file.write('}')
