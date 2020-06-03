@@ -1,4 +1,4 @@
-%% Example for Patitoplusplus
+%% Example ARR for Patitoplusplus
 programa patito;
 var
 int x, y;

@@ -3,10 +3,12 @@
 # Cubo de semantica y tabla de simbolos de Patitoplusplus
 # Created 04/25/2020
 from structures import *
-import ast
+# ========================================================================== #
+# Semantics.py
+# ========================================================================== #
 
 # ========================================================================== #
-# Manejo de la dirección digital de variables globales
+# Manejo de la dirección digital de variables globales, constantes, temporales
 # ========================================================================== #
 
 # Regresa error en caso de superar la dimension límite de globales
@@ -175,6 +177,9 @@ def get_point_dir():
     point_dir_count[0] = point_dir_count[0] + 1
     return point_dir_count[0] -1, e
 
+# ========================================================================== #
+# Registro de operandos en tablas de variables, tabla de constantes
+# ========================================================================== #
 
 # Registrar un operando en el operand_stack, con su tipo
 # Regresa error en caso de superar un límite de dimension
@@ -183,6 +188,10 @@ def register_operand(raw_operand):
     e, operand = create_operand(raw_operand)
     operand_stack.append(operand)
     return e
+
+# ========================================================================== #
+# Registrar elementos temporales, variables, y globales
+# ========================================================================== #
 
 # Registrar un id en el operand_stack, con su tipo
 # Regresa error en caso de superar el límite de direcciones constante
@@ -267,6 +276,10 @@ def pop_fake_bottom():
   operator = operator_stack.pop()
   if operator != '(':
       e = 'Expected: )'
+
+# ========================================================================== #
+# Creación de cuadruplos de operaciones
+# ========================================================================== #
 
 # Crea los cuadruplos y amenta el quad_pointer
 def create_quadruple(operator, left_operand, right_operand, result):
@@ -359,7 +372,7 @@ def check_mat_op(operator, right_operand, right_name, left_operand, left_name, r
     else:
         temp, e = get_temp_dir(result_type)
         create_operand_point(temp, size_right)
-        set_temp_size_arr(result_type, sum(size_right) )
+        set_temp_size_arr(result_type, multiply_tuple(size_right) )
         if operator == "*":
             size_temp = (size_right[0], size_left[1])
             create_quadruple(operator, (left_operand, size_left), (right_operand, size_right) , (temp, size_temp) )
@@ -389,44 +402,45 @@ def solve_unary_or_cont(ops: [Operations]):
         temp, e = get_temp_dir(result_type)
 
         #Caso especial para operadores unarios
-        if const_table[operand_name].get('name') is not None:
-            size = []
-            name = const_table[operand_name]['name']
-            if symbol_table[current_func]['vars'].get(name) is None:
-                size = name
-            else:
-                for element in symbol_table[current_func]['vars'][name]['isArray'].items():
-                    size.append(element[1]['Ls'])
-                size = tuple(size)
+        if const_table.get(operand_name) is not None:
+            if const_table[operand_name].get('name') is not None:
+                size = []
+                name = const_table[operand_name]['name']
+                if symbol_table[current_func]['vars'].get(name) is None:
+                    size = name
+                else:
+                    for element in symbol_table[current_func]['vars'][name]['isArray'].items():
+                        size.append(element[1]['Ls'])
+                    size = tuple(size)
 
-            if operator == '$':
-                if size[0] != size[1]:
-                    return "Incorrect dim for operator " + str(operator) + ": " + str(size[0]) + " =!" + str(size[1])
-                create_quadruple(operator, (operand_name, size), None , temp )
+                if operator == '$':
+                    if size[0] != size[1]:
+                        return "Incorrect dim for operator " + str(operator) + ": " + str(size[0]) + " =!" + str(size[1])
+                    create_quadruple(operator, (operand_name, size), None , temp )
 
-            elif operator == '¡':
-                if len(size) != 2:
-                    return "Incorrect dim for operator " + str(operator) + " recieved " + str(len(size)) + " expected 2"
-                temp_size = tuple([size[1], size[0]])
-                create_operand_point(temp, temp_size)
-                set_temp_size_arr(result_type, sum(size) )
-                create_quadruple(operator, (operand_name, size), None , (temp, temp_size) )
+                elif operator == '¡':
+                    if len(size) != 2:
+                        return "Incorrect dim for operator " + str(operator) + " recieved " + str(len(size)) + " expected 2"
+                    temp_size = tuple([size[1], size[0]])
+                    create_operand_point(temp, temp_size)
+                    set_temp_size_arr(result_type, multiply_tuple(size) )
+                    create_quadruple(operator, (operand_name, size), None , (temp, temp_size) )
 
-            elif operator == '?':
-                if len(size) != 2:
-                    return "Incorrect dim for operator " + str(operator) + " recieved " + str(len(size)) + " expected 2"
-                create_operand_point(temp, size)
-                set_temp_size_arr(result_type, sum(size) )
-                create_quadruple(operator, (operand_name, size), None , (temp, size) )
+                elif operator == '?':
+                    if len(size) != 2:
+                        return "Incorrect dim for operator " + str(operator) + " recieved " + str(len(size)) + " expected 2"
+                    create_operand_point(temp, size)
+                    set_temp_size_arr(result_type, multiply_tuple(size) )
+                    create_quadruple(operator, (operand_name, size), None , (temp, size) )
 
-            else:
-                operator = operator + "mat"
-                create_operand_point(temp, size)
-                set_temp_size_arr(result_type, sum(size) )
-                create_quadruple(operator, (operand_name, size), None , (temp, size) )
+                else:
+                    operator = operator + "mat"
+                    create_operand_point(temp, size)
+                    set_temp_size_arr(result_type, multiply_tuple(size) )
+                    create_quadruple(operator, (operand_name, size), None , (temp, size) )
 
         elif operator == '$' or operator == '¡' or operator == '?':
-            return "Operator " + str(operator) + " not given a Matrix, recived: " + str(result_type)
+            return "Operator " + str(operator) + " not given a Matrix, recieved: " + str(result_type)
         else :
             create_quadruple(operator, operand_name, None, temp)
 
@@ -434,8 +448,13 @@ def solve_unary_or_cont(ops: [Operations]):
 
     return e
 
+# ========================================================================== #
+# Operaciones de modulos (funciones)
+# ========================================================================== #
+
+
 # Checa el valor de un entero en la expresion
-# Regrea error si no existe tal entero.
+# Regresa error si no existe tal entero.
 def check_int():
     global jump_stack
     e = None
@@ -458,6 +477,8 @@ def fill_quad(end, cont):
     return e
 
 # end if OR while statement and fill waiting goto dir
+# Termina una expresion while ó un for y genera cuadruplos para la actualizacion de cuadruples
+# Regresa un error en caso de superar el límite de direcciones virtuales
 def cond_end(type_op):
     e = None
     global jump_stack, for_operand_stack
@@ -476,6 +497,8 @@ def cond_end(type_op):
     return e
 
 # Generate quadruples for else staement
+# Genera cuadruples para else
+# Regresa un error en caso de uperar el límite de direcciones virtuales
 def else_start():
     global jump_stack
     e = None
@@ -485,18 +508,20 @@ def else_start():
     e = fill_quad(if_false, quad_pointer)
     return e
 
-#Set quad_pointer to while function
+# Genera el quad_pointer en la función while
 def set_while():
     global jump_stack
     jump_stack.append(quad_pointer)
     return None
 
-# Creates quadruple for main
+# Crea cuadruplo para main
 def goto_main(function):
     global jump_stack
     create_quadruple('GOTO', None, None, None)
     jump_stack.append(quad_pointer - 1)
 
+# Crea cuadruplo final para for
+# Regresa error en caso de no encontrar una expresion int
 def set_for():
     global jump_stack, for_operand_stack
     e = None
@@ -505,8 +530,8 @@ def set_for():
     type, operand = top(operand_stack)
     for_operand_stack.append(operand)
 
-
-#set quad_pointer
+# Guarda el quad pointer para la operación for, appenda la dirección para regresar en el jump_stack
+# Regresa error en caso de no encontrar una expresion int
 def gen_for():
     global jump_stack, for_operand_stack
     e = None
@@ -521,6 +546,8 @@ def gen_for():
         jump_stack.append(quad_pointer - 1)
     return e
 
+# Salva el numero de parametros de la funcion en la variable func_param_counter
+# Regresa error si no existe la funcion
 def populate_func(type_op, current_func):
     global symbol_table, func_var_count, func_param_order
     e = None
@@ -535,6 +562,8 @@ def populate_func(type_op, current_func):
     func_param_order = []
     return e
 
+# Agrega a la función dentro del symbol_table su address
+# Regresa error en caso de no poder accesa la current func
 def func_set(current_func):
     global symbol_table
     e = None
@@ -544,19 +573,23 @@ def func_set(current_func):
         e = "Not able to modify quad pointer on start position on function: " + current_func
     return e
 
+# Termina el contexto de la funcion (reseta contadores temporales y locales)
+# Regresa error si la funcion no existe
 def func_end(current_func):
     global symbol_table, temp_dir_count, var_dir_count
     e = None
     try:
-        #symbol_table[current_func]['vars'] = None    #DELETE THE VAR TABLE
-        temp_dir_count = list(TEMP_LOWER_LIMIT) #RESET the temp counter
-        var_dir_count = list(VAR_LOWER_LIMIT) #RESET the temp func_dim_counter
+        symbol_table[current_func]['vars'] = None  #DELETE VAR TABLE
+        temp_dir_count = list(TEMP_LOWER_LIMIT) #RESET temp counter
+        var_dir_count = list(VAR_LOWER_LIMIT) #RESET temp func_dim_counter
     except:
         e = "Not able to delete var table on function: " + current_func
     create_quadruple("ENDFunc", None, None, None)
     return e
     pass
 
+# Recibe las funciones direcciones virtuales
+# Regresa error si sobrepasa el límite superior de variables locales
 def get_func_count(current_type, current_var):
     global func_var_count, func_param_order
     switcher = {
@@ -573,6 +606,8 @@ def get_func_count(current_type, current_var):
     func_param_order.append( (current_type, current_var) )
     return e
 
+# Crea el cuadruplo de ERA de funcion, con si tamaño
+# Regresa un error si la funcion no existe
 def func_check(current_func):
     global symbol_table, func_param_counter
     e = None
@@ -586,6 +621,9 @@ def func_check(current_func):
         create_quadruple("ERA", current_func, None, size)
     return e
 
+# Crear cuadruples PARAM para current_func
+# Regresa error en caso de numeros de parametros incorrecto.
+# Regresa error en caso de tipado incorrecto de parametros
 def check_param(current_func):
     global func_param_counter
     e = None
@@ -602,6 +640,7 @@ def check_param(current_func):
         e = "Type error on " + current_func + " parameter " + str(func_param_counter + 1) + " erronuos type of " + argumentType
     return e
 
+# Genera cuadruplo gosub, genera operación de igual para valores de retorno
 def go_sub(current_func):
     create_quadruple("GOSUB", current_func, None, symbol_table[current_func]['pos'])
     if symbol_table['global']['vars'].get(current_func) is not None:
@@ -609,15 +648,16 @@ def go_sub(current_func):
         operand_stack.append( (symbol_table['global']['vars'][current_func]['type'], temp) )
         create_quadruple('=', symbol_table['global']['vars'][current_func]['address'], None, temp)
 
+# Genera cuadruplos para funciones como lee y escribe
 def default_function(func):
     Type, value = operand_stack.pop()
     create_quadruple(func, None, None, value)
 
-# Save elements for virtual machine on Ouput.txt
+# Genera archivo objeto para maquina virtual
 def print_constants():
     global symbol_table, const_table, quadruples
 
-    #Modificar constant table to write address : value , type
+    #Modificar constant table para escribir address : value , type
     constant_dir = {}
 
     for element in const_table:
@@ -634,14 +674,21 @@ def print_constants():
     text_file.write('}')
     text_file.close()
 
-#Save principal address on "goto main" jump
+# Guarda dirección principal en "goto main" jump
 def end_princ():
     global jump_stack, quadruples
     quadruples[jump_stack.pop()][3] = quad_pointer
 
-
+# Caulcula el  tamaño del arreglo con base en su dimensiones
 def size_arr_calc(arr_isArray):
     size = 1
     for element in arr_isArray.items():
         size = size * element[1]['Ls']
     return size
+
+# Multiplicación de elementos de tupla
+def multiply_tuple(varr):
+    temp = 1
+    for elem in varr:
+        temp = temp * elem
+    return temp

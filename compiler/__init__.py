@@ -2,12 +2,16 @@
 # Cesar Buenfil Vazquez A01207499
 # init file de Patitoplusplus
 # Created 04/06/2020
-from parser import parser, error
+from parser import parser
 from scanner import *
-from structures import *
+from structures import p_error, operator_stack, operand_stack, symbol_table, const_table, quadruples
 from semantics import symbol_table, const_table
 import sys
 import pprint
+
+# ========================================================================== #
+# MAIN Compilador
+# ========================================================================== #
 
 # Para buscar y abrir un file con el programa
 data = ""
@@ -15,8 +19,8 @@ data = ""
 def debugging(result):
     # Debbuging
     print("Errors: ", result)
-    print("Operator Stack: ", operator_stack) #Error saves not operators
-    print("Operand Stack: ", operand_stack) #Error none
+    print("Operator Stack: ", operator_stack)
+    print("Operand Stack: ", operand_stack)
     print("Symbol Table: ")
     pprint.pprint(symbol_table)
     print("Const Table: ")
@@ -27,7 +31,7 @@ def debugging(result):
        print( i,": ", element)
        i = i + 1
 
-
+# Con base a los argumentos dados, el programa regresa un error o ejecuta
 def main():
     if(len(sys.argv) == 2):
         try:
@@ -49,11 +53,18 @@ def main():
     # Dar el input al lexer
     lexer.input(data)
 
+    # Tokenize
+    # while True:
+    #     tok = lexer.token()
+    #     if not tok:
+    #         break      # No more input
+    #     print(tok.type, tok.value, tok.lineno, tok.lexpos)
+
     result = parser.parse(data)
 
-    # debugging(result)
+    debugging(result)
 
-    if error:
+    if p_error:
         sys.exit(1)
     else:
         print("Succesful compilation, passing to execution.")

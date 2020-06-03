@@ -1,14 +1,15 @@
-%% Example for Patitoplusplus
+%% Example UNARY for Patitoplusplus
 programa patito;
-
 
 principal()
 var int k;
 {
+	k = 90;
 	k = 80+k;
 	k = -k + 60 - -k;
 	si ( !k) entonces
 		{
 			k = k;
 		}
+	escribe(k);
 }

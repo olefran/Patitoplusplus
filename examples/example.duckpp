@@ -2,32 +2,29 @@
 programa patito;
 
 var
-int i,j, p;
+int i, j, p;
 int Arreglo[10], OtroArreglo[10];
 float valor;
 int Matriz[3][8], OtraMatriz[3][3];
 
-funcion int fact (int j)
+funcion int fact(int j)
 var int i;
 {
-	i = j + (p - j*2*j);
-	si (j == 1) entonces
-		{
+	i = j + (p - j * 2 + j);
+	si (j <= 1) entonces {
 			regresa (j);
-		}
-	sino
-		{
-			regresa (j * fact(j-1));
-		}
+	}
+	sino {
+		regresa (fact(j-1));
+	}
 }
 
 funcion void inicia(int y)
 var int x;
 {
-	x= 0;
-	mientras (x < 11) haz
-	{
-		Arreglo[x] = y * x;
+	x = 0;
+	mientras(x < 10) haz {
+		Arreglo[x] = y * x + 1;
 		x = x + 1;
 	}
 }
@@ -36,36 +33,32 @@ var int x;
 principal()
 var int k;
 {
-  lee(p) ; j =p*2;
-  inicia (p*j - 5) ;
+  lee(p);
+	j = p * 2;
+  inicia (p * j);
 
-  desde i=0 hasta 9 hacer
-  {
-    Arreglo [ i ] = Arreglo [ i ] * fact(Arreglo [ i ] -p);
-  }
+	desde i=0 hasta 9 hacer {
+		Arreglo[ i ] = Arreglo[ i ] * fact(Arreglo[ i ] - p);
+	}
 
-  OtroArreglo = Arreglo;
+	OtroArreglo = Arreglo;
 
-  desde j = 0 hasta 2 hacer
-    desde k= 0 hasta 7 hacer
-    {
-      Matriz[j, k] = OtroArreglo[ j+k-fact(p) + p*k ] * p +j;
-    }
+	desde j = 0 hasta 3 hacer
+		desde k= 0 hasta 8 hacer {
+			Matriz[j, k] = OtroArreglo[ k ] * p + j;
+	}
 
-  desde j = 0 hasta 2 hacer
-    desde k = 0 hasta 2 hacer
-    {
-      OtraMatriz[j , k ] = k +j;
-    }
+	desde j = 0 hasta 3 hacer
+		desde k = 0 hasta 3 hacer {
+			OtraMatriz[j , k ] = k + j;
+	}
 
-  valor = OtraMatriz$ ;
-  escribe ("el determinante es: ", valor);
+	valor = Matriz$;
+	escribe ("el determinante es: ", valor);
 
-  mientras ( i >= 0)
-  {
-    escribe ("resultado", Arreglo[i], fact(i+2) * valor);
-    i = i + 1;
-  }
-
+	mientras( i < 10) {
+		escribe ("resultado", Arreglo[i], fact(i+2) * valor);
+		i = i + 1;
+	}
 
 }

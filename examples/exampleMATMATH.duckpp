@@ -1,4 +1,4 @@
-%% Example MAT for Patitoplusplus
+%% Example MATMATH for Patitoplusplus
 programa patito;
 
 var
@@ -31,7 +31,8 @@ principal()
 var
 int Arreglo[4], OtroArreglo[5], det, trans, inv;
 {
-	Matriz[0,0,0] = 1;
-	escribe(1 + Matriz[0,0,0]);
 	inicia();
+	Mat2 = Mat1;
+	Mat3 = Mat1*Mat2;
+	imprime();
 }

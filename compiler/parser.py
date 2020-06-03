@@ -2,6 +2,9 @@
 # Cesar Buenfil Vazquez A01207499
 # Parser con yacc de Patitoplusplus
 # Created on 04/25/2020
+# ========================================================================== #
+# Parser.py
+# ========================================================================== #
 import yacc
 from scanner import tokens
 from semantics import *
@@ -13,8 +16,9 @@ input_str = ''
 # Punto de partida
 start = 'PROGRAM'
 
-#Valor booleano de error just incase
-error = False
+# ========================================================================== #
+# Gramática Libre de Contexto
+# ========================================================================== #
 
 # Produccion vacía para epsilon
 def p_empty(p):
@@ -23,9 +27,10 @@ def p_empty(p):
 
 # PROGRAMA → programa r_goto_main id ;  VARS r_save_vars FUNCTIONS MAIN r_print_constants
 # r_goto_main : Crea cuadruplo principal para salto a MAIN
+# r_save_vars : Salva el numero de varaibles de la funcion en la variable func_var_count
 # r_print_constants : Crea el archivo objeto para la virtual machine
 def p_PROGRAM(p):
-    'PROGRAM : PROGRAMA r_goto_main ID DOTCOMA VARS r_save_vars  FUNCTIONS MAIN r_print_constants'
+    'PROGRAM : PROGRAMA r_goto_main ID DOTCOMA VARS r_save_vars FUNCTIONS MAIN r_print_constants'
     pass
 
 # MAIN → principal r_save_func ( ) r_register_princ r_save_param_func VARS r_save_vars r_end_princ r_func_set BLOQUE r_func_end
@@ -36,7 +41,6 @@ def p_PROGRAM(p):
 # r_end_princ : Guarda el cuadruplo de salto al final de la operación
 # r_func_set : Guarda el instruction pointer en el jump_stack
 # r_func_end : Destruye la var table de la funcion, crea el cueadruplo de ERA
-
 def p_MAIN(p):
     'MAIN : PRINCIPAL r_save_func LPAREN RPAREN r_register_princ r_save_param_func VARS r_save_vars r_end_princ r_func_set BLOQUE r_func_end '
     pass
@@ -92,6 +96,7 @@ def p_FUNCTIONS(p):
     pass
 
 # FUNCTION → funcion TIPO id ( PARAM )  VARS BLOQUE | funcion void id ( PARAM )  VARS BLOQUE
+# r_save_type : Salva el tipo en la varable global current_type
 # r_save_func : Guarda la funcion en variable current_func
 # r_register_func : Guarda el diccionario y la llave en el symbol_table
 # r_save_param_func : Salva el numero de parametros de la funcion en la variable func_param_counter
@@ -103,23 +108,17 @@ def p_FUNCTION(p):
     | FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end'''
     pass
 
-# PARAM → TIPO id PARENTESIS PARAM_AUX
+# PARAM → TIPO id PARAM_AUX
 # Sólo acepta ids ya declaradas, no acepta constantes
 # r_register_var : Salva el nombre de variable en la variable global current_var
 def p_PARAM(p):
-    '''PARAM : TIPO ID r_register_var PARENTESIS PARAM_AUX
+    '''PARAM : TIPO ID r_register_var PARAM_AUX
     | empty'''
     pass
 
 # PARAM_AUX → , PARAM  | empty
 def p_PARAM_AUX(p):
     '''PARAM_AUX : COMA PARAM
-    | empty'''
-    pass
-
-# PARENTESIS → [ ] PARENTESIS | empty
-def p_PARENTESIS(p):
-    '''PARENTESIS : LSTAPLE RSTAPLE PARENTESIS
     | empty'''
     pass
 
@@ -145,15 +144,15 @@ def p_ESTATUTO(p):
     pass
 
 # ASIGNACION → id ARRDIM = EXPRESION | id ARRDIM = CTE_ARR
-# r_seen_operand_id : Salva el id en el operand stack, ademas de darle una dirrecion virtual.
-# r_seen_operator : Salva la constante en el operand_stack, ademas de darle una dirrecion virtual.
-# r_seen_equal : Salva la operacion "=" en el operand_stack, busca solucionar la operacion
+# r_seen_operand_id : Salva el id en el operand stack, ademas de darle una dirrecion virtual
+# r_seen_operator : Salva la operación en el operator_stack
+# r_seen_equal : Salva la operacion "=" en el operator_stack, busca solucionar la operacion
 def p_ASIGNACION(p):
     'ASIGNACION : ID r_seen_operand_id ARRACC EQUAL r_seen_operator EXPRESION r_seen_equal'
     pass
 
 # ARRACC → [ EXPRESION ARRACC_AUX ] | empty
-# r_check_dim : Guarda las dimensiones de un arreglo declarado,
+# r_check_dim : Guarda las dimensiones de un arreglo declarado
 # r_create_quad : Genera los cuadruplos de VER y de sumas de pointer
 # r_close_arracc : Destruye las variables temporales de declaracion de arreglo
 def p_ARRACC(p):
@@ -184,7 +183,7 @@ def p_EXPRESION_AUX(p):
     pass
 
 # SUBEXP → EXP SUBEXP_AUX
-# r_seen_exp : Trata de buscar operaciones del nivel subexpresion  (AND, OR)
+# r_seen_exp : Trata de buscar operaciones del nivel expresion de comparación
 def p_SUBEXP(p):
     'SUBEXP : EXP r_seen_exp SUBEXP_AUX'
     pass
@@ -207,7 +206,7 @@ def p_COMPARACION(p):
     pass
 
 # EXP → TERMINO EXP_AUX
-# r_seen_term : Trata de buscar operaciones del nivel termino ( comparacion )
+# r_seen_term : Trata de buscar operaciones del nivel termino ( + / - )
 def p_EXP(p):
     'EXP : TERMINO r_seen_term EXP_AUX'
     pass
@@ -230,7 +229,7 @@ def p_TERMINO(p):
 # r_seen_operator : Salva la operacion en el operator_stack
 # r_seen_term : Trata de buscar operaciones del nivel termino ( comparacion )
 def p_TERMINO_AUX(p):
-    '''TERMINO_AUX : MULT r_seen_operator TERMINO
+    '''TERMINO_AUX : MULT r_seen_operator TERMINO r_seen_term
     | DIV r_seen_operator TERMINO r_seen_term
     | MOD r_seen_operator TERMINO r_seen_term
     | empty'''
@@ -238,7 +237,7 @@ def p_TERMINO_AUX(p):
 
 # FACTOR → ! FACTOR_AUX | FACTOR_AUX
 # r_seen_unary_operator : Salva la operacion en el operator_stack
-# solve_unary_or_cont(ops[]) : Trata de resolver operaciones unarias. ( +unary, -unary, !, $, ¡, ? )
+# solve_unary_or_cont(ops[]) : Trata de resolver operaciones unarias ( +unary, -unary, !, $, ¡, ? )
 def p_FACTOR(p):
     '''FACTOR : NOT r_seen_unary_operator FACTOR_AUX
     | FACTOR_AUX'''
@@ -249,7 +248,7 @@ def p_FACTOR(p):
 # FACTOR_AUX → ( EXPRESION ) | SIGN ( EXPRESION ) | SIGN CTE | CTE ARROP | CTE
 # r_seen_operator : Salva la operacion en el operator_stack
 # r_pop_fake_bottom : Elimina el elemento "(" del operator_stack
-# solve_unary_or_cont(ops[]) : Trata de resolver operaciones unarias. ( +unary, -unary, !, $, ¡, ? )
+# solve_unary_or_cont(ops[]) : Trata de resolver operaciones unarias ( +unary, -unary, !, $, ¡, ? )
 def p_FACTOR_AUX(p):
     '''FACTOR_AUX : SIGN LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom
     | SIGN CTE ARROP'''
@@ -265,8 +264,8 @@ def p_SIGN(p):
     | empty'''
 
 # CTE → cte_i | cte_f | ct_ch | cte_string | FUN | ID ARRACC
-# r_seen_operand : Salva la operarnd en el operand_stack, ADEMAS de asignarle la dirreción temporal.
-# r_seen_operand_id : Salva la operarnd en el operand_stack, ADEMAS de asignarle la dirreción temporal.
+# r_seen_operand : Salva la operand en el operand_stack, ADEMÁS de asignarle la dirreción temporal
+# r_seen_operand_id : Salva la operarnd en el operand_stack, ADEMÁS de asignarle la dirreción temporal
 def p_CTE(p):
     '''CTE : CTE_I r_seen_operand
     | CTE_F r_seen_operand
@@ -277,7 +276,7 @@ def p_CTE(p):
     pass
 
 # ARROP→ $ | ! | ? | empty
-# r_seen_operator_mat : Salva la operarnd en el operand_stack, ADEMAS de asignarle la dirreción temporal.
+# r_seen_operator_mat : Salva la operand en el operand_stack, ADEMÁS de asignarle la dirreción temporal
 def p_ARROP(p):
     '''ARROP : DET_ARR r_seen_operator_mat
     | TRANS_ARR r_seen_operator_mat
@@ -321,7 +320,7 @@ def p_IF2(p):
     pass
 
 # IFAUX → sino BLOQUE | empty
-# r_else_start : crea el goto false, y el goto con el elemento top del jump_stack
+# r_else_start : Crea el goto false, y el goto con el elemento top del jump_stack
 def p_IF_AUX(p):
     '''IF_AUX : SINO r_else_start BLOQUE
     | empty'''
@@ -330,7 +329,7 @@ def p_IF_AUX(p):
 # WHILE → mientras ( EXPRESION ) WHILE_AUX WHILE2
 # r_set_while : Guarda el point instruction en el jump_stack
 # r_check_int : Revisa si la expresion es un entero, guarda la dirreción en el jump_stack
-# r_while_end : Genera el goto con el elemnto top del jump_stack
+# r_while_end : Genera el goto con el elemento top del jump_stack
 def p_WHILE(p):
     'WHILE : MIENTRAS r_set_while LPAREN EXPRESION r_check_int RPAREN WHILE_AUX WHILE2 r_while_end'
     pass
@@ -350,7 +349,7 @@ def p_WHILE_AUX(p):
 # FOR → desde ASIGNACION hasta EXPRESION hacer FOR2
 # r_set_for : Guarda el point instruction en el jump_stack
 # r_for_gen : Guarda el elemento en el for_operand_stack
-# r_for_end : Genera el goto con el elemnto top del jump_stack
+# r_for_end : Genera el goto con el elemento top del jump_stack
 def p_FOR(p):
     'FOR : DESDE ASIGNACION r_set_for HASTA EXPRESION r_for_gen HACER FOR2 r_for_end'
     pass
@@ -384,7 +383,7 @@ def p_READ(p):
     pass
 
 # READ_AUX → id ARRDIM READ_AUXSUB
-# r_seen_operand_id : Salva la operarnd en el operand_stack, ADEMAS de asignarle la dirreción temporal.
+# r_seen_operand_id : Salva la operand en el operand_stack, ADEMÁS de asignarle la dirreción temporal.
 # r_lee : Genera el cuadruplo de lectura
 def p_READ_AUX(p):
     'READ_AUX : ID r_seen_operand_id ARRDIM r_lee READ_AUXSUB'
@@ -411,7 +410,9 @@ precedence = (
     ('left', 'AND', 'OR'),
 )
 
+# ========================================================================== #
 # Funciones para guardar en symbol_table
+# ========================================================================== #
 
 # r_save_type : Salva el tipo en la varable global current_type
 def p_r_save_type(p):
@@ -828,7 +829,7 @@ def p_r_check_func(p):
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
-# r_check_param : Create cuadruples PARAM
+# r_check_param : Crea cuadruplos PARAM
 def p_r_check_param(p):
     'r_check_param : '
     global call_func, current_func
@@ -879,11 +880,15 @@ def p_r_print_constants(p):
     if e:
         handle_error(p.lineno(-1), p.lexpos(-1), e)
 
+# ========================================================================== #
+# Manejo de Errores
+# ========================================================================== #
+
 # Función para controlar errores
 def handle_error(line, lexpos, mssg):
   '''Print error message and set error state to true'''
-  global error
-  error = True
+  global p_error
+  p_error = True
   error_prefix(line, lexpos, input_str)
   print(mssg)
 
@@ -892,13 +897,13 @@ def error_prefix(line, lexpos, input_str):
   '''Prints the line and column where an error ocurred.'''
 
   print(f'Error at line = {line} - ', end='')
-  global error
-  error = True
+  global p_error
+  p_error = True
 
 #Funcion para imprimir errores a pantalla.
 def p_error(p):
-  global error
-  error = True
+  global p_error
+  p_error = True
   error_prefix(p.lineno, p.lexpos, input_str)
   print(f'Unexpected token {p.value}.')
   recover_parser(parser)

@@ -1,17 +1,31 @@
-%% Example for Patitoplusplus
+%% Example MATOP for Patitoplusplus
 programa patito;
 
 var
-int MatA[1][2], MatB[2][1];
+int MatA[2][2], MatB[2][2], MatC[2][2], MatD[2][2], MatE[2][2];
 
 funcion void inicia()
-var int j, k;
+var int j, k, i;
 {
-	desde j = 0 hasta 1 hacer
+	i = 0;
+	desde j = 0 hasta 2 hacer
 		desde k = 0 hasta 2 hacer
 		{
-			MatA[j, k] = j+k;
-			escribe(Mat1[j, k]);
+			MatA[j, k] = j+k+i;
+			escribe(MatA[j, k]);
+		}
+}
+
+funcion void inicia2()
+var int j, k, i;
+{
+	i = 0;
+	desde j = 0 hasta 2 hacer
+		desde k = 0 hasta 2 hacer
+		{
+			MatD[j, k] = j + k + i;
+			escribe(MatD[j, k]);
+			i = i + 1;
 		}
 }
 
@@ -19,17 +33,32 @@ funcion void imprime()
 var int j, k;
 {
 	desde j = 0 hasta 2 hacer
-		desde k = 0 hasta 1 hacer
+		desde k = 0 hasta 2 hacer
 		{
 			escribe(MatB[j, k]);
 		}
 }
 
+funcion void imprime2()
+var int j, k;
+{
+	desde j = 0 hasta 2 hacer
+		desde k = 0 hasta 2 hacer
+		{
+			escribe(MatE[j, k]);
+		}
+}
+
 principal()
 var
-int Arreglo[4], OtroArreglo[5], det, trans, inv;
+int Arreglo[4], OtroArreglo[5], det;
 {
 	inicia();
-	Mat3 = Mat1¡;
-	imprime();
+	escribe("Determinante");
+	det = MatA$;
+	escribe(det);
+	MatB = MatA?;
+	inicia2();
+	MatE = MatD¡;
+	imprime2();
 }

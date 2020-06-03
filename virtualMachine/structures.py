@@ -3,8 +3,16 @@
 # Operaciones para virtualMachine
 # Created 04/25/2020\
 import pprint
+# ========================================================================== #
+# Structures.py
+# ========================================================================== #
 
-temp_memory = [{}] # Can temp memory be used as a execution_stack?
+# ========================================================================== #
+# Estructuras de Máquina Virtual
+# ========================================================================== #
+
+# Arreglo de dicionarios
+temp_memory = [{}]
 
 current_temp_memory = {} #Dictionary for ERA declaration
 
@@ -24,6 +32,7 @@ quad_size = 0
 
 quad_pointer = 0
 
+# Llenado del archibo obj "Output.txt"
 with open("virtualMachine/Output.txt",'r', newline = '\n') as file:
     text_file = eval(file.read())
 

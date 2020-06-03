@@ -1,4 +1,4 @@
-%% Example for Patitoplusplus
+%% Example MATH for Patitoplusplus
 programa patito;
 var
 int i,j,k;
@@ -13,7 +13,7 @@ principal()
 var
 int p, y;
 {
-	y = 7;
+	y = 7-7+4;
 	p = 5;
 	fact(p, y);
 }

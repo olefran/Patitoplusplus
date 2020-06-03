@@ -4,6 +4,14 @@
 
 import pprint
 from operations import *
+import ast
+# ========================================================================== #
+# VirtualMachine.py
+# ========================================================================== #
+
+# ========================================================================== #
+# Matrix de operaciones
+# ========================================================================== #
 
 operations = {
     "unary+" : plus_unary_solve,
@@ -33,7 +41,6 @@ operations = {
     "ERA" : era_solve,
     "RETURN" : return_solve,
     "ENDFunc" : endfunc_solve,
-    "END" : end_solve,
     "VER" : verify_solve,
     "+dir" : plus_add_solve,
     "=mat" : equal_mat_solve,
@@ -45,16 +52,17 @@ operations = {
     "*mat" : times_mat_solve,
     "unary+mat": plus_unary_mat_solve,
     "unary-mat": minus_unary_mat_solve
- } #TODO: Implement functions, AND implement matrix based operations
+ }
 
-
+# Ejecuta los cuadruplos desde  un quad point = 0
 def main():
   '''Grab the object code file and run it.'''
   global quad_size, quadruples
-  #Execute the quadruples one by one
+  #Executa cuadruplos uno por uno
   quad_pointer = 0
   while quad_pointer < quad_size:
       e = operations[quadruples[quad_pointer][0]](quadruples[quad_pointer][1], quadruples[quad_pointer][2], quadruples[quad_pointer][3])
+      # print(quadruples[quad_pointer][0], quadruples[quad_pointer][1], quadruples[quad_pointer][2], quadruples[quad_pointer][3])
       if e == True:
           set_pointer(quad_pointer+1)
       elif e is not None and e is not False:
