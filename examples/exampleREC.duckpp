@@ -12,14 +12,14 @@ var int i;
 float g, h ,b;
 char c;
 {
-  si (j == 0) entonces
+  si (j <= 0) entonces
     {
       regresa(j);
     }
     sino
     {
       escribe(j);
-      func1(j-1);
+      regresa(func1(j-1) - func1(j-1) );
     }
 }
 

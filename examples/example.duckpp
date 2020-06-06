@@ -44,7 +44,7 @@ var int k;
 	OtroArreglo = Arreglo;
 
 	desde j = 0 hasta 3 hacer
-		desde k= 0 hasta 8 hacer {
+		desde k = 0 hasta 8 hacer {
 			Matriz[j, k] = OtroArreglo[ k ] * p + j;
 	}
 
@@ -53,7 +53,7 @@ var int k;
 			OtraMatriz[j , k ] = k + j;
 	}
 
-	valor = Matriz$;
+	valor = OtraMatriz$;
 	escribe ("el determinante es: ", valor);
 
 	mientras( i < 10) {

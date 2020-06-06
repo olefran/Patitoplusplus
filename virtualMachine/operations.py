@@ -278,7 +278,6 @@ def get_cofactor(first):
 
 #Determinante de matrices
 def det_mat_solve(first, second, dst):
-    size = 1
     temp = None
     mat = []
     arr_temp = []
@@ -292,28 +291,27 @@ def det_mat_solve(first, second, dst):
 
 #Matriz transpuesta
 def trans_mat_solve(first, second, dst):
-    size = 1
     temp = None
     mat = []
     arr_temp = []
+    aux = 0
     for x in range(first[1][0]):
         for y in range(first[1][1]):
-            arr_temp.append(get_value(first[0] + x*first[1][0] + y ) )
+            arr_temp.append(get_value(first[0] + aux))
+            aux = aux + 1
         mat.append(arr_temp)
         arr_temp = []
     matrix = np.array(mat)
     matrix = matrix.transpose()
-
-    for x in range(dst[1][1]):
-        for y in range(dst[1][0]):
-            temp = set_value(matrix[x][y], dst[0]+x*first[1][0]+y )
+    for x in range(dst[1][0]):
+        for y in range(dst[1][1]):
+            temp = set_value(matrix[x][y], dst[0]+x*dst[1][1]+y )
             if temp is not True:
                 return temp
     return temp
 
 # Matriz inversa
 def inv_mat_solve(first, second, dst):
-    size = 1
     temp = None
     mat = []
     arr_temp = []
