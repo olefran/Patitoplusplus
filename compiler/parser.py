@@ -76,14 +76,14 @@ def p_IDS(p):
 
 # ARRDIM → [ CTE_I ARRDIM_AUX ] ARRDIM | empty
 # r_register_arr : Salva el nombre de el arreglo, en el symbol_table
-# r_register_dim : Salva las dimeciones del arreglo en el symbol_table
+# r_register_dim : Salva las dimensiones del arreglo en el symbol_table
 def p_ARRDIM(p):
     '''ARRDIM : r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM
     | empty'''
     pass
 
 # ARRDIM → , CTE_I ARRDIM_AUX | empty
-# r_register_dim : Salva las dimeciones del arreglo en el symbol_table
+# r_register_dim : Salva las dimensiones del arreglo en el symbol_table
 def p_ARRDIM_AUX(p):
     '''ARRDIM_AUX : COMA CTE_I r_register_dim ARRDIM_AUX
     | empty'''
@@ -161,7 +161,7 @@ def p_ARRACC(p):
     pass
 
 # ARRACC_AUX → , CTE_I ARRACC_AUX | empty
-# r_add_dim : Aumenta el contador de dimenciones (r_dim)
+# r_add_dim : Aumenta el contador de dimensiones (r_dim)
 # r_create_quad : Genera los cuadruplos de VER y de sumas de pointer
 def p_ARRACC_AUX(p):
     '''ARRACC_AUX : COMA r_add_dim EXPRESION r_create_quad ARRACC_AUX
@@ -484,7 +484,7 @@ def p_r_register_arr(p):
         if e:
             handle_error(p.lineno(-1), p.lexpos(-1), e)
 
-# r_register_dim : Salva las dimeciones del arreglo en el symbol_table
+# r_register_dim : Salva las dimensiones del arreglo en el symbol_table
 def p_r_register_dim(p):
     'r_register_dim : '
     global symbol_table, current_var, func_dim_counter, current_var_aux, r_dim
@@ -532,7 +532,7 @@ def p_r_populate_r(p):
         if e:
             handle_error(p.lineno(-1), p.lexpos(-1), e)
 
-#Checa las dimeciones de un arreglo declarado
+#Checa las dimensiones de un arreglo declarado
 def p_r_check_dim(p):
     'r_check_dim : '
     global symbol_table, r_dim, operator_stack, pila_dim
@@ -588,15 +588,8 @@ def p_r_create_quad(p):
         create_quadruple("+", aux, aux2, temp)
         operand_stack.append((aux_type, temp))
 
-# r_register_princ : Crea el diccionario y la llave de la funcion en el symbol_table
-def p_r_register_princ(p):
-    'r_register_princ : '
-    global symbol_table
-    symbol_table[current_func] = {
-        'vars': {}
-    }
 
-# r_add_dim : Aumenta el contador de dimenciones (r_dim)
+# r_add_dim : Aumenta el contador de dimensiones (r_dim)
 def p_r_add_dim(p):
     'r_add_dim : '
     global r_dim, pila_dim
@@ -643,6 +636,14 @@ def p_r_close_arracc(p):
     operand_stack.append( (aux_type, temp2) )
     pop_fake_bottom()
 
+
+# r_register_princ : Crea el diccionario y la llave de la funcion en el symbol_table
+def p_r_register_princ(p):
+    'r_register_princ : '
+    global symbol_table
+    symbol_table[current_func] = {
+        'vars': {}
+    }
 
 # Registra la direción para el salto inicial de programa "goto main"
 def p_r_end_princ(p):

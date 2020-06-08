@@ -269,7 +269,7 @@ def minus_unary_mat_solve(first, second, dst):
             return temp
     return temp
 
-#Get cofactor for determinant calculation
+#Get cofactor for determinant calculation [DEPRECATED FOR NUMPY]
 def get_cofactor(first):
     i = j = 0
     for row in range(first[1][0]):
@@ -335,6 +335,7 @@ def plus_mat_solve(first, second, dst):
     for dim in first[1]:
         size = size * dim
     for x in range(size):
+
         temp = set_value(get_value(first[0] + x) + get_value(second[0] + x), dst[0] + x )
         if temp is not True:
             return temp
@@ -354,7 +355,7 @@ def minus_mat_solve(first, second, dst):
 
 # Multiplicacion de matrices
 def times_mat_solve(first, second, dst):
-    #Aqui hay que hacer lo de multiplicar matrices (solo de 2 dimensiones)
+    #Aqui hay que hacer lo de multiplicar matrices (solo de 2 dimensiones ó 1 dimensiones)
     result = 0
     temp = None
     for i in range( first[1][0] ):

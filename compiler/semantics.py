@@ -652,6 +652,8 @@ def go_sub(current_func):
 def default_function(func):
     Type, value = operand_stack.pop()
     create_quadruple(func, None, None, value)
+    if func == "RETURN":
+        create_quadruple("ENDFunc", None, None, None)
 
 # Genera archivo objeto para maquina virtual
 def print_constants():

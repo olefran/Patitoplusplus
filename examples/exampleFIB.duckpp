@@ -2,16 +2,23 @@
 programa patito;
 
 funcion int fibo(int i)
+var int k, j;
 {
-	si (i <= 1) entonces {
+	si (i == 0) entonces {
+			regresa(0);
+	}
+	si (i == 1) entonces {
 			regresa(1);
-	} sino {
-			regresa ( fibo(i-1) + fibo(i-2) );
+	}
+	sino {
+			regresa( fibo(i-1) + fibo(i-2) );
 	}
 
 }
 
 principal()
+var int x;
 {
-	escribe( fibo(3) );
+	x = fibo(5);
+	escribe(x);
 }
