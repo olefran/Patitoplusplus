@@ -20,6 +20,7 @@ Asegurate que los archivos: ``` yacc.py , lex.py``` existan en el mismo director
 
 * python >= 3.6
 * ply 2.6 (pre-instalado)
+* numpy ``` pip(3) install numpy ```
 
 ### :zap: Ejecución
 
