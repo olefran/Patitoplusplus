@@ -277,6 +277,12 @@ def pop_fake_bottom():
   if operator != '(':
       e = 'Expected: )'
 
+# Agrega el elemento "(" de operator_stack
+def create_fake_bottom():
+  global operator_stack
+  operator_stack.append('(')
+  return None
+
 # ========================================================================== #
 # Creación de cuadruplos de operaciones
 # ========================================================================== #

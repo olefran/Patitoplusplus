@@ -85,7 +85,7 @@ Rule 75    ARROP -> DET_ARR r_seen_operator_mat
 Rule 76    ARROP -> TRANS_ARR r_seen_operator_mat
 Rule 77    ARROP -> INV_ARR r_seen_operator_mat
 Rule 78    ARROP -> empty
-Rule 79    FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub
+Rule 79    FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub
 Rule 80    FUN_AUX -> EXPRESION r_check_param COMA FUN_AUX
 Rule 81    FUN_AUX -> EXPRESION r_check_param
 Rule 82    FUN_AUX -> empty
@@ -139,26 +139,27 @@ Rule 129   r_seen_exp -> <empty>
 Rule 130   r_seen_term -> <empty>
 Rule 131   r_seen_factor -> <empty>
 Rule 132   r_pop_fake_bottom -> <empty>
-Rule 133   r_check_int -> <empty>
-Rule 134   r_if_end -> <empty>
-Rule 135   r_else_start -> <empty>
-Rule 136   r_set_while -> <empty>
-Rule 137   r_while_end -> <empty>
-Rule 138   r_set_for -> <empty>
-Rule 139   r_for_gen -> <empty>
-Rule 140   r_for_end -> <empty>
-Rule 141   r_save_param_func -> <empty>
-Rule 142   r_save_vars -> <empty>
-Rule 143   r_func_set -> <empty>
-Rule 144   r_func_end -> <empty>
-Rule 145   r_check_func -> <empty>
-Rule 146   r_check_param -> <empty>
-Rule 147   r_go_sub -> <empty>
-Rule 148   r_goto_main -> <empty>
-Rule 149   r_regresa -> <empty>
-Rule 150   r_escribe -> <empty>
-Rule 151   r_lee -> <empty>
-Rule 152   r_print_constants -> <empty>
+Rule 133   r_create_bottom -> <empty>
+Rule 134   r_check_int -> <empty>
+Rule 135   r_if_end -> <empty>
+Rule 136   r_else_start -> <empty>
+Rule 137   r_set_while -> <empty>
+Rule 138   r_while_end -> <empty>
+Rule 139   r_set_for -> <empty>
+Rule 140   r_for_gen -> <empty>
+Rule 141   r_for_end -> <empty>
+Rule 142   r_save_param_func -> <empty>
+Rule 143   r_save_vars -> <empty>
+Rule 144   r_func_set -> <empty>
+Rule 145   r_func_end -> <empty>
+Rule 146   r_check_func -> <empty>
+Rule 147   r_check_param -> <empty>
+Rule 148   r_go_sub -> <empty>
+Rule 149   r_goto_main -> <empty>
+Rule 150   r_regresa -> <empty>
+Rule 151   r_escribe -> <empty>
+Rule 152   r_lee -> <empty>
+Rule 153   r_print_constants -> <empty>
 
 Terminals, with rules where they appear
 
@@ -276,6 +277,7 @@ r_check_func         : 79
 r_check_int          : 86 91
 r_check_param        : 80 81
 r_close_arracc       : 36
+r_create_bottom      : 79
 r_create_quad        : 36 38
 r_else_start         : 89
 r_end_princ          : 3
@@ -288,7 +290,7 @@ r_go_sub             : 79
 r_goto_main          : 2
 r_if_end             : 86
 r_lee                : 104
-r_pop_fake_bottom    : 64
+r_pop_fake_bottom    : 64 79
 r_populate_r         : 12 13
 r_print_constants    : 2
 r_register_arr       : 14
@@ -335,9 +337,9 @@ state 1
 state 2
 
     (2) PROGRAM -> PROGRAMA . r_goto_main ID DOTCOMA VARS r_save_vars FUNCTIONS MAIN r_print_constants
-    (148) r_goto_main -> .
+    (149) r_goto_main -> .
 
-    ID              reduce using rule 148 (r_goto_main -> .)
+    ID              reduce using rule 149 (r_goto_main -> .)
 
     r_goto_main                    shift and go to state 3
 
@@ -372,10 +374,10 @@ state 5
 state 6
 
     (2) PROGRAM -> PROGRAMA r_goto_main ID DOTCOMA VARS . r_save_vars FUNCTIONS MAIN r_print_constants
-    (142) r_save_vars -> .
+    (143) r_save_vars -> .
 
-    FUNCION         reduce using rule 142 (r_save_vars -> .)
-    PRINCIPAL       reduce using rule 142 (r_save_vars -> .)
+    FUNCION         reduce using rule 143 (r_save_vars -> .)
+    PRINCIPAL       reduce using rule 143 (r_save_vars -> .)
 
     r_save_vars                    shift and go to state 9
 
@@ -606,9 +608,9 @@ state 26
 state 27
 
     (2) PROGRAM -> PROGRAMA r_goto_main ID DOTCOMA VARS r_save_vars FUNCTIONS MAIN . r_print_constants
-    (152) r_print_constants -> .
+    (153) r_print_constants -> .
 
-    $end            reduce using rule 152 (r_print_constants -> .)
+    $end            reduce using rule 153 (r_print_constants -> .)
 
     r_print_constants              shift and go to state 34
 
@@ -830,10 +832,10 @@ state 51
 state 52
 
     (3) MAIN -> PRINCIPAL r_save_func LPAREN RPAREN r_register_princ . r_save_param_func VARS r_save_vars r_end_princ r_func_set BLOQUE r_func_end
-    (141) r_save_param_func -> .
+    (142) r_save_param_func -> .
 
-    VAR             reduce using rule 141 (r_save_param_func -> .)
-    LBRACKET        reduce using rule 141 (r_save_param_func -> .)
+    VAR             reduce using rule 142 (r_save_param_func -> .)
+    LBRACKET        reduce using rule 142 (r_save_param_func -> .)
 
     r_save_param_func              shift and go to state 57
 
@@ -970,9 +972,9 @@ state 64
 state 65
 
     (3) MAIN -> PRINCIPAL r_save_func LPAREN RPAREN r_register_princ r_save_param_func VARS . r_save_vars r_end_princ r_func_set BLOQUE r_func_end
-    (142) r_save_vars -> .
+    (143) r_save_vars -> .
 
-    LBRACKET        reduce using rule 142 (r_save_vars -> .)
+    LBRACKET        reduce using rule 143 (r_save_vars -> .)
 
     r_save_vars                    shift and go to state 71
 
@@ -989,10 +991,10 @@ state 66
 state 67
 
     (20) FUNCTION -> FUNCION TIPO ID r_save_func r_register_func LPAREN PARAM RPAREN . r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end
-    (141) r_save_param_func -> .
+    (142) r_save_param_func -> .
 
-    VAR             reduce using rule 141 (r_save_param_func -> .)
-    LBRACKET        reduce using rule 141 (r_save_param_func -> .)
+    VAR             reduce using rule 142 (r_save_param_func -> .)
+    LBRACKET        reduce using rule 142 (r_save_param_func -> .)
 
     r_save_param_func              shift and go to state 73
 
@@ -1068,10 +1070,10 @@ state 73
 state 74
 
     (21) FUNCTION -> FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN . r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end
-    (141) r_save_param_func -> .
+    (142) r_save_param_func -> .
 
-    VAR             reduce using rule 141 (r_save_param_func -> .)
-    LBRACKET        reduce using rule 141 (r_save_param_func -> .)
+    VAR             reduce using rule 142 (r_save_param_func -> .)
+    LBRACKET        reduce using rule 142 (r_save_param_func -> .)
 
     r_save_param_func              shift and go to state 82
 
@@ -1100,9 +1102,9 @@ state 76
 state 77
 
     (3) MAIN -> PRINCIPAL r_save_func LPAREN RPAREN r_register_princ r_save_param_func VARS r_save_vars r_end_princ . r_func_set BLOQUE r_func_end
-    (143) r_func_set -> .
+    (144) r_func_set -> .
 
-    LBRACKET        reduce using rule 143 (r_func_set -> .)
+    LBRACKET        reduce using rule 144 (r_func_set -> .)
 
     r_func_set                     shift and go to state 84
 
@@ -1144,9 +1146,9 @@ state 80
 state 81
 
     (20) FUNCTION -> FUNCION TIPO ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS . r_save_vars r_func_set BLOQUE r_func_end
-    (142) r_save_vars -> .
+    (143) r_save_vars -> .
 
-    LBRACKET        reduce using rule 142 (r_save_vars -> .)
+    LBRACKET        reduce using rule 143 (r_save_vars -> .)
 
     r_save_vars                    shift and go to state 86
 
@@ -1189,27 +1191,27 @@ state 85
 state 86
 
     (20) FUNCTION -> FUNCION TIPO ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars . r_func_set BLOQUE r_func_end
-    (143) r_func_set -> .
+    (144) r_func_set -> .
 
-    LBRACKET        reduce using rule 143 (r_func_set -> .)
+    LBRACKET        reduce using rule 144 (r_func_set -> .)
 
     r_func_set                     shift and go to state 90
 
 state 87
 
     (21) FUNCTION -> FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS . r_save_vars r_func_set BLOQUE r_func_end
-    (142) r_save_vars -> .
+    (143) r_save_vars -> .
 
-    LBRACKET        reduce using rule 142 (r_save_vars -> .)
+    LBRACKET        reduce using rule 143 (r_save_vars -> .)
 
     r_save_vars                    shift and go to state 91
 
 state 88
 
     (3) MAIN -> PRINCIPAL r_save_func LPAREN RPAREN r_register_princ r_save_param_func VARS r_save_vars r_end_princ r_func_set BLOQUE . r_func_end
-    (144) r_func_end -> .
+    (145) r_func_end -> .
 
-    $end            reduce using rule 144 (r_func_end -> .)
+    $end            reduce using rule 145 (r_func_end -> .)
 
     r_func_end                     shift and go to state 92
 
@@ -1226,7 +1228,7 @@ state 89
     (34) ESTATUTO -> . RETURN DOTCOMA
     (1) empty -> .
     (35) ASIGNACION -> . ID r_seen_operand_id ARRACC EQUAL r_seen_operator EXPRESION r_seen_equal
-    (79) FUN -> . ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub
+    (79) FUN -> . ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub
     (83) COND -> . IF
     (84) COND -> . FOR
     (85) COND -> . WHILE
@@ -1272,9 +1274,9 @@ state 90
 state 91
 
     (21) FUNCTION -> FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars . r_func_set BLOQUE r_func_end
-    (143) r_func_set -> .
+    (144) r_func_set -> .
 
-    LBRACKET        reduce using rule 143 (r_func_set -> .)
+    LBRACKET        reduce using rule 144 (r_func_set -> .)
 
     r_func_set                     shift and go to state 113
 
@@ -1305,7 +1307,7 @@ state 94
     (34) ESTATUTO -> . RETURN DOTCOMA
     (1) empty -> .
     (35) ASIGNACION -> . ID r_seen_operand_id ARRACC EQUAL r_seen_operator EXPRESION r_seen_equal
-    (79) FUN -> . ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub
+    (79) FUN -> . ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub
     (83) COND -> . IF
     (84) COND -> . FOR
     (85) COND -> . WHILE
@@ -1398,13 +1400,13 @@ state 101
 state 102
 
     (35) ASIGNACION -> ID . r_seen_operand_id ARRACC EQUAL r_seen_operator EXPRESION r_seen_equal
-    (79) FUN -> ID . r_check_func LPAREN FUN_AUX RPAREN r_go_sub
+    (79) FUN -> ID . r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub
     (123) r_seen_operand_id -> .
-    (145) r_check_func -> .
+    (146) r_check_func -> .
 
     LSTAPLE         reduce using rule 123 (r_seen_operand_id -> .)
     EQUAL           reduce using rule 123 (r_seen_operand_id -> .)
-    LPAREN          reduce using rule 145 (r_check_func -> .)
+    LPAREN          reduce using rule 146 (r_check_func -> .)
 
     r_seen_operand_id              shift and go to state 121
     r_check_func                   shift and go to state 122
@@ -1492,19 +1494,19 @@ state 110
 state 111
 
     (91) WHILE -> MIENTRAS . r_set_while LPAREN EXPRESION r_check_int RPAREN WHILE_AUX WHILE2 r_while_end
-    (136) r_set_while -> .
+    (137) r_set_while -> .
 
-    LPAREN          reduce using rule 136 (r_set_while -> .)
+    LPAREN          reduce using rule 137 (r_set_while -> .)
 
     r_set_while                    shift and go to state 129
 
 state 112
 
     (20) FUNCTION -> FUNCION TIPO ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE . r_func_end
-    (144) r_func_end -> .
+    (145) r_func_end -> .
 
-    FUNCION         reduce using rule 144 (r_func_end -> .)
-    PRINCIPAL       reduce using rule 144 (r_func_end -> .)
+    FUNCION         reduce using rule 145 (r_func_end -> .)
+    PRINCIPAL       reduce using rule 145 (r_func_end -> .)
 
     r_func_end                     shift and go to state 130
 
@@ -1627,7 +1629,7 @@ state 121
 
 state 122
 
-    (79) FUN -> ID r_check_func . LPAREN FUN_AUX RPAREN r_go_sub
+    (79) FUN -> ID r_check_func . LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub
 
     LPAREN          shift and go to state 135
 
@@ -1753,9 +1755,9 @@ state 126
 state 127
 
     (96) FOR -> DESDE ASIGNACION . r_set_for HASTA EXPRESION r_for_gen HACER FOR2 r_for_end
-    (138) r_set_for -> .
+    (139) r_set_for -> .
 
-    HASTA           reduce using rule 138 (r_set_for -> .)
+    HASTA           reduce using rule 139 (r_set_for -> .)
 
     r_set_for                      shift and go to state 153
 
@@ -1787,10 +1789,10 @@ state 130
 state 131
 
     (21) FUNCTION -> FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE . r_func_end
-    (144) r_func_end -> .
+    (145) r_func_end -> .
 
-    FUNCION         reduce using rule 144 (r_func_end -> .)
-    PRINCIPAL       reduce using rule 144 (r_func_end -> .)
+    FUNCION         reduce using rule 145 (r_func_end -> .)
+    PRINCIPAL       reduce using rule 145 (r_func_end -> .)
 
     r_func_end                     shift and go to state 155
 
@@ -1849,60 +1851,38 @@ state 134
 
 state 135
 
-    (79) FUN -> ID r_check_func LPAREN . FUN_AUX RPAREN r_go_sub
-    (80) FUN_AUX -> . EXPRESION r_check_param COMA FUN_AUX
-    (81) FUN_AUX -> . EXPRESION r_check_param
-    (82) FUN_AUX -> . empty
-    (40) EXPRESION -> . SUBEXP r_seen_subexp EXPRESION_AUX
-    (1) empty -> .
-    (44) SUBEXP -> . EXP r_seen_exp SUBEXP_AUX
-    (53) EXP -> . TERMINO r_seen_term EXP_AUX
-    (57) TERMINO -> . FACTOR r_seen_factor TERMINO_AUX
-    (62) FACTOR -> . NOT r_seen_unary_operator FACTOR_AUX
-    (63) FACTOR -> . FACTOR_AUX
-    (64) FACTOR_AUX -> . SIGN LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom
-    (65) FACTOR_AUX -> . SIGN CTE ARROP
-    (66) SIGN -> . PLUS r_seen_unary_operator
-    (67) SIGN -> . MINUS r_seen_unary_operator
-    (68) SIGN -> . empty
+    (79) FUN -> ID r_check_func LPAREN . r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub
+    (133) r_create_bottom -> .
 
-    RPAREN          reduce using rule 1 (empty -> .)
-    LPAREN          reduce using rule 1 (empty -> .)
-    CTE_I           reduce using rule 1 (empty -> .)
-    CTE_F           reduce using rule 1 (empty -> .)
-    CTE_CH          reduce using rule 1 (empty -> .)
-    CTE_STRING      reduce using rule 1 (empty -> .)
-    ID              reduce using rule 1 (empty -> .)
-    NOT             shift and go to state 142
-    PLUS            shift and go to state 145
-    MINUS           shift and go to state 146
+    NOT             reduce using rule 133 (r_create_bottom -> .)
+    PLUS            reduce using rule 133 (r_create_bottom -> .)
+    MINUS           reduce using rule 133 (r_create_bottom -> .)
+    RPAREN          reduce using rule 133 (r_create_bottom -> .)
+    LPAREN          reduce using rule 133 (r_create_bottom -> .)
+    CTE_I           reduce using rule 133 (r_create_bottom -> .)
+    CTE_F           reduce using rule 133 (r_create_bottom -> .)
+    CTE_CH          reduce using rule 133 (r_create_bottom -> .)
+    CTE_STRING      reduce using rule 133 (r_create_bottom -> .)
+    ID              reduce using rule 133 (r_create_bottom -> .)
 
-    FUN_AUX                        shift and go to state 158
-    EXPRESION                      shift and go to state 159
-    empty                          shift and go to state 160
-    SUBEXP                         shift and go to state 138
-    EXP                            shift and go to state 139
-    TERMINO                        shift and go to state 140
-    FACTOR                         shift and go to state 141
-    FACTOR_AUX                     shift and go to state 143
-    SIGN                           shift and go to state 144
+    r_create_bottom                shift and go to state 158
 
 state 136
 
     (99) WRITE -> ESCRIBE LPAREN WRITE_AUX . RPAREN
 
-    RPAREN          shift and go to state 161
+    RPAREN          shift and go to state 159
 
 
 state 137
 
     (100) WRITE_AUX -> EXPRESION . r_escribe WRITE_AUXSUB
-    (150) r_escribe -> .
+    (151) r_escribe -> .
 
-    COMA            reduce using rule 150 (r_escribe -> .)
-    RPAREN          reduce using rule 150 (r_escribe -> .)
+    COMA            reduce using rule 151 (r_escribe -> .)
+    RPAREN          reduce using rule 151 (r_escribe -> .)
 
-    r_escribe                      shift and go to state 162
+    r_escribe                      shift and go to state 160
 
 state 138
 
@@ -1918,7 +1898,7 @@ state 138
     DOTCOMA         reduce using rule 128 (r_seen_subexp -> .)
     HASTA           reduce using rule 128 (r_seen_subexp -> .)
 
-    r_seen_subexp                  shift and go to state 163
+    r_seen_subexp                  shift and go to state 161
 
 state 139
 
@@ -1940,7 +1920,7 @@ state 139
     DOTCOMA         reduce using rule 129 (r_seen_exp -> .)
     HASTA           reduce using rule 129 (r_seen_exp -> .)
 
-    r_seen_exp                     shift and go to state 164
+    r_seen_exp                     shift and go to state 162
 
 state 140
 
@@ -1964,7 +1944,7 @@ state 140
     DOTCOMA         reduce using rule 130 (r_seen_term -> .)
     HASTA           reduce using rule 130 (r_seen_term -> .)
 
-    r_seen_term                    shift and go to state 165
+    r_seen_term                    shift and go to state 163
 
 state 141
 
@@ -1991,7 +1971,7 @@ state 141
     DOTCOMA         reduce using rule 131 (r_seen_factor -> .)
     HASTA           reduce using rule 131 (r_seen_factor -> .)
 
-    r_seen_factor                  shift and go to state 166
+    r_seen_factor                  shift and go to state 164
 
 state 142
 
@@ -2007,7 +1987,7 @@ state 142
     CTE_STRING      reduce using rule 125 (r_seen_unary_operator -> .)
     ID              reduce using rule 125 (r_seen_unary_operator -> .)
 
-    r_seen_unary_operator          shift and go to state 167
+    r_seen_unary_operator          shift and go to state 165
 
 state 143
 
@@ -2044,17 +2024,17 @@ state 144
     (72) CTE -> . CTE_STRING r_seen_operand
     (73) CTE -> . FUN
     (74) CTE -> . ID r_seen_operand_id ARRACC
-    (79) FUN -> . ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub
+    (79) FUN -> . ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub
 
-    LPAREN          shift and go to state 168
-    CTE_I           shift and go to state 170
-    CTE_F           shift and go to state 171
-    CTE_CH          shift and go to state 172
-    CTE_STRING      shift and go to state 173
-    ID              shift and go to state 175
+    LPAREN          shift and go to state 166
+    CTE_I           shift and go to state 168
+    CTE_F           shift and go to state 169
+    CTE_CH          shift and go to state 170
+    CTE_STRING      shift and go to state 171
+    ID              shift and go to state 173
 
-    CTE                            shift and go to state 169
-    FUN                            shift and go to state 174
+    CTE                            shift and go to state 167
+    FUN                            shift and go to state 172
 
 state 145
 
@@ -2068,7 +2048,7 @@ state 145
     CTE_STRING      reduce using rule 125 (r_seen_unary_operator -> .)
     ID              reduce using rule 125 (r_seen_unary_operator -> .)
 
-    r_seen_unary_operator          shift and go to state 176
+    r_seen_unary_operator          shift and go to state 174
 
 state 146
 
@@ -2082,7 +2062,7 @@ state 146
     CTE_STRING      reduce using rule 125 (r_seen_unary_operator -> .)
     ID              reduce using rule 125 (r_seen_unary_operator -> .)
 
-    r_seen_unary_operator          shift and go to state 177
+    r_seen_unary_operator          shift and go to state 175
 
 state 147
 
@@ -2100,7 +2080,7 @@ state 148
 
     (103) READ -> LEE LPAREN READ_AUX . RPAREN
 
-    RPAREN          shift and go to state 178
+    RPAREN          shift and go to state 176
 
 
 state 149
@@ -2112,41 +2092,101 @@ state 149
     LSTAPLE         reduce using rule 123 (r_seen_operand_id -> .)
     RPAREN          reduce using rule 123 (r_seen_operand_id -> .)
 
-    r_seen_operand_id              shift and go to state 179
+    r_seen_operand_id              shift and go to state 177
 
 state 150
 
     (107) RETURN -> REGRESA LPAREN EXPRESION . RPAREN r_regresa
 
-    RPAREN          shift and go to state 180
+    RPAREN          shift and go to state 178
 
 
 state 151
 
     (108) RETURN -> REGRESA LPAREN NULL . RPAREN
 
-    RPAREN          shift and go to state 181
+    RPAREN          shift and go to state 179
 
 
 state 152
 
     (86) IF -> SI LPAREN EXPRESION . r_check_int RPAREN ENTONCES IF2 r_if_end
-    (133) r_check_int -> .
+    (134) r_check_int -> .
 
-    RPAREN          reduce using rule 133 (r_check_int -> .)
+    RPAREN          reduce using rule 134 (r_check_int -> .)
 
-    r_check_int                    shift and go to state 182
+    r_check_int                    shift and go to state 180
 
 state 153
 
     (96) FOR -> DESDE ASIGNACION r_set_for . HASTA EXPRESION r_for_gen HACER FOR2 r_for_end
 
-    HASTA           shift and go to state 183
+    HASTA           shift and go to state 181
 
 
 state 154
 
     (91) WHILE -> MIENTRAS r_set_while LPAREN . EXPRESION r_check_int RPAREN WHILE_AUX WHILE2 r_while_end
+    (40) EXPRESION -> . SUBEXP r_seen_subexp EXPRESION_AUX
+    (44) SUBEXP -> . EXP r_seen_exp SUBEXP_AUX
+    (53) EXP -> . TERMINO r_seen_term EXP_AUX
+    (57) TERMINO -> . FACTOR r_seen_factor TERMINO_AUX
+    (62) FACTOR -> . NOT r_seen_unary_operator FACTOR_AUX
+    (63) FACTOR -> . FACTOR_AUX
+    (64) FACTOR_AUX -> . SIGN LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom
+    (65) FACTOR_AUX -> . SIGN CTE ARROP
+    (66) SIGN -> . PLUS r_seen_unary_operator
+    (67) SIGN -> . MINUS r_seen_unary_operator
+    (68) SIGN -> . empty
+    (1) empty -> .
+
+    NOT             shift and go to state 142
+    PLUS            shift and go to state 145
+    MINUS           shift and go to state 146
+    LPAREN          reduce using rule 1 (empty -> .)
+    CTE_I           reduce using rule 1 (empty -> .)
+    CTE_F           reduce using rule 1 (empty -> .)
+    CTE_CH          reduce using rule 1 (empty -> .)
+    CTE_STRING      reduce using rule 1 (empty -> .)
+    ID              reduce using rule 1 (empty -> .)
+
+    EXPRESION                      shift and go to state 182
+    SUBEXP                         shift and go to state 138
+    EXP                            shift and go to state 139
+    TERMINO                        shift and go to state 140
+    FACTOR                         shift and go to state 141
+    FACTOR_AUX                     shift and go to state 143
+    SIGN                           shift and go to state 144
+    empty                          shift and go to state 147
+
+state 155
+
+    (21) FUNCTION -> FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end .
+
+    FUNCION         reduce using rule 21 (FUNCTION -> FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end .)
+    PRINCIPAL       reduce using rule 21 (FUNCTION -> FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end .)
+
+
+state 156
+
+    (35) ASIGNACION -> ID r_seen_operand_id ARRACC EQUAL . r_seen_operator EXPRESION r_seen_equal
+    (124) r_seen_operator -> .
+
+    NOT             reduce using rule 124 (r_seen_operator -> .)
+    PLUS            reduce using rule 124 (r_seen_operator -> .)
+    MINUS           reduce using rule 124 (r_seen_operator -> .)
+    LPAREN          reduce using rule 124 (r_seen_operator -> .)
+    CTE_I           reduce using rule 124 (r_seen_operator -> .)
+    CTE_F           reduce using rule 124 (r_seen_operator -> .)
+    CTE_CH          reduce using rule 124 (r_seen_operator -> .)
+    CTE_STRING      reduce using rule 124 (r_seen_operator -> .)
+    ID              reduce using rule 124 (r_seen_operator -> .)
+
+    r_seen_operator                shift and go to state 183
+
+state 157
+
+    (36) ARRACC -> LSTAPLE r_check_dim . EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc
     (40) EXPRESION -> . SUBEXP r_seen_subexp EXPRESION_AUX
     (44) SUBEXP -> . EXP r_seen_exp SUBEXP_AUX
     (53) EXP -> . TERMINO r_seen_term EXP_AUX
@@ -2179,35 +2219,14 @@ state 154
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 155
+state 158
 
-    (21) FUNCTION -> FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end .
-
-    FUNCION         reduce using rule 21 (FUNCTION -> FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end .)
-    PRINCIPAL       reduce using rule 21 (FUNCTION -> FUNCION VOID r_save_type ID r_save_func r_register_func LPAREN PARAM RPAREN r_save_param_func VARS r_save_vars r_func_set BLOQUE r_func_end .)
-
-
-state 156
-
-    (35) ASIGNACION -> ID r_seen_operand_id ARRACC EQUAL . r_seen_operator EXPRESION r_seen_equal
-    (124) r_seen_operator -> .
-
-    NOT             reduce using rule 124 (r_seen_operator -> .)
-    PLUS            reduce using rule 124 (r_seen_operator -> .)
-    MINUS           reduce using rule 124 (r_seen_operator -> .)
-    LPAREN          reduce using rule 124 (r_seen_operator -> .)
-    CTE_I           reduce using rule 124 (r_seen_operator -> .)
-    CTE_F           reduce using rule 124 (r_seen_operator -> .)
-    CTE_CH          reduce using rule 124 (r_seen_operator -> .)
-    CTE_STRING      reduce using rule 124 (r_seen_operator -> .)
-    ID              reduce using rule 124 (r_seen_operator -> .)
-
-    r_seen_operator                shift and go to state 185
-
-state 157
-
-    (36) ARRACC -> LSTAPLE r_check_dim . EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc
+    (79) FUN -> ID r_check_func LPAREN r_create_bottom . FUN_AUX RPAREN r_pop_fake_bottom r_go_sub
+    (80) FUN_AUX -> . EXPRESION r_check_param COMA FUN_AUX
+    (81) FUN_AUX -> . EXPRESION r_check_param
+    (82) FUN_AUX -> . empty
     (40) EXPRESION -> . SUBEXP r_seen_subexp EXPRESION_AUX
+    (1) empty -> .
     (44) SUBEXP -> . EXP r_seen_exp SUBEXP_AUX
     (53) EXP -> . TERMINO r_seen_term EXP_AUX
     (57) TERMINO -> . FACTOR r_seen_factor TERMINO_AUX
@@ -2218,80 +2237,49 @@ state 157
     (66) SIGN -> . PLUS r_seen_unary_operator
     (67) SIGN -> . MINUS r_seen_unary_operator
     (68) SIGN -> . empty
-    (1) empty -> .
 
-    NOT             shift and go to state 142
-    PLUS            shift and go to state 145
-    MINUS           shift and go to state 146
+    RPAREN          reduce using rule 1 (empty -> .)
     LPAREN          reduce using rule 1 (empty -> .)
     CTE_I           reduce using rule 1 (empty -> .)
     CTE_F           reduce using rule 1 (empty -> .)
     CTE_CH          reduce using rule 1 (empty -> .)
     CTE_STRING      reduce using rule 1 (empty -> .)
     ID              reduce using rule 1 (empty -> .)
+    NOT             shift and go to state 142
+    PLUS            shift and go to state 145
+    MINUS           shift and go to state 146
 
+    FUN_AUX                        shift and go to state 185
     EXPRESION                      shift and go to state 186
+    empty                          shift and go to state 187
     SUBEXP                         shift and go to state 138
     EXP                            shift and go to state 139
     TERMINO                        shift and go to state 140
     FACTOR                         shift and go to state 141
     FACTOR_AUX                     shift and go to state 143
     SIGN                           shift and go to state 144
-    empty                          shift and go to state 147
-
-state 158
-
-    (79) FUN -> ID r_check_func LPAREN FUN_AUX . RPAREN r_go_sub
-
-    RPAREN          shift and go to state 187
-
 
 state 159
-
-    (80) FUN_AUX -> EXPRESION . r_check_param COMA FUN_AUX
-    (81) FUN_AUX -> EXPRESION . r_check_param
-    (146) r_check_param -> .
-
-    COMA            reduce using rule 146 (r_check_param -> .)
-    RPAREN          reduce using rule 146 (r_check_param -> .)
-
-    r_check_param                  shift and go to state 188
-
-state 160
-
-    (82) FUN_AUX -> empty .
-    (68) SIGN -> empty .
-
-    RPAREN          reduce using rule 82 (FUN_AUX -> empty .)
-    LPAREN          reduce using rule 68 (SIGN -> empty .)
-    CTE_I           reduce using rule 68 (SIGN -> empty .)
-    CTE_F           reduce using rule 68 (SIGN -> empty .)
-    CTE_CH          reduce using rule 68 (SIGN -> empty .)
-    CTE_STRING      reduce using rule 68 (SIGN -> empty .)
-    ID              reduce using rule 68 (SIGN -> empty .)
-
-
-state 161
 
     (99) WRITE -> ESCRIBE LPAREN WRITE_AUX RPAREN .
 
     DOTCOMA         reduce using rule 99 (WRITE -> ESCRIBE LPAREN WRITE_AUX RPAREN .)
 
 
-state 162
+state 160
 
     (100) WRITE_AUX -> EXPRESION r_escribe . WRITE_AUXSUB
     (101) WRITE_AUXSUB -> . COMA WRITE_AUX
     (102) WRITE_AUXSUB -> . empty
     (1) empty -> .
 
-    COMA            shift and go to state 190
+    COMA            shift and go to state 189
     RPAREN          reduce using rule 1 (empty -> .)
 
-    WRITE_AUXSUB                   shift and go to state 189
-    empty                          shift and go to state 191
+    WRITE_AUXSUB                   shift and go to state 188
+    empty                          shift and go to state 190
 
-state 163
+state 161
 
     (40) EXPRESION -> SUBEXP r_seen_subexp . EXPRESION_AUX
     (41) EXPRESION_AUX -> . AND r_seen_operator EXPRESION
@@ -2299,8 +2287,8 @@ state 163
     (43) EXPRESION_AUX -> . empty
     (1) empty -> .
 
-    AND             shift and go to state 193
-    OR              shift and go to state 194
+    AND             shift and go to state 192
+    OR              shift and go to state 193
     COMA            reduce using rule 1 (empty -> .)
     RPAREN          reduce using rule 1 (empty -> .)
     RSTAPLE         reduce using rule 1 (empty -> .)
@@ -2308,10 +2296,10 @@ state 163
     DOTCOMA         reduce using rule 1 (empty -> .)
     HASTA           reduce using rule 1 (empty -> .)
 
-    EXPRESION_AUX                  shift and go to state 192
-    empty                          shift and go to state 195
+    EXPRESION_AUX                  shift and go to state 191
+    empty                          shift and go to state 194
 
-state 164
+state 162
 
     (44) SUBEXP -> EXP r_seen_exp . SUBEXP_AUX
     (45) SUBEXP_AUX -> . COMPARACION SUBEXP
@@ -2324,12 +2312,12 @@ state 164
     (52) COMPARACION -> . LESSEQUAL r_seen_operator
     (1) empty -> .
 
-    MORE            shift and go to state 199
-    LESS            shift and go to state 200
-    COMPARE         shift and go to state 201
-    DIFFERENT       shift and go to state 202
-    MOREEQUAL       shift and go to state 203
-    LESSEQUAL       shift and go to state 204
+    MORE            shift and go to state 198
+    LESS            shift and go to state 199
+    COMPARE         shift and go to state 200
+    DIFFERENT       shift and go to state 201
+    MOREEQUAL       shift and go to state 202
+    LESSEQUAL       shift and go to state 203
     AND             reduce using rule 1 (empty -> .)
     OR              reduce using rule 1 (empty -> .)
     COMA            reduce using rule 1 (empty -> .)
@@ -2339,11 +2327,11 @@ state 164
     DOTCOMA         reduce using rule 1 (empty -> .)
     HASTA           reduce using rule 1 (empty -> .)
 
-    SUBEXP_AUX                     shift and go to state 196
-    COMPARACION                    shift and go to state 197
-    empty                          shift and go to state 198
+    SUBEXP_AUX                     shift and go to state 195
+    COMPARACION                    shift and go to state 196
+    empty                          shift and go to state 197
 
-state 165
+state 163
 
     (53) EXP -> TERMINO r_seen_term . EXP_AUX
     (54) EXP_AUX -> . PLUS r_seen_operator EXP
@@ -2351,8 +2339,8 @@ state 165
     (56) EXP_AUX -> . empty
     (1) empty -> .
 
-    PLUS            shift and go to state 206
-    MINUS           shift and go to state 207
+    PLUS            shift and go to state 205
+    MINUS           shift and go to state 206
     MORE            reduce using rule 1 (empty -> .)
     LESS            reduce using rule 1 (empty -> .)
     COMPARE         reduce using rule 1 (empty -> .)
@@ -2368,10 +2356,10 @@ state 165
     DOTCOMA         reduce using rule 1 (empty -> .)
     HASTA           reduce using rule 1 (empty -> .)
 
-    EXP_AUX                        shift and go to state 205
-    empty                          shift and go to state 208
+    EXP_AUX                        shift and go to state 204
+    empty                          shift and go to state 207
 
-state 166
+state 164
 
     (57) TERMINO -> FACTOR r_seen_factor . TERMINO_AUX
     (58) TERMINO_AUX -> . MULT r_seen_operator TERMINO r_seen_term
@@ -2380,9 +2368,9 @@ state 166
     (61) TERMINO_AUX -> . empty
     (1) empty -> .
 
-    MULT            shift and go to state 210
-    DIV             shift and go to state 211
-    MOD             shift and go to state 212
+    MULT            shift and go to state 209
+    DIV             shift and go to state 210
+    MOD             shift and go to state 211
     PLUS            reduce using rule 1 (empty -> .)
     MINUS           reduce using rule 1 (empty -> .)
     MORE            reduce using rule 1 (empty -> .)
@@ -2400,10 +2388,10 @@ state 166
     DOTCOMA         reduce using rule 1 (empty -> .)
     HASTA           reduce using rule 1 (empty -> .)
 
-    TERMINO_AUX                    shift and go to state 209
-    empty                          shift and go to state 213
+    TERMINO_AUX                    shift and go to state 208
+    empty                          shift and go to state 212
 
-state 167
+state 165
 
     (62) FACTOR -> NOT r_seen_unary_operator . FACTOR_AUX
     (64) FACTOR_AUX -> . SIGN LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom
@@ -2422,11 +2410,11 @@ state 167
     CTE_STRING      reduce using rule 1 (empty -> .)
     ID              reduce using rule 1 (empty -> .)
 
-    FACTOR_AUX                     shift and go to state 214
+    FACTOR_AUX                     shift and go to state 213
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 168
+state 166
 
     (64) FACTOR_AUX -> SIGN LPAREN . r_seen_operator EXPRESION RPAREN r_pop_fake_bottom
     (124) r_seen_operator -> .
@@ -2441,9 +2429,9 @@ state 168
     CTE_STRING      reduce using rule 124 (r_seen_operator -> .)
     ID              reduce using rule 124 (r_seen_operator -> .)
 
-    r_seen_operator                shift and go to state 215
+    r_seen_operator                shift and go to state 214
 
-state 169
+state 167
 
     (65) FACTOR_AUX -> SIGN CTE . ARROP
     (75) ARROP -> . DET_ARR r_seen_operator_mat
@@ -2452,9 +2440,9 @@ state 169
     (78) ARROP -> . empty
     (1) empty -> .
 
-    DET_ARR         shift and go to state 217
-    TRANS_ARR       shift and go to state 218
-    INV_ARR         shift and go to state 219
+    DET_ARR         shift and go to state 216
+    TRANS_ARR       shift and go to state 217
+    INV_ARR         shift and go to state 218
     MULT            reduce using rule 1 (empty -> .)
     DIV             reduce using rule 1 (empty -> .)
     MOD             reduce using rule 1 (empty -> .)
@@ -2475,10 +2463,10 @@ state 169
     DOTCOMA         reduce using rule 1 (empty -> .)
     HASTA           reduce using rule 1 (empty -> .)
 
-    ARROP                          shift and go to state 216
-    empty                          shift and go to state 220
+    ARROP                          shift and go to state 215
+    empty                          shift and go to state 219
 
-state 170
+state 168
 
     (69) CTE -> CTE_I . r_seen_operand
     (122) r_seen_operand -> .
@@ -2506,9 +2494,9 @@ state 170
     DOTCOMA         reduce using rule 122 (r_seen_operand -> .)
     HASTA           reduce using rule 122 (r_seen_operand -> .)
 
-    r_seen_operand                 shift and go to state 221
+    r_seen_operand                 shift and go to state 220
 
-state 171
+state 169
 
     (70) CTE -> CTE_F . r_seen_operand
     (122) r_seen_operand -> .
@@ -2536,9 +2524,9 @@ state 171
     DOTCOMA         reduce using rule 122 (r_seen_operand -> .)
     HASTA           reduce using rule 122 (r_seen_operand -> .)
 
-    r_seen_operand                 shift and go to state 222
+    r_seen_operand                 shift and go to state 221
 
-state 172
+state 170
 
     (71) CTE -> CTE_CH . r_seen_operand
     (122) r_seen_operand -> .
@@ -2566,9 +2554,9 @@ state 172
     DOTCOMA         reduce using rule 122 (r_seen_operand -> .)
     HASTA           reduce using rule 122 (r_seen_operand -> .)
 
-    r_seen_operand                 shift and go to state 223
+    r_seen_operand                 shift and go to state 222
 
-state 173
+state 171
 
     (72) CTE -> CTE_STRING . r_seen_operand
     (122) r_seen_operand -> .
@@ -2596,9 +2584,9 @@ state 173
     DOTCOMA         reduce using rule 122 (r_seen_operand -> .)
     HASTA           reduce using rule 122 (r_seen_operand -> .)
 
-    r_seen_operand                 shift and go to state 224
+    r_seen_operand                 shift and go to state 223
 
-state 174
+state 172
 
     (73) CTE -> FUN .
 
@@ -2626,12 +2614,12 @@ state 174
     HASTA           reduce using rule 73 (CTE -> FUN .)
 
 
-state 175
+state 173
 
     (74) CTE -> ID . r_seen_operand_id ARRACC
-    (79) FUN -> ID . r_check_func LPAREN FUN_AUX RPAREN r_go_sub
+    (79) FUN -> ID . r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub
     (123) r_seen_operand_id -> .
-    (145) r_check_func -> .
+    (146) r_check_func -> .
 
     LSTAPLE         reduce using rule 123 (r_seen_operand_id -> .)
     DET_ARR         reduce using rule 123 (r_seen_operand_id -> .)
@@ -2656,12 +2644,12 @@ state 175
     HACER           reduce using rule 123 (r_seen_operand_id -> .)
     DOTCOMA         reduce using rule 123 (r_seen_operand_id -> .)
     HASTA           reduce using rule 123 (r_seen_operand_id -> .)
-    LPAREN          reduce using rule 145 (r_check_func -> .)
+    LPAREN          reduce using rule 146 (r_check_func -> .)
 
-    r_seen_operand_id              shift and go to state 225
+    r_seen_operand_id              shift and go to state 224
     r_check_func                   shift and go to state 122
 
-state 176
+state 174
 
     (66) SIGN -> PLUS r_seen_unary_operator .
 
@@ -2673,7 +2661,7 @@ state 176
     ID              reduce using rule 66 (SIGN -> PLUS r_seen_unary_operator .)
 
 
-state 177
+state 175
 
     (67) SIGN -> MINUS r_seen_unary_operator .
 
@@ -2685,14 +2673,14 @@ state 177
     ID              reduce using rule 67 (SIGN -> MINUS r_seen_unary_operator .)
 
 
-state 178
+state 176
 
     (103) READ -> LEE LPAREN READ_AUX RPAREN .
 
     DOTCOMA         reduce using rule 103 (READ -> LEE LPAREN READ_AUX RPAREN .)
 
 
-state 179
+state 177
 
     (104) READ_AUX -> ID r_seen_operand_id . ARRDIM r_lee READ_AUXSUB
     (14) ARRDIM -> . r_register_arr LSTAPLE CTE_I r_register_dim ARRDIM_AUX RSTAPLE ARRDIM
@@ -2704,34 +2692,34 @@ state 179
     COMA            reduce using rule 1 (empty -> .)
     RPAREN          reduce using rule 1 (empty -> .)
 
-    ARRDIM                         shift and go to state 226
+    ARRDIM                         shift and go to state 225
     r_register_arr                 shift and go to state 39
     empty                          shift and go to state 40
 
-state 180
+state 178
 
     (107) RETURN -> REGRESA LPAREN EXPRESION RPAREN . r_regresa
-    (149) r_regresa -> .
+    (150) r_regresa -> .
 
-    DOTCOMA         reduce using rule 149 (r_regresa -> .)
+    DOTCOMA         reduce using rule 150 (r_regresa -> .)
 
-    r_regresa                      shift and go to state 227
+    r_regresa                      shift and go to state 226
 
-state 181
+state 179
 
     (108) RETURN -> REGRESA LPAREN NULL RPAREN .
 
     DOTCOMA         reduce using rule 108 (RETURN -> REGRESA LPAREN NULL RPAREN .)
 
 
-state 182
+state 180
 
     (86) IF -> SI LPAREN EXPRESION r_check_int . RPAREN ENTONCES IF2 r_if_end
 
-    RPAREN          shift and go to state 228
+    RPAREN          shift and go to state 227
 
 
-state 183
+state 181
 
     (96) FOR -> DESDE ASIGNACION r_set_for HASTA . EXPRESION r_for_gen HACER FOR2 r_for_end
     (40) EXPRESION -> . SUBEXP r_seen_subexp EXPRESION_AUX
@@ -2757,7 +2745,7 @@ state 183
     CTE_STRING      reduce using rule 1 (empty -> .)
     ID              reduce using rule 1 (empty -> .)
 
-    EXPRESION                      shift and go to state 229
+    EXPRESION                      shift and go to state 228
     SUBEXP                         shift and go to state 138
     EXP                            shift and go to state 139
     TERMINO                        shift and go to state 140
@@ -2766,16 +2754,16 @@ state 183
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 184
+state 182
 
     (91) WHILE -> MIENTRAS r_set_while LPAREN EXPRESION . r_check_int RPAREN WHILE_AUX WHILE2 r_while_end
-    (133) r_check_int -> .
+    (134) r_check_int -> .
 
-    RPAREN          reduce using rule 133 (r_check_int -> .)
+    RPAREN          reduce using rule 134 (r_check_int -> .)
 
-    r_check_int                    shift and go to state 230
+    r_check_int                    shift and go to state 229
 
-state 185
+state 183
 
     (35) ASIGNACION -> ID r_seen_operand_id ARRACC EQUAL r_seen_operator . EXPRESION r_seen_equal
     (40) EXPRESION -> . SUBEXP r_seen_subexp EXPRESION_AUX
@@ -2801,7 +2789,7 @@ state 185
     CTE_STRING      reduce using rule 1 (empty -> .)
     ID              reduce using rule 1 (empty -> .)
 
-    EXPRESION                      shift and go to state 231
+    EXPRESION                      shift and go to state 230
     SUBEXP                         shift and go to state 138
     EXP                            shift and go to state 139
     TERMINO                        shift and go to state 140
@@ -2810,7 +2798,7 @@ state 185
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 186
+state 184
 
     (36) ARRACC -> LSTAPLE r_check_dim EXPRESION . r_create_quad ARRACC_AUX RSTAPLE r_close_arracc
     (117) r_create_quad -> .
@@ -2818,55 +2806,48 @@ state 186
     COMA            reduce using rule 117 (r_create_quad -> .)
     RSTAPLE         reduce using rule 117 (r_create_quad -> .)
 
-    r_create_quad                  shift and go to state 232
+    r_create_quad                  shift and go to state 231
+
+state 185
+
+    (79) FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX . RPAREN r_pop_fake_bottom r_go_sub
+
+    RPAREN          shift and go to state 232
+
+
+state 186
+
+    (80) FUN_AUX -> EXPRESION . r_check_param COMA FUN_AUX
+    (81) FUN_AUX -> EXPRESION . r_check_param
+    (147) r_check_param -> .
+
+    COMA            reduce using rule 147 (r_check_param -> .)
+    RPAREN          reduce using rule 147 (r_check_param -> .)
+
+    r_check_param                  shift and go to state 233
 
 state 187
 
-    (79) FUN -> ID r_check_func LPAREN FUN_AUX RPAREN . r_go_sub
-    (147) r_go_sub -> .
+    (82) FUN_AUX -> empty .
+    (68) SIGN -> empty .
 
-    DOTCOMA         reduce using rule 147 (r_go_sub -> .)
-    DET_ARR         reduce using rule 147 (r_go_sub -> .)
-    TRANS_ARR       reduce using rule 147 (r_go_sub -> .)
-    INV_ARR         reduce using rule 147 (r_go_sub -> .)
-    MULT            reduce using rule 147 (r_go_sub -> .)
-    DIV             reduce using rule 147 (r_go_sub -> .)
-    MOD             reduce using rule 147 (r_go_sub -> .)
-    PLUS            reduce using rule 147 (r_go_sub -> .)
-    MINUS           reduce using rule 147 (r_go_sub -> .)
-    MORE            reduce using rule 147 (r_go_sub -> .)
-    LESS            reduce using rule 147 (r_go_sub -> .)
-    COMPARE         reduce using rule 147 (r_go_sub -> .)
-    DIFFERENT       reduce using rule 147 (r_go_sub -> .)
-    MOREEQUAL       reduce using rule 147 (r_go_sub -> .)
-    LESSEQUAL       reduce using rule 147 (r_go_sub -> .)
-    AND             reduce using rule 147 (r_go_sub -> .)
-    OR              reduce using rule 147 (r_go_sub -> .)
-    COMA            reduce using rule 147 (r_go_sub -> .)
-    RPAREN          reduce using rule 147 (r_go_sub -> .)
-    RSTAPLE         reduce using rule 147 (r_go_sub -> .)
-    HACER           reduce using rule 147 (r_go_sub -> .)
-    HASTA           reduce using rule 147 (r_go_sub -> .)
+    RPAREN          reduce using rule 82 (FUN_AUX -> empty .)
+    LPAREN          reduce using rule 68 (SIGN -> empty .)
+    CTE_I           reduce using rule 68 (SIGN -> empty .)
+    CTE_F           reduce using rule 68 (SIGN -> empty .)
+    CTE_CH          reduce using rule 68 (SIGN -> empty .)
+    CTE_STRING      reduce using rule 68 (SIGN -> empty .)
+    ID              reduce using rule 68 (SIGN -> empty .)
 
-    r_go_sub                       shift and go to state 233
 
 state 188
-
-    (80) FUN_AUX -> EXPRESION r_check_param . COMA FUN_AUX
-    (81) FUN_AUX -> EXPRESION r_check_param .
-
-    COMA            shift and go to state 234
-    RPAREN          reduce using rule 81 (FUN_AUX -> EXPRESION r_check_param .)
-
-
-state 189
 
     (100) WRITE_AUX -> EXPRESION r_escribe WRITE_AUXSUB .
 
     RPAREN          reduce using rule 100 (WRITE_AUX -> EXPRESION r_escribe WRITE_AUXSUB .)
 
 
-state 190
+state 189
 
     (101) WRITE_AUXSUB -> COMA . WRITE_AUX
     (100) WRITE_AUX -> . EXPRESION r_escribe WRITE_AUXSUB
@@ -2893,7 +2874,7 @@ state 190
     CTE_STRING      reduce using rule 1 (empty -> .)
     ID              reduce using rule 1 (empty -> .)
 
-    WRITE_AUX                      shift and go to state 235
+    WRITE_AUX                      shift and go to state 234
     EXPRESION                      shift and go to state 137
     SUBEXP                         shift and go to state 138
     EXP                            shift and go to state 139
@@ -2903,14 +2884,14 @@ state 190
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 191
+state 190
 
     (102) WRITE_AUXSUB -> empty .
 
     RPAREN          reduce using rule 102 (WRITE_AUXSUB -> empty .)
 
 
-state 192
+state 191
 
     (40) EXPRESION -> SUBEXP r_seen_subexp EXPRESION_AUX .
 
@@ -2922,9 +2903,26 @@ state 192
     HASTA           reduce using rule 40 (EXPRESION -> SUBEXP r_seen_subexp EXPRESION_AUX .)
 
 
-state 193
+state 192
 
     (41) EXPRESION_AUX -> AND . r_seen_operator EXPRESION
+    (124) r_seen_operator -> .
+
+    NOT             reduce using rule 124 (r_seen_operator -> .)
+    PLUS            reduce using rule 124 (r_seen_operator -> .)
+    MINUS           reduce using rule 124 (r_seen_operator -> .)
+    LPAREN          reduce using rule 124 (r_seen_operator -> .)
+    CTE_I           reduce using rule 124 (r_seen_operator -> .)
+    CTE_F           reduce using rule 124 (r_seen_operator -> .)
+    CTE_CH          reduce using rule 124 (r_seen_operator -> .)
+    CTE_STRING      reduce using rule 124 (r_seen_operator -> .)
+    ID              reduce using rule 124 (r_seen_operator -> .)
+
+    r_seen_operator                shift and go to state 235
+
+state 193
+
+    (42) EXPRESION_AUX -> OR . r_seen_operator EXPRESION
     (124) r_seen_operator -> .
 
     NOT             reduce using rule 124 (r_seen_operator -> .)
@@ -2941,23 +2939,6 @@ state 193
 
 state 194
 
-    (42) EXPRESION_AUX -> OR . r_seen_operator EXPRESION
-    (124) r_seen_operator -> .
-
-    NOT             reduce using rule 124 (r_seen_operator -> .)
-    PLUS            reduce using rule 124 (r_seen_operator -> .)
-    MINUS           reduce using rule 124 (r_seen_operator -> .)
-    LPAREN          reduce using rule 124 (r_seen_operator -> .)
-    CTE_I           reduce using rule 124 (r_seen_operator -> .)
-    CTE_F           reduce using rule 124 (r_seen_operator -> .)
-    CTE_CH          reduce using rule 124 (r_seen_operator -> .)
-    CTE_STRING      reduce using rule 124 (r_seen_operator -> .)
-    ID              reduce using rule 124 (r_seen_operator -> .)
-
-    r_seen_operator                shift and go to state 237
-
-state 195
-
     (43) EXPRESION_AUX -> empty .
 
     COMA            reduce using rule 43 (EXPRESION_AUX -> empty .)
@@ -2968,7 +2949,7 @@ state 195
     HASTA           reduce using rule 43 (EXPRESION_AUX -> empty .)
 
 
-state 196
+state 195
 
     (44) SUBEXP -> EXP r_seen_exp SUBEXP_AUX .
 
@@ -2982,7 +2963,7 @@ state 196
     HASTA           reduce using rule 44 (SUBEXP -> EXP r_seen_exp SUBEXP_AUX .)
 
 
-state 197
+state 196
 
     (45) SUBEXP_AUX -> COMPARACION . SUBEXP
     (44) SUBEXP -> . EXP r_seen_exp SUBEXP_AUX
@@ -3007,7 +2988,7 @@ state 197
     CTE_STRING      reduce using rule 1 (empty -> .)
     ID              reduce using rule 1 (empty -> .)
 
-    SUBEXP                         shift and go to state 238
+    SUBEXP                         shift and go to state 237
     EXP                            shift and go to state 139
     TERMINO                        shift and go to state 140
     FACTOR                         shift and go to state 141
@@ -3015,7 +2996,7 @@ state 197
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 198
+state 197
 
     (46) SUBEXP_AUX -> empty .
 
@@ -3029,9 +3010,26 @@ state 198
     HASTA           reduce using rule 46 (SUBEXP_AUX -> empty .)
 
 
-state 199
+state 198
 
     (47) COMPARACION -> MORE . r_seen_operator
+    (124) r_seen_operator -> .
+
+    NOT             reduce using rule 124 (r_seen_operator -> .)
+    PLUS            reduce using rule 124 (r_seen_operator -> .)
+    MINUS           reduce using rule 124 (r_seen_operator -> .)
+    LPAREN          reduce using rule 124 (r_seen_operator -> .)
+    CTE_I           reduce using rule 124 (r_seen_operator -> .)
+    CTE_F           reduce using rule 124 (r_seen_operator -> .)
+    CTE_CH          reduce using rule 124 (r_seen_operator -> .)
+    CTE_STRING      reduce using rule 124 (r_seen_operator -> .)
+    ID              reduce using rule 124 (r_seen_operator -> .)
+
+    r_seen_operator                shift and go to state 238
+
+state 199
+
+    (48) COMPARACION -> LESS . r_seen_operator
     (124) r_seen_operator -> .
 
     NOT             reduce using rule 124 (r_seen_operator -> .)
@@ -3048,7 +3046,7 @@ state 199
 
 state 200
 
-    (48) COMPARACION -> LESS . r_seen_operator
+    (49) COMPARACION -> COMPARE . r_seen_operator
     (124) r_seen_operator -> .
 
     NOT             reduce using rule 124 (r_seen_operator -> .)
@@ -3065,7 +3063,7 @@ state 200
 
 state 201
 
-    (49) COMPARACION -> COMPARE . r_seen_operator
+    (50) COMPARACION -> DIFFERENT . r_seen_operator
     (124) r_seen_operator -> .
 
     NOT             reduce using rule 124 (r_seen_operator -> .)
@@ -3082,7 +3080,7 @@ state 201
 
 state 202
 
-    (50) COMPARACION -> DIFFERENT . r_seen_operator
+    (51) COMPARACION -> MOREEQUAL . r_seen_operator
     (124) r_seen_operator -> .
 
     NOT             reduce using rule 124 (r_seen_operator -> .)
@@ -3099,7 +3097,7 @@ state 202
 
 state 203
 
-    (51) COMPARACION -> MOREEQUAL . r_seen_operator
+    (52) COMPARACION -> LESSEQUAL . r_seen_operator
     (124) r_seen_operator -> .
 
     NOT             reduce using rule 124 (r_seen_operator -> .)
@@ -3115,23 +3113,6 @@ state 203
     r_seen_operator                shift and go to state 243
 
 state 204
-
-    (52) COMPARACION -> LESSEQUAL . r_seen_operator
-    (124) r_seen_operator -> .
-
-    NOT             reduce using rule 124 (r_seen_operator -> .)
-    PLUS            reduce using rule 124 (r_seen_operator -> .)
-    MINUS           reduce using rule 124 (r_seen_operator -> .)
-    LPAREN          reduce using rule 124 (r_seen_operator -> .)
-    CTE_I           reduce using rule 124 (r_seen_operator -> .)
-    CTE_F           reduce using rule 124 (r_seen_operator -> .)
-    CTE_CH          reduce using rule 124 (r_seen_operator -> .)
-    CTE_STRING      reduce using rule 124 (r_seen_operator -> .)
-    ID              reduce using rule 124 (r_seen_operator -> .)
-
-    r_seen_operator                shift and go to state 244
-
-state 205
 
     (53) EXP -> TERMINO r_seen_term EXP_AUX .
 
@@ -3151,9 +3132,26 @@ state 205
     HASTA           reduce using rule 53 (EXP -> TERMINO r_seen_term EXP_AUX .)
 
 
-state 206
+state 205
 
     (54) EXP_AUX -> PLUS . r_seen_operator EXP
+    (124) r_seen_operator -> .
+
+    NOT             reduce using rule 124 (r_seen_operator -> .)
+    PLUS            reduce using rule 124 (r_seen_operator -> .)
+    MINUS           reduce using rule 124 (r_seen_operator -> .)
+    LPAREN          reduce using rule 124 (r_seen_operator -> .)
+    CTE_I           reduce using rule 124 (r_seen_operator -> .)
+    CTE_F           reduce using rule 124 (r_seen_operator -> .)
+    CTE_CH          reduce using rule 124 (r_seen_operator -> .)
+    CTE_STRING      reduce using rule 124 (r_seen_operator -> .)
+    ID              reduce using rule 124 (r_seen_operator -> .)
+
+    r_seen_operator                shift and go to state 244
+
+state 206
+
+    (55) EXP_AUX -> MINUS . r_seen_operator EXP
     (124) r_seen_operator -> .
 
     NOT             reduce using rule 124 (r_seen_operator -> .)
@@ -3169,23 +3167,6 @@ state 206
     r_seen_operator                shift and go to state 245
 
 state 207
-
-    (55) EXP_AUX -> MINUS . r_seen_operator EXP
-    (124) r_seen_operator -> .
-
-    NOT             reduce using rule 124 (r_seen_operator -> .)
-    PLUS            reduce using rule 124 (r_seen_operator -> .)
-    MINUS           reduce using rule 124 (r_seen_operator -> .)
-    LPAREN          reduce using rule 124 (r_seen_operator -> .)
-    CTE_I           reduce using rule 124 (r_seen_operator -> .)
-    CTE_F           reduce using rule 124 (r_seen_operator -> .)
-    CTE_CH          reduce using rule 124 (r_seen_operator -> .)
-    CTE_STRING      reduce using rule 124 (r_seen_operator -> .)
-    ID              reduce using rule 124 (r_seen_operator -> .)
-
-    r_seen_operator                shift and go to state 246
-
-state 208
 
     (56) EXP_AUX -> empty .
 
@@ -3205,7 +3186,7 @@ state 208
     HASTA           reduce using rule 56 (EXP_AUX -> empty .)
 
 
-state 209
+state 208
 
     (57) TERMINO -> FACTOR r_seen_factor TERMINO_AUX .
 
@@ -3227,9 +3208,26 @@ state 209
     HASTA           reduce using rule 57 (TERMINO -> FACTOR r_seen_factor TERMINO_AUX .)
 
 
-state 210
+state 209
 
     (58) TERMINO_AUX -> MULT . r_seen_operator TERMINO r_seen_term
+    (124) r_seen_operator -> .
+
+    NOT             reduce using rule 124 (r_seen_operator -> .)
+    PLUS            reduce using rule 124 (r_seen_operator -> .)
+    MINUS           reduce using rule 124 (r_seen_operator -> .)
+    LPAREN          reduce using rule 124 (r_seen_operator -> .)
+    CTE_I           reduce using rule 124 (r_seen_operator -> .)
+    CTE_F           reduce using rule 124 (r_seen_operator -> .)
+    CTE_CH          reduce using rule 124 (r_seen_operator -> .)
+    CTE_STRING      reduce using rule 124 (r_seen_operator -> .)
+    ID              reduce using rule 124 (r_seen_operator -> .)
+
+    r_seen_operator                shift and go to state 246
+
+state 210
+
+    (59) TERMINO_AUX -> DIV . r_seen_operator TERMINO r_seen_term
     (124) r_seen_operator -> .
 
     NOT             reduce using rule 124 (r_seen_operator -> .)
@@ -3246,7 +3244,7 @@ state 210
 
 state 211
 
-    (59) TERMINO_AUX -> DIV . r_seen_operator TERMINO r_seen_term
+    (60) TERMINO_AUX -> MOD . r_seen_operator TERMINO r_seen_term
     (124) r_seen_operator -> .
 
     NOT             reduce using rule 124 (r_seen_operator -> .)
@@ -3262,23 +3260,6 @@ state 211
     r_seen_operator                shift and go to state 248
 
 state 212
-
-    (60) TERMINO_AUX -> MOD . r_seen_operator TERMINO r_seen_term
-    (124) r_seen_operator -> .
-
-    NOT             reduce using rule 124 (r_seen_operator -> .)
-    PLUS            reduce using rule 124 (r_seen_operator -> .)
-    MINUS           reduce using rule 124 (r_seen_operator -> .)
-    LPAREN          reduce using rule 124 (r_seen_operator -> .)
-    CTE_I           reduce using rule 124 (r_seen_operator -> .)
-    CTE_F           reduce using rule 124 (r_seen_operator -> .)
-    CTE_CH          reduce using rule 124 (r_seen_operator -> .)
-    CTE_STRING      reduce using rule 124 (r_seen_operator -> .)
-    ID              reduce using rule 124 (r_seen_operator -> .)
-
-    r_seen_operator                shift and go to state 249
-
-state 213
 
     (61) TERMINO_AUX -> empty .
 
@@ -3300,7 +3281,7 @@ state 213
     HASTA           reduce using rule 61 (TERMINO_AUX -> empty .)
 
 
-state 214
+state 213
 
     (62) FACTOR -> NOT r_seen_unary_operator FACTOR_AUX .
 
@@ -3325,7 +3306,7 @@ state 214
     HASTA           reduce using rule 62 (FACTOR -> NOT r_seen_unary_operator FACTOR_AUX .)
 
 
-state 215
+state 214
 
     (64) FACTOR_AUX -> SIGN LPAREN r_seen_operator . EXPRESION RPAREN r_pop_fake_bottom
     (40) EXPRESION -> . SUBEXP r_seen_subexp EXPRESION_AUX
@@ -3352,7 +3333,7 @@ state 215
     ID              reduce using rule 1 (empty -> .)
 
     SIGN                           shift and go to state 144
-    EXPRESION                      shift and go to state 250
+    EXPRESION                      shift and go to state 249
     SUBEXP                         shift and go to state 138
     EXP                            shift and go to state 139
     TERMINO                        shift and go to state 140
@@ -3360,7 +3341,7 @@ state 215
     FACTOR_AUX                     shift and go to state 143
     empty                          shift and go to state 147
 
-state 216
+state 215
 
     (65) FACTOR_AUX -> SIGN CTE ARROP .
 
@@ -3385,9 +3366,36 @@ state 216
     HASTA           reduce using rule 65 (FACTOR_AUX -> SIGN CTE ARROP .)
 
 
-state 217
+state 216
 
     (75) ARROP -> DET_ARR . r_seen_operator_mat
+    (126) r_seen_operator_mat -> .
+
+    MULT            reduce using rule 126 (r_seen_operator_mat -> .)
+    DIV             reduce using rule 126 (r_seen_operator_mat -> .)
+    MOD             reduce using rule 126 (r_seen_operator_mat -> .)
+    PLUS            reduce using rule 126 (r_seen_operator_mat -> .)
+    MINUS           reduce using rule 126 (r_seen_operator_mat -> .)
+    MORE            reduce using rule 126 (r_seen_operator_mat -> .)
+    LESS            reduce using rule 126 (r_seen_operator_mat -> .)
+    COMPARE         reduce using rule 126 (r_seen_operator_mat -> .)
+    DIFFERENT       reduce using rule 126 (r_seen_operator_mat -> .)
+    MOREEQUAL       reduce using rule 126 (r_seen_operator_mat -> .)
+    LESSEQUAL       reduce using rule 126 (r_seen_operator_mat -> .)
+    AND             reduce using rule 126 (r_seen_operator_mat -> .)
+    OR              reduce using rule 126 (r_seen_operator_mat -> .)
+    COMA            reduce using rule 126 (r_seen_operator_mat -> .)
+    RPAREN          reduce using rule 126 (r_seen_operator_mat -> .)
+    RSTAPLE         reduce using rule 126 (r_seen_operator_mat -> .)
+    HACER           reduce using rule 126 (r_seen_operator_mat -> .)
+    DOTCOMA         reduce using rule 126 (r_seen_operator_mat -> .)
+    HASTA           reduce using rule 126 (r_seen_operator_mat -> .)
+
+    r_seen_operator_mat            shift and go to state 250
+
+state 217
+
+    (76) ARROP -> TRANS_ARR . r_seen_operator_mat
     (126) r_seen_operator_mat -> .
 
     MULT            reduce using rule 126 (r_seen_operator_mat -> .)
@@ -3414,7 +3422,7 @@ state 217
 
 state 218
 
-    (76) ARROP -> TRANS_ARR . r_seen_operator_mat
+    (77) ARROP -> INV_ARR . r_seen_operator_mat
     (126) r_seen_operator_mat -> .
 
     MULT            reduce using rule 126 (r_seen_operator_mat -> .)
@@ -3441,33 +3449,6 @@ state 218
 
 state 219
 
-    (77) ARROP -> INV_ARR . r_seen_operator_mat
-    (126) r_seen_operator_mat -> .
-
-    MULT            reduce using rule 126 (r_seen_operator_mat -> .)
-    DIV             reduce using rule 126 (r_seen_operator_mat -> .)
-    MOD             reduce using rule 126 (r_seen_operator_mat -> .)
-    PLUS            reduce using rule 126 (r_seen_operator_mat -> .)
-    MINUS           reduce using rule 126 (r_seen_operator_mat -> .)
-    MORE            reduce using rule 126 (r_seen_operator_mat -> .)
-    LESS            reduce using rule 126 (r_seen_operator_mat -> .)
-    COMPARE         reduce using rule 126 (r_seen_operator_mat -> .)
-    DIFFERENT       reduce using rule 126 (r_seen_operator_mat -> .)
-    MOREEQUAL       reduce using rule 126 (r_seen_operator_mat -> .)
-    LESSEQUAL       reduce using rule 126 (r_seen_operator_mat -> .)
-    AND             reduce using rule 126 (r_seen_operator_mat -> .)
-    OR              reduce using rule 126 (r_seen_operator_mat -> .)
-    COMA            reduce using rule 126 (r_seen_operator_mat -> .)
-    RPAREN          reduce using rule 126 (r_seen_operator_mat -> .)
-    RSTAPLE         reduce using rule 126 (r_seen_operator_mat -> .)
-    HACER           reduce using rule 126 (r_seen_operator_mat -> .)
-    DOTCOMA         reduce using rule 126 (r_seen_operator_mat -> .)
-    HASTA           reduce using rule 126 (r_seen_operator_mat -> .)
-
-    r_seen_operator_mat            shift and go to state 253
-
-state 220
-
     (78) ARROP -> empty .
 
     MULT            reduce using rule 78 (ARROP -> empty .)
@@ -3491,7 +3472,7 @@ state 220
     HASTA           reduce using rule 78 (ARROP -> empty .)
 
 
-state 221
+state 220
 
     (69) CTE -> CTE_I r_seen_operand .
 
@@ -3519,7 +3500,7 @@ state 221
     HASTA           reduce using rule 69 (CTE -> CTE_I r_seen_operand .)
 
 
-state 222
+state 221
 
     (70) CTE -> CTE_F r_seen_operand .
 
@@ -3547,7 +3528,7 @@ state 222
     HASTA           reduce using rule 70 (CTE -> CTE_F r_seen_operand .)
 
 
-state 223
+state 222
 
     (71) CTE -> CTE_CH r_seen_operand .
 
@@ -3575,7 +3556,7 @@ state 223
     HASTA           reduce using rule 71 (CTE -> CTE_CH r_seen_operand .)
 
 
-state 224
+state 223
 
     (72) CTE -> CTE_STRING r_seen_operand .
 
@@ -3603,7 +3584,7 @@ state 224
     HASTA           reduce using rule 72 (CTE -> CTE_STRING r_seen_operand .)
 
 
-state 225
+state 224
 
     (74) CTE -> ID r_seen_operand_id . ARRACC
     (36) ARRACC -> . LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc
@@ -3634,50 +3615,50 @@ state 225
     DOTCOMA         reduce using rule 1 (empty -> .)
     HASTA           reduce using rule 1 (empty -> .)
 
-    ARRACC                         shift and go to state 254
+    ARRACC                         shift and go to state 253
     empty                          shift and go to state 134
 
-state 226
+state 225
 
     (104) READ_AUX -> ID r_seen_operand_id ARRDIM . r_lee READ_AUXSUB
-    (151) r_lee -> .
+    (152) r_lee -> .
 
-    COMA            reduce using rule 151 (r_lee -> .)
-    RPAREN          reduce using rule 151 (r_lee -> .)
+    COMA            reduce using rule 152 (r_lee -> .)
+    RPAREN          reduce using rule 152 (r_lee -> .)
 
-    r_lee                          shift and go to state 255
+    r_lee                          shift and go to state 254
 
-state 227
+state 226
 
     (107) RETURN -> REGRESA LPAREN EXPRESION RPAREN r_regresa .
 
     DOTCOMA         reduce using rule 107 (RETURN -> REGRESA LPAREN EXPRESION RPAREN r_regresa .)
 
 
-state 228
+state 227
 
     (86) IF -> SI LPAREN EXPRESION r_check_int RPAREN . ENTONCES IF2 r_if_end
 
-    ENTONCES        shift and go to state 256
+    ENTONCES        shift and go to state 255
 
+
+state 228
+
+    (96) FOR -> DESDE ASIGNACION r_set_for HASTA EXPRESION . r_for_gen HACER FOR2 r_for_end
+    (140) r_for_gen -> .
+
+    HACER           reduce using rule 140 (r_for_gen -> .)
+
+    r_for_gen                      shift and go to state 256
 
 state 229
 
-    (96) FOR -> DESDE ASIGNACION r_set_for HASTA EXPRESION . r_for_gen HACER FOR2 r_for_end
-    (139) r_for_gen -> .
-
-    HACER           reduce using rule 139 (r_for_gen -> .)
-
-    r_for_gen                      shift and go to state 257
-
-state 230
-
     (91) WHILE -> MIENTRAS r_set_while LPAREN EXPRESION r_check_int . RPAREN WHILE_AUX WHILE2 r_while_end
 
-    RPAREN          shift and go to state 258
+    RPAREN          shift and go to state 257
 
 
-state 231
+state 230
 
     (35) ASIGNACION -> ID r_seen_operand_id ARRACC EQUAL r_seen_operator EXPRESION . r_seen_equal
     (127) r_seen_equal -> .
@@ -3685,97 +3666,68 @@ state 231
     DOTCOMA         reduce using rule 127 (r_seen_equal -> .)
     HASTA           reduce using rule 127 (r_seen_equal -> .)
 
-    r_seen_equal                   shift and go to state 259
+    r_seen_equal                   shift and go to state 258
 
-state 232
+state 231
 
     (36) ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad . ARRACC_AUX RSTAPLE r_close_arracc
     (38) ARRACC_AUX -> . COMA r_add_dim EXPRESION r_create_quad ARRACC_AUX
     (39) ARRACC_AUX -> . empty
     (1) empty -> .
 
-    COMA            shift and go to state 261
+    COMA            shift and go to state 260
     RSTAPLE         reduce using rule 1 (empty -> .)
 
-    ARRACC_AUX                     shift and go to state 260
-    empty                          shift and go to state 262
+    ARRACC_AUX                     shift and go to state 259
+    empty                          shift and go to state 261
+
+state 232
+
+    (79) FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN . r_pop_fake_bottom r_go_sub
+    (132) r_pop_fake_bottom -> .
+
+    DOTCOMA         reduce using rule 132 (r_pop_fake_bottom -> .)
+    DET_ARR         reduce using rule 132 (r_pop_fake_bottom -> .)
+    TRANS_ARR       reduce using rule 132 (r_pop_fake_bottom -> .)
+    INV_ARR         reduce using rule 132 (r_pop_fake_bottom -> .)
+    MULT            reduce using rule 132 (r_pop_fake_bottom -> .)
+    DIV             reduce using rule 132 (r_pop_fake_bottom -> .)
+    MOD             reduce using rule 132 (r_pop_fake_bottom -> .)
+    PLUS            reduce using rule 132 (r_pop_fake_bottom -> .)
+    MINUS           reduce using rule 132 (r_pop_fake_bottom -> .)
+    MORE            reduce using rule 132 (r_pop_fake_bottom -> .)
+    LESS            reduce using rule 132 (r_pop_fake_bottom -> .)
+    COMPARE         reduce using rule 132 (r_pop_fake_bottom -> .)
+    DIFFERENT       reduce using rule 132 (r_pop_fake_bottom -> .)
+    MOREEQUAL       reduce using rule 132 (r_pop_fake_bottom -> .)
+    LESSEQUAL       reduce using rule 132 (r_pop_fake_bottom -> .)
+    AND             reduce using rule 132 (r_pop_fake_bottom -> .)
+    OR              reduce using rule 132 (r_pop_fake_bottom -> .)
+    COMA            reduce using rule 132 (r_pop_fake_bottom -> .)
+    RPAREN          reduce using rule 132 (r_pop_fake_bottom -> .)
+    RSTAPLE         reduce using rule 132 (r_pop_fake_bottom -> .)
+    HACER           reduce using rule 132 (r_pop_fake_bottom -> .)
+    HASTA           reduce using rule 132 (r_pop_fake_bottom -> .)
+
+    r_pop_fake_bottom              shift and go to state 262
 
 state 233
 
-    (79) FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .
+    (80) FUN_AUX -> EXPRESION r_check_param . COMA FUN_AUX
+    (81) FUN_AUX -> EXPRESION r_check_param .
 
-    DOTCOMA         reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    DET_ARR         reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    TRANS_ARR       reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    INV_ARR         reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    MULT            reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    DIV             reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    MOD             reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    PLUS            reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    MINUS           reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    MORE            reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    LESS            reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    COMPARE         reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    DIFFERENT       reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    MOREEQUAL       reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    LESSEQUAL       reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    AND             reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    OR              reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    COMA            reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    RPAREN          reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    RSTAPLE         reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    HACER           reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
-    HASTA           reduce using rule 79 (FUN -> ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub .)
+    COMA            shift and go to state 263
+    RPAREN          reduce using rule 81 (FUN_AUX -> EXPRESION r_check_param .)
 
 
 state 234
-
-    (80) FUN_AUX -> EXPRESION r_check_param COMA . FUN_AUX
-    (80) FUN_AUX -> . EXPRESION r_check_param COMA FUN_AUX
-    (81) FUN_AUX -> . EXPRESION r_check_param
-    (82) FUN_AUX -> . empty
-    (40) EXPRESION -> . SUBEXP r_seen_subexp EXPRESION_AUX
-    (1) empty -> .
-    (44) SUBEXP -> . EXP r_seen_exp SUBEXP_AUX
-    (53) EXP -> . TERMINO r_seen_term EXP_AUX
-    (57) TERMINO -> . FACTOR r_seen_factor TERMINO_AUX
-    (62) FACTOR -> . NOT r_seen_unary_operator FACTOR_AUX
-    (63) FACTOR -> . FACTOR_AUX
-    (64) FACTOR_AUX -> . SIGN LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom
-    (65) FACTOR_AUX -> . SIGN CTE ARROP
-    (66) SIGN -> . PLUS r_seen_unary_operator
-    (67) SIGN -> . MINUS r_seen_unary_operator
-    (68) SIGN -> . empty
-
-    RPAREN          reduce using rule 1 (empty -> .)
-    LPAREN          reduce using rule 1 (empty -> .)
-    CTE_I           reduce using rule 1 (empty -> .)
-    CTE_F           reduce using rule 1 (empty -> .)
-    CTE_CH          reduce using rule 1 (empty -> .)
-    CTE_STRING      reduce using rule 1 (empty -> .)
-    ID              reduce using rule 1 (empty -> .)
-    NOT             shift and go to state 142
-    PLUS            shift and go to state 145
-    MINUS           shift and go to state 146
-
-    EXPRESION                      shift and go to state 159
-    FUN_AUX                        shift and go to state 263
-    empty                          shift and go to state 160
-    SUBEXP                         shift and go to state 138
-    EXP                            shift and go to state 139
-    TERMINO                        shift and go to state 140
-    FACTOR                         shift and go to state 141
-    FACTOR_AUX                     shift and go to state 143
-    SIGN                           shift and go to state 144
-
-state 235
 
     (101) WRITE_AUXSUB -> COMA WRITE_AUX .
 
     RPAREN          reduce using rule 101 (WRITE_AUXSUB -> COMA WRITE_AUX .)
 
 
-state 236
+state 235
 
     (41) EXPRESION_AUX -> AND r_seen_operator . EXPRESION
     (40) EXPRESION -> . SUBEXP r_seen_subexp EXPRESION_AUX
@@ -3810,7 +3762,7 @@ state 236
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 237
+state 236
 
     (42) EXPRESION_AUX -> OR r_seen_operator . EXPRESION
     (40) EXPRESION -> . SUBEXP r_seen_subexp EXPRESION_AUX
@@ -3845,7 +3797,7 @@ state 237
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 238
+state 237
 
     (45) SUBEXP_AUX -> COMPARACION SUBEXP .
 
@@ -3859,7 +3811,7 @@ state 238
     HASTA           reduce using rule 45 (SUBEXP_AUX -> COMPARACION SUBEXP .)
 
 
-state 239
+state 238
 
     (47) COMPARACION -> MORE r_seen_operator .
 
@@ -3874,7 +3826,7 @@ state 239
     ID              reduce using rule 47 (COMPARACION -> MORE r_seen_operator .)
 
 
-state 240
+state 239
 
     (48) COMPARACION -> LESS r_seen_operator .
 
@@ -3889,7 +3841,7 @@ state 240
     ID              reduce using rule 48 (COMPARACION -> LESS r_seen_operator .)
 
 
-state 241
+state 240
 
     (49) COMPARACION -> COMPARE r_seen_operator .
 
@@ -3904,7 +3856,7 @@ state 241
     ID              reduce using rule 49 (COMPARACION -> COMPARE r_seen_operator .)
 
 
-state 242
+state 241
 
     (50) COMPARACION -> DIFFERENT r_seen_operator .
 
@@ -3919,7 +3871,7 @@ state 242
     ID              reduce using rule 50 (COMPARACION -> DIFFERENT r_seen_operator .)
 
 
-state 243
+state 242
 
     (51) COMPARACION -> MOREEQUAL r_seen_operator .
 
@@ -3934,7 +3886,7 @@ state 243
     ID              reduce using rule 51 (COMPARACION -> MOREEQUAL r_seen_operator .)
 
 
-state 244
+state 243
 
     (52) COMPARACION -> LESSEQUAL r_seen_operator .
 
@@ -3949,7 +3901,7 @@ state 244
     ID              reduce using rule 52 (COMPARACION -> LESSEQUAL r_seen_operator .)
 
 
-state 245
+state 244
 
     (54) EXP_AUX -> PLUS r_seen_operator . EXP
     (53) EXP -> . TERMINO r_seen_term EXP_AUX
@@ -3980,7 +3932,7 @@ state 245
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 246
+state 245
 
     (55) EXP_AUX -> MINUS r_seen_operator . EXP
     (53) EXP -> . TERMINO r_seen_term EXP_AUX
@@ -4011,7 +3963,7 @@ state 246
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 247
+state 246
 
     (58) TERMINO_AUX -> MULT r_seen_operator . TERMINO r_seen_term
     (57) TERMINO -> . FACTOR r_seen_factor TERMINO_AUX
@@ -4040,7 +3992,7 @@ state 247
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 248
+state 247
 
     (59) TERMINO_AUX -> DIV r_seen_operator . TERMINO r_seen_term
     (57) TERMINO -> . FACTOR r_seen_factor TERMINO_AUX
@@ -4069,7 +4021,7 @@ state 248
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 249
+state 248
 
     (60) TERMINO_AUX -> MOD r_seen_operator . TERMINO r_seen_term
     (57) TERMINO -> . FACTOR r_seen_factor TERMINO_AUX
@@ -4098,14 +4050,14 @@ state 249
     SIGN                           shift and go to state 144
     empty                          shift and go to state 147
 
-state 250
+state 249
 
     (64) FACTOR_AUX -> SIGN LPAREN r_seen_operator EXPRESION . RPAREN r_pop_fake_bottom
 
     RPAREN          shift and go to state 271
 
 
-state 251
+state 250
 
     (75) ARROP -> DET_ARR r_seen_operator_mat .
 
@@ -4130,7 +4082,7 @@ state 251
     HASTA           reduce using rule 75 (ARROP -> DET_ARR r_seen_operator_mat .)
 
 
-state 252
+state 251
 
     (76) ARROP -> TRANS_ARR r_seen_operator_mat .
 
@@ -4155,7 +4107,7 @@ state 252
     HASTA           reduce using rule 76 (ARROP -> TRANS_ARR r_seen_operator_mat .)
 
 
-state 253
+state 252
 
     (77) ARROP -> INV_ARR r_seen_operator_mat .
 
@@ -4180,7 +4132,7 @@ state 253
     HASTA           reduce using rule 77 (ARROP -> INV_ARR r_seen_operator_mat .)
 
 
-state 254
+state 253
 
     (74) CTE -> ID r_seen_operand_id ARRACC .
 
@@ -4208,7 +4160,7 @@ state 254
     HASTA           reduce using rule 74 (CTE -> ID r_seen_operand_id ARRACC .)
 
 
-state 255
+state 254
 
     (104) READ_AUX -> ID r_seen_operand_id ARRDIM r_lee . READ_AUXSUB
     (105) READ_AUXSUB -> . COMA READ_AUX
@@ -4221,7 +4173,7 @@ state 255
     READ_AUXSUB                    shift and go to state 272
     empty                          shift and go to state 274
 
-state 256
+state 255
 
     (86) IF -> SI LPAREN EXPRESION r_check_int RPAREN ENTONCES . IF2 r_if_end
     (87) IF2 -> . BLOQUE IF_AUX
@@ -4246,14 +4198,14 @@ state 256
     FOR                            shift and go to state 104
     WHILE                          shift and go to state 105
 
-state 257
+state 256
 
     (96) FOR -> DESDE ASIGNACION r_set_for HASTA EXPRESION r_for_gen . HACER FOR2 r_for_end
 
     HACER           shift and go to state 278
 
 
-state 258
+state 257
 
     (91) WHILE -> MIENTRAS r_set_while LPAREN EXPRESION r_check_int RPAREN . WHILE_AUX WHILE2 r_while_end
     (94) WHILE_AUX -> . HAZ
@@ -4269,7 +4221,7 @@ state 258
     WHILE_AUX                      shift and go to state 279
     empty                          shift and go to state 281
 
-state 259
+state 258
 
     (35) ASIGNACION -> ID r_seen_operand_id ARRACC EQUAL r_seen_operator EXPRESION r_seen_equal .
 
@@ -4277,14 +4229,14 @@ state 259
     HASTA           reduce using rule 35 (ASIGNACION -> ID r_seen_operand_id ARRACC EQUAL r_seen_operator EXPRESION r_seen_equal .)
 
 
-state 260
+state 259
 
     (36) ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX . RSTAPLE r_close_arracc
 
     RSTAPLE         shift and go to state 282
 
 
-state 261
+state 260
 
     (38) ARRACC_AUX -> COMA . r_add_dim EXPRESION r_create_quad ARRACC_AUX
     (118) r_add_dim -> .
@@ -4301,19 +4253,82 @@ state 261
 
     r_add_dim                      shift and go to state 283
 
-state 262
+state 261
 
     (39) ARRACC_AUX -> empty .
 
     RSTAPLE         reduce using rule 39 (ARRACC_AUX -> empty .)
 
 
+state 262
+
+    (79) FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom . r_go_sub
+    (148) r_go_sub -> .
+
+    DOTCOMA         reduce using rule 148 (r_go_sub -> .)
+    DET_ARR         reduce using rule 148 (r_go_sub -> .)
+    TRANS_ARR       reduce using rule 148 (r_go_sub -> .)
+    INV_ARR         reduce using rule 148 (r_go_sub -> .)
+    MULT            reduce using rule 148 (r_go_sub -> .)
+    DIV             reduce using rule 148 (r_go_sub -> .)
+    MOD             reduce using rule 148 (r_go_sub -> .)
+    PLUS            reduce using rule 148 (r_go_sub -> .)
+    MINUS           reduce using rule 148 (r_go_sub -> .)
+    MORE            reduce using rule 148 (r_go_sub -> .)
+    LESS            reduce using rule 148 (r_go_sub -> .)
+    COMPARE         reduce using rule 148 (r_go_sub -> .)
+    DIFFERENT       reduce using rule 148 (r_go_sub -> .)
+    MOREEQUAL       reduce using rule 148 (r_go_sub -> .)
+    LESSEQUAL       reduce using rule 148 (r_go_sub -> .)
+    AND             reduce using rule 148 (r_go_sub -> .)
+    OR              reduce using rule 148 (r_go_sub -> .)
+    COMA            reduce using rule 148 (r_go_sub -> .)
+    RPAREN          reduce using rule 148 (r_go_sub -> .)
+    RSTAPLE         reduce using rule 148 (r_go_sub -> .)
+    HACER           reduce using rule 148 (r_go_sub -> .)
+    HASTA           reduce using rule 148 (r_go_sub -> .)
+
+    r_go_sub                       shift and go to state 284
+
 state 263
 
-    (80) FUN_AUX -> EXPRESION r_check_param COMA FUN_AUX .
+    (80) FUN_AUX -> EXPRESION r_check_param COMA . FUN_AUX
+    (80) FUN_AUX -> . EXPRESION r_check_param COMA FUN_AUX
+    (81) FUN_AUX -> . EXPRESION r_check_param
+    (82) FUN_AUX -> . empty
+    (40) EXPRESION -> . SUBEXP r_seen_subexp EXPRESION_AUX
+    (1) empty -> .
+    (44) SUBEXP -> . EXP r_seen_exp SUBEXP_AUX
+    (53) EXP -> . TERMINO r_seen_term EXP_AUX
+    (57) TERMINO -> . FACTOR r_seen_factor TERMINO_AUX
+    (62) FACTOR -> . NOT r_seen_unary_operator FACTOR_AUX
+    (63) FACTOR -> . FACTOR_AUX
+    (64) FACTOR_AUX -> . SIGN LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom
+    (65) FACTOR_AUX -> . SIGN CTE ARROP
+    (66) SIGN -> . PLUS r_seen_unary_operator
+    (67) SIGN -> . MINUS r_seen_unary_operator
+    (68) SIGN -> . empty
 
-    RPAREN          reduce using rule 80 (FUN_AUX -> EXPRESION r_check_param COMA FUN_AUX .)
+    RPAREN          reduce using rule 1 (empty -> .)
+    LPAREN          reduce using rule 1 (empty -> .)
+    CTE_I           reduce using rule 1 (empty -> .)
+    CTE_F           reduce using rule 1 (empty -> .)
+    CTE_CH          reduce using rule 1 (empty -> .)
+    CTE_STRING      reduce using rule 1 (empty -> .)
+    ID              reduce using rule 1 (empty -> .)
+    NOT             shift and go to state 142
+    PLUS            shift and go to state 145
+    MINUS           shift and go to state 146
 
+    EXPRESION                      shift and go to state 186
+    FUN_AUX                        shift and go to state 285
+    empty                          shift and go to state 187
+    SUBEXP                         shift and go to state 138
+    EXP                            shift and go to state 139
+    TERMINO                        shift and go to state 140
+    FACTOR                         shift and go to state 141
+    FACTOR_AUX                     shift and go to state 143
+    SIGN                           shift and go to state 144
 
 state 264
 
@@ -4401,7 +4416,7 @@ state 268
     DOTCOMA         reduce using rule 130 (r_seen_term -> .)
     HASTA           reduce using rule 130 (r_seen_term -> .)
 
-    r_seen_term                    shift and go to state 284
+    r_seen_term                    shift and go to state 286
 
 state 269
 
@@ -4425,7 +4440,7 @@ state 269
     DOTCOMA         reduce using rule 130 (r_seen_term -> .)
     HASTA           reduce using rule 130 (r_seen_term -> .)
 
-    r_seen_term                    shift and go to state 285
+    r_seen_term                    shift and go to state 287
 
 state 270
 
@@ -4449,7 +4464,7 @@ state 270
     DOTCOMA         reduce using rule 130 (r_seen_term -> .)
     HASTA           reduce using rule 130 (r_seen_term -> .)
 
-    r_seen_term                    shift and go to state 286
+    r_seen_term                    shift and go to state 288
 
 state 271
 
@@ -4476,7 +4491,7 @@ state 271
     DOTCOMA         reduce using rule 132 (r_pop_fake_bottom -> .)
     HASTA           reduce using rule 132 (r_pop_fake_bottom -> .)
 
-    r_pop_fake_bottom              shift and go to state 287
+    r_pop_fake_bottom              shift and go to state 289
 
 state 272
 
@@ -4492,7 +4507,7 @@ state 273
 
     ID              shift and go to state 149
 
-    READ_AUX                       shift and go to state 288
+    READ_AUX                       shift and go to state 290
 
 state 274
 
@@ -4504,18 +4519,18 @@ state 274
 state 275
 
     (86) IF -> SI LPAREN EXPRESION r_check_int RPAREN ENTONCES IF2 . r_if_end
-    (134) r_if_end -> .
+    (135) r_if_end -> .
 
-    ID              reduce using rule 134 (r_if_end -> .)
-    ESCRIBE         reduce using rule 134 (r_if_end -> .)
-    LEE             reduce using rule 134 (r_if_end -> .)
-    REGRESA         reduce using rule 134 (r_if_end -> .)
-    SI              reduce using rule 134 (r_if_end -> .)
-    DESDE           reduce using rule 134 (r_if_end -> .)
-    MIENTRAS        reduce using rule 134 (r_if_end -> .)
-    RBRACKET        reduce using rule 134 (r_if_end -> .)
+    ID              reduce using rule 135 (r_if_end -> .)
+    ESCRIBE         reduce using rule 135 (r_if_end -> .)
+    LEE             reduce using rule 135 (r_if_end -> .)
+    REGRESA         reduce using rule 135 (r_if_end -> .)
+    SI              reduce using rule 135 (r_if_end -> .)
+    DESDE           reduce using rule 135 (r_if_end -> .)
+    MIENTRAS        reduce using rule 135 (r_if_end -> .)
+    RBRACKET        reduce using rule 135 (r_if_end -> .)
 
-    r_if_end                       shift and go to state 289
+    r_if_end                       shift and go to state 291
 
 state 276
 
@@ -4524,7 +4539,7 @@ state 276
     (90) IF_AUX -> . empty
     (1) empty -> .
 
-    SINO            shift and go to state 291
+    SINO            shift and go to state 293
     ID              reduce using rule 1 (empty -> .)
     ESCRIBE         reduce using rule 1 (empty -> .)
     LEE             reduce using rule 1 (empty -> .)
@@ -4534,8 +4549,8 @@ state 276
     MIENTRAS        reduce using rule 1 (empty -> .)
     RBRACKET        reduce using rule 1 (empty -> .)
 
-    IF_AUX                         shift and go to state 290
-    empty                          shift and go to state 292
+    IF_AUX                         shift and go to state 292
+    empty                          shift and go to state 294
 
 state 277
 
@@ -4569,9 +4584,9 @@ state 278
     DESDE           shift and go to state 110
     MIENTRAS        shift and go to state 111
 
-    FOR2                           shift and go to state 293
-    BLOQUE                         shift and go to state 294
-    COND                           shift and go to state 295
+    FOR2                           shift and go to state 295
+    BLOQUE                         shift and go to state 296
+    COND                           shift and go to state 297
     IF                             shift and go to state 103
     FOR                            shift and go to state 104
     WHILE                          shift and go to state 105
@@ -4594,9 +4609,9 @@ state 279
     DESDE           shift and go to state 110
     MIENTRAS        shift and go to state 111
 
-    WHILE2                         shift and go to state 296
-    BLOQUE                         shift and go to state 297
-    COND                           shift and go to state 298
+    WHILE2                         shift and go to state 298
+    BLOQUE                         shift and go to state 299
+    COND                           shift and go to state 300
     IF                             shift and go to state 103
     FOR                            shift and go to state 104
     WHILE                          shift and go to state 105
@@ -4650,7 +4665,7 @@ state 282
     DOTCOMA         reduce using rule 119 (r_close_arracc -> .)
     HASTA           reduce using rule 119 (r_close_arracc -> .)
 
-    r_close_arracc                 shift and go to state 299
+    r_close_arracc                 shift and go to state 301
 
 state 283
 
@@ -4678,7 +4693,7 @@ state 283
     CTE_STRING      reduce using rule 1 (empty -> .)
     ID              reduce using rule 1 (empty -> .)
 
-    EXPRESION                      shift and go to state 300
+    EXPRESION                      shift and go to state 302
     SUBEXP                         shift and go to state 138
     EXP                            shift and go to state 139
     TERMINO                        shift and go to state 140
@@ -4688,6 +4703,41 @@ state 283
     empty                          shift and go to state 147
 
 state 284
+
+    (79) FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .
+
+    DOTCOMA         reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    DET_ARR         reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    TRANS_ARR       reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    INV_ARR         reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    MULT            reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    DIV             reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    MOD             reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    PLUS            reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    MINUS           reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    MORE            reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    LESS            reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    COMPARE         reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    DIFFERENT       reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    MOREEQUAL       reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    LESSEQUAL       reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    AND             reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    OR              reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    COMA            reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    RPAREN          reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    RSTAPLE         reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    HACER           reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+    HASTA           reduce using rule 79 (FUN -> ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub .)
+
+
+state 285
+
+    (80) FUN_AUX -> EXPRESION r_check_param COMA FUN_AUX .
+
+    RPAREN          reduce using rule 80 (FUN_AUX -> EXPRESION r_check_param COMA FUN_AUX .)
+
+
+state 286
 
     (58) TERMINO_AUX -> MULT r_seen_operator TERMINO r_seen_term .
 
@@ -4709,7 +4759,7 @@ state 284
     HASTA           reduce using rule 58 (TERMINO_AUX -> MULT r_seen_operator TERMINO r_seen_term .)
 
 
-state 285
+state 287
 
     (59) TERMINO_AUX -> DIV r_seen_operator TERMINO r_seen_term .
 
@@ -4731,7 +4781,7 @@ state 285
     HASTA           reduce using rule 59 (TERMINO_AUX -> DIV r_seen_operator TERMINO r_seen_term .)
 
 
-state 286
+state 288
 
     (60) TERMINO_AUX -> MOD r_seen_operator TERMINO r_seen_term .
 
@@ -4753,7 +4803,7 @@ state 286
     HASTA           reduce using rule 60 (TERMINO_AUX -> MOD r_seen_operator TERMINO r_seen_term .)
 
 
-state 287
+state 289
 
     (64) FACTOR_AUX -> SIGN LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom .
 
@@ -4778,14 +4828,14 @@ state 287
     HASTA           reduce using rule 64 (FACTOR_AUX -> SIGN LPAREN r_seen_operator EXPRESION RPAREN r_pop_fake_bottom .)
 
 
-state 288
+state 290
 
     (105) READ_AUXSUB -> COMA READ_AUX .
 
     RPAREN          reduce using rule 105 (READ_AUXSUB -> COMA READ_AUX .)
 
 
-state 289
+state 291
 
     (86) IF -> SI LPAREN EXPRESION r_check_int RPAREN ENTONCES IF2 r_if_end .
 
@@ -4799,7 +4849,7 @@ state 289
     RBRACKET        reduce using rule 86 (IF -> SI LPAREN EXPRESION r_check_int RPAREN ENTONCES IF2 r_if_end .)
 
 
-state 290
+state 292
 
     (87) IF2 -> BLOQUE IF_AUX .
 
@@ -4813,16 +4863,16 @@ state 290
     RBRACKET        reduce using rule 87 (IF2 -> BLOQUE IF_AUX .)
 
 
-state 291
+state 293
 
     (89) IF_AUX -> SINO . r_else_start BLOQUE
-    (135) r_else_start -> .
+    (136) r_else_start -> .
 
-    LBRACKET        reduce using rule 135 (r_else_start -> .)
+    LBRACKET        reduce using rule 136 (r_else_start -> .)
 
-    r_else_start                   shift and go to state 301
+    r_else_start                   shift and go to state 303
 
-state 292
+state 294
 
     (90) IF_AUX -> empty .
 
@@ -4836,23 +4886,23 @@ state 292
     RBRACKET        reduce using rule 90 (IF_AUX -> empty .)
 
 
-state 293
+state 295
 
     (96) FOR -> DESDE ASIGNACION r_set_for HASTA EXPRESION r_for_gen HACER FOR2 . r_for_end
-    (140) r_for_end -> .
+    (141) r_for_end -> .
 
-    ID              reduce using rule 140 (r_for_end -> .)
-    ESCRIBE         reduce using rule 140 (r_for_end -> .)
-    LEE             reduce using rule 140 (r_for_end -> .)
-    REGRESA         reduce using rule 140 (r_for_end -> .)
-    SI              reduce using rule 140 (r_for_end -> .)
-    DESDE           reduce using rule 140 (r_for_end -> .)
-    MIENTRAS        reduce using rule 140 (r_for_end -> .)
-    RBRACKET        reduce using rule 140 (r_for_end -> .)
+    ID              reduce using rule 141 (r_for_end -> .)
+    ESCRIBE         reduce using rule 141 (r_for_end -> .)
+    LEE             reduce using rule 141 (r_for_end -> .)
+    REGRESA         reduce using rule 141 (r_for_end -> .)
+    SI              reduce using rule 141 (r_for_end -> .)
+    DESDE           reduce using rule 141 (r_for_end -> .)
+    MIENTRAS        reduce using rule 141 (r_for_end -> .)
+    RBRACKET        reduce using rule 141 (r_for_end -> .)
 
-    r_for_end                      shift and go to state 302
+    r_for_end                      shift and go to state 304
 
-state 294
+state 296
 
     (97) FOR2 -> BLOQUE .
 
@@ -4866,7 +4916,7 @@ state 294
     RBRACKET        reduce using rule 97 (FOR2 -> BLOQUE .)
 
 
-state 295
+state 297
 
     (98) FOR2 -> COND .
 
@@ -4880,23 +4930,23 @@ state 295
     RBRACKET        reduce using rule 98 (FOR2 -> COND .)
 
 
-state 296
+state 298
 
     (91) WHILE -> MIENTRAS r_set_while LPAREN EXPRESION r_check_int RPAREN WHILE_AUX WHILE2 . r_while_end
-    (137) r_while_end -> .
+    (138) r_while_end -> .
 
-    ID              reduce using rule 137 (r_while_end -> .)
-    ESCRIBE         reduce using rule 137 (r_while_end -> .)
-    LEE             reduce using rule 137 (r_while_end -> .)
-    REGRESA         reduce using rule 137 (r_while_end -> .)
-    SI              reduce using rule 137 (r_while_end -> .)
-    DESDE           reduce using rule 137 (r_while_end -> .)
-    MIENTRAS        reduce using rule 137 (r_while_end -> .)
-    RBRACKET        reduce using rule 137 (r_while_end -> .)
+    ID              reduce using rule 138 (r_while_end -> .)
+    ESCRIBE         reduce using rule 138 (r_while_end -> .)
+    LEE             reduce using rule 138 (r_while_end -> .)
+    REGRESA         reduce using rule 138 (r_while_end -> .)
+    SI              reduce using rule 138 (r_while_end -> .)
+    DESDE           reduce using rule 138 (r_while_end -> .)
+    MIENTRAS        reduce using rule 138 (r_while_end -> .)
+    RBRACKET        reduce using rule 138 (r_while_end -> .)
 
-    r_while_end                    shift and go to state 303
+    r_while_end                    shift and go to state 305
 
-state 297
+state 299
 
     (92) WHILE2 -> BLOQUE .
 
@@ -4910,7 +4960,7 @@ state 297
     RBRACKET        reduce using rule 92 (WHILE2 -> BLOQUE .)
 
 
-state 298
+state 300
 
     (93) WHILE2 -> COND .
 
@@ -4924,7 +4974,7 @@ state 298
     RBRACKET        reduce using rule 93 (WHILE2 -> COND .)
 
 
-state 299
+state 301
 
     (36) ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .
 
@@ -4953,7 +5003,7 @@ state 299
     HASTA           reduce using rule 36 (ARRACC -> LSTAPLE r_check_dim EXPRESION r_create_quad ARRACC_AUX RSTAPLE r_close_arracc .)
 
 
-state 300
+state 302
 
     (38) ARRACC_AUX -> COMA r_add_dim EXPRESION . r_create_quad ARRACC_AUX
     (117) r_create_quad -> .
@@ -4961,18 +5011,18 @@ state 300
     COMA            reduce using rule 117 (r_create_quad -> .)
     RSTAPLE         reduce using rule 117 (r_create_quad -> .)
 
-    r_create_quad                  shift and go to state 304
+    r_create_quad                  shift and go to state 306
 
-state 301
+state 303
 
     (89) IF_AUX -> SINO r_else_start . BLOQUE
     (26) BLOQUE -> . LBRACKET ESTATUTOS RBRACKET
 
     LBRACKET        shift and go to state 89
 
-    BLOQUE                         shift and go to state 305
+    BLOQUE                         shift and go to state 307
 
-state 302
+state 304
 
     (96) FOR -> DESDE ASIGNACION r_set_for HASTA EXPRESION r_for_gen HACER FOR2 r_for_end .
 
@@ -4986,7 +5036,7 @@ state 302
     RBRACKET        reduce using rule 96 (FOR -> DESDE ASIGNACION r_set_for HASTA EXPRESION r_for_gen HACER FOR2 r_for_end .)
 
 
-state 303
+state 305
 
     (91) WHILE -> MIENTRAS r_set_while LPAREN EXPRESION r_check_int RPAREN WHILE_AUX WHILE2 r_while_end .
 
@@ -5000,20 +5050,20 @@ state 303
     RBRACKET        reduce using rule 91 (WHILE -> MIENTRAS r_set_while LPAREN EXPRESION r_check_int RPAREN WHILE_AUX WHILE2 r_while_end .)
 
 
-state 304
+state 306
 
     (38) ARRACC_AUX -> COMA r_add_dim EXPRESION r_create_quad . ARRACC_AUX
     (38) ARRACC_AUX -> . COMA r_add_dim EXPRESION r_create_quad ARRACC_AUX
     (39) ARRACC_AUX -> . empty
     (1) empty -> .
 
-    COMA            shift and go to state 261
+    COMA            shift and go to state 260
     RSTAPLE         reduce using rule 1 (empty -> .)
 
-    ARRACC_AUX                     shift and go to state 306
-    empty                          shift and go to state 262
+    ARRACC_AUX                     shift and go to state 308
+    empty                          shift and go to state 261
 
-state 305
+state 307
 
     (89) IF_AUX -> SINO r_else_start BLOQUE .
 
@@ -5027,7 +5077,7 @@ state 305
     RBRACKET        reduce using rule 89 (IF_AUX -> SINO r_else_start BLOQUE .)
 
 
-state 306
+state 308
 
     (38) ARRACC_AUX -> COMA r_add_dim EXPRESION r_create_quad ARRACC_AUX .
 

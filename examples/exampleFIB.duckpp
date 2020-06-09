@@ -13,12 +13,11 @@ var int k, j;
 	sino {
 			regresa( fibo(i-1) + fibo(i-2) );
 	}
-
 }
 
 principal()
 var int x;
 {
-	x = fibo(5);
+	x = fibo(8);
 	escribe(x);
 }

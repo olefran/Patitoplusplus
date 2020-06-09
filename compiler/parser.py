@@ -288,13 +288,13 @@ def p_ARROP(p):
 # r_check_func : Checa de exista la funcion exista en el symbol table
 # r_go_sub : Genera el goto hacia la dirreción de la función
 def p_FUN(p):
-    'FUN : ID r_check_func LPAREN FUN_AUX RPAREN r_go_sub'
+    'FUN : ID r_check_func LPAREN r_create_bottom FUN_AUX RPAREN r_pop_fake_bottom r_go_sub'
     pass
 
 # FUN_AUX → EXPRESION , FUN_AUX | EXPRESION | empty
 # r_check_param : Create cuadruples PARAM
 def p_FUN_AUX(p):
-    '''FUN_AUX : EXPRESION r_check_param COMA FUN_AUX
+    '''FUN_AUX : EXPRESION r_check_param COMA  FUN_AUX
     | EXPRESION r_check_param
     | empty'''
     pass
@@ -736,6 +736,12 @@ def p_r_pop_fake_bottom(p):
   e = pop_fake_bottom()
   if e:
       handle_error(p.lineno(-1), p.lexpos(-1), e)
+
+def p_r_create_bottom(p):
+    'r_create_bottom : '
+    e = create_fake_bottom()
+    if e:
+        handle_error(p.lineno(-1), p.lexpos(-1), e)
 
 # r_check_int : Revisa si la expresion es un entero, guarda la dirreción en el jump_stack
 def p_r_check_int(p):

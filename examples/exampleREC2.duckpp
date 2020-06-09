@@ -1,0 +1,20 @@
+%% Example REC for Patitoplusplus
+programa patito;
+
+funcion int func1 (int j)
+{
+  si (j == 0) entonces
+  {
+    regresa(j);
+  }
+  sino
+  {
+    regresa(func1(j-1) + j);
+  }
+}
+
+principal()
+var int k;
+{
+  escribe(func1(5));
+}
